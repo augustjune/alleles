@@ -6,4 +6,8 @@ package object operators {
   trait Selection extends GeneticOperator
   trait Mixing extends GeneticOperator
   trait Mutation extends GeneticOperator
+
+  object Same extends Selection with Mixing with Mutation {
+    def apply(pop: Population): Population = pop
+  }
 }
