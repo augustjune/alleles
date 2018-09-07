@@ -17,9 +17,11 @@ package object genetic {
   type Population = List[Permutation]
 
   //ToDo - implement
-  class Permutation() {
+  class Permutation() extends Ordered[Permutation] {
     def fitnessValue: Int = ???
     def mutate: Permutation = ???
     def randomCrossOver(other: Permutation): Permutation = ???
+
+    def compare(other: Permutation): Int = fitnessValue.compare(other.fitnessValue)
   }
 }
