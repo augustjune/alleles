@@ -1,13 +1,13 @@
 package genetic
 
-trait Permutation {
+trait Genotype {
   def fitnessValue: Int
 
   /**
     * Creates a new permutation with single chromosome mutated
     * @return mutated Permutation
     */
-  def mutate: Permutation
+  def mutate: Genotype
 
   /**
     * Creates a new permutation containing part of the original genome
@@ -15,5 +15,5 @@ trait Permutation {
     * @param other permutation providing second part of genome
     * @return permutation containing genes from both genomes
     */
-  def crossover(other: Permutation): Permutation
+  def crossover(other: Genotype): Genotype
 }

@@ -12,9 +12,9 @@ object Roulette extends Selection {
 
     val rouletteSectors = population.map(x => (largestFitness - x.fitnessValue) / range)
 
-    def selectOne: Permutation = population(Random.shot(rouletteSectors))
+    def selectOne: Genotype = population(Random.shot(rouletteSectors))
 
-    def selectUntil(newPopSize: Int, acc: List[Permutation]): List[Permutation] =
+    def selectUntil(newPopSize: Int, acc: List[Genotype]): List[Genotype] =
       if (acc.length < newPopSize)
         selectUntil(newPopSize, selectOne :: acc)
       else acc

@@ -7,7 +7,7 @@ import scala.util.Random
 
 case class ClassicCrossover(parentChance: Double) extends Crossover {
   def apply(population: Population): Population = {
-    def iter(pool: Population, acc: List[Permutation]): List[Permutation] = pool match {
+    def iter(pool: Population, acc: List[Genotype]): List[Genotype] = pool match {
       case Nil | List(_) => acc
       case p1 :: p2 :: tail =>
         if (Random.shot(parentChance)) iter(tail, p2 :: p1 :: acc)

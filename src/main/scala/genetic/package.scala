@@ -4,7 +4,7 @@ import scala.concurrent.duration.Duration
 import scala.util.Random
 
 package object genetic {
-  type Population = List[Permutation]
+  type Population = List[Genotype]
 
   implicit class RandomExtension(rand: Random) {
     def shot(chance: Double): Boolean = rand.nextDouble() < chance

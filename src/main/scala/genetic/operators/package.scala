@@ -9,7 +9,7 @@ package object operators {
   sealed trait GeneticOperator extends (Population => Population)
 
   /**
-    * The stage of genetic algorithm, which chooses individual
+    * A genetic operator used to choose individual
     * genomes from a population for later breeding
     */
   trait Selection extends GeneticOperator

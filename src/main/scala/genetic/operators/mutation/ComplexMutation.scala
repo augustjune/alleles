@@ -14,7 +14,7 @@ case class ComplexMutation(chance: Double, complexity: Double) extends Mutation 
 
   //ToDo - rename
   @tailrec
-  private def mutateSingleChromosome(complexity: Double)(permutation: Permutation): Permutation = {
+  private def mutateSingleChromosome(complexity: Double)(permutation: Genotype): Genotype = {
     val mutated = permutation.mutate
     if (Random.shot(complexity)) mutateSingleChromosome(complexity)(mutated)
     else mutated
