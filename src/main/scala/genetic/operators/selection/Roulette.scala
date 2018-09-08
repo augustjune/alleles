@@ -5,9 +5,9 @@ import genetic._
 
 import scala.util.Random
 
-case object Roulette extends Selection {
+object Roulette extends Selection {
   def apply(population: Population): Population = {
-    val largestFitness = population.max.fitnessValue
+    val largestFitness = population.map(_.fitnessValue).max
     val range: Double = population.map(largestFitness - _.fitnessValue).sum
 
     val rouletteSectors = population.map(x => (largestFitness - x.fitnessValue) / range)

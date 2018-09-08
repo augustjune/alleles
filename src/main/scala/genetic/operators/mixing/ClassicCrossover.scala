@@ -11,7 +11,7 @@ case class ClassicCrossover(parentChance: Double) extends Mixing {
       case Nil | List(_) => acc
       case p1 :: p2 :: tail =>
         if (Random.shot(parentChance)) iter(tail, p2 :: p1 :: acc)
-        else iter(tail, p1.randomCrossOver(p2) :: p2.randomCrossOver(p1) :: acc)
+        else iter(tail, p1.randomCrossover(p2) :: p2.randomCrossover(p1) :: acc)
     }
 
     iter(population, Nil)
