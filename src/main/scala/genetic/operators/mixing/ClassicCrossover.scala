@@ -1,17 +1,17 @@
 package genetic.operators.mixing
 
 import genetic._
-import genetic.operators.Mixing
+import genetic.operators.Crossover
 
 import scala.util.Random
 
-case class ClassicCrossover(parentChance: Double) extends Mixing {
+case class ClassicCrossover(parentChance: Double) extends Crossover {
   def apply(population: Population): Population = {
     def iter(pool: Population, acc: List[Permutation]): List[Permutation] = pool match {
       case Nil | List(_) => acc
       case p1 :: p2 :: tail =>
         if (Random.shot(parentChance)) iter(tail, p2 :: p1 :: acc)
-        else iter(tail, p1.randomCrossover(p2) :: p2.randomCrossover(p1) :: acc)
+        else iter(tail, p1.crossover(p2) :: p2.crossover(p1) :: acc)
     }
 
     iter(population, Nil)

@@ -1,4 +1,4 @@
-import genetic.operators.{Mixing, Mutation, Same, Selection}
+import genetic.operators.{Crossover, Mutation, Same, Selection}
 
 import scala.concurrent.duration.Duration
 import scala.util.Random
