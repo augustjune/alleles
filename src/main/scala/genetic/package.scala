@@ -7,15 +7,22 @@ package object genetic {
   type Population = List[Genotype]
 
   implicit class RandomExtension(rand: Random) {
+    /**
+      * Returns a random boolean with custom probability
+      * @param chance probability of true
+      */
     def shot(chance: Double): Boolean = rand.nextDouble() < chance
 
-    //ToDo - rename method
-    def shot(chances: Seq[Double]): Int = {
-      def iter(chances: List[Double], i: Int, shot: Double): Int = chances match {
-        case Nil => throw new RuntimeException
-        case h :: t => if (shot <= h) i else iter(t, i + 1, shot - h)
+    /**
+      * Returns a value from the 'chancesMap' with corresponding randomized chance
+      * @param chancesMap map of chances and their elements with all chances summing to 1
+      */
+    def shotSeq[A](chancesMap: Map[Double, A]): A = {
+      def loop(chances: List[Double], shot: Double): A = chances match {
+        case Nil => throw new RuntimeException("All chances should sum to 1")
+        case h :: t => if (shot <= h) chancesMap(h) else loop(t, shot - h)
       }
-      iter(chances.sorted.reverse.toList, 0, Random.nextDouble())
+      loop(chancesMap.keys.toList.sorted.reverse, Random.nextDouble())
     }
   }
 }
