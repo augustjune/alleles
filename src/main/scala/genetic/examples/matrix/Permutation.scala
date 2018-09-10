@@ -1,11 +1,10 @@
 package genetic.examples.matrix
 
-import genetic.Genotype
 import genetic.examples.matrix.matrices.{FlowMatrix, RangeMatrix}
 
 import scala.util.Random
 
-class Permutation(flowMatrix: FlowMatrix, rangeMatrix: RangeMatrix, private val locations: Seq[Int]) extends Genotype {
+class Permutation(flowMatrix: FlowMatrix, rangeMatrix: RangeMatrix, private val locations: Seq[Int]) {
   require(flowMatrix.size == rangeMatrix.size)
   require(flowMatrix.size == locations.length)
 
@@ -38,7 +37,7 @@ class Permutation(flowMatrix: FlowMatrix, rangeMatrix: RangeMatrix, private val 
     }
   }
 
-  def crossover(other: Genotype): Permutation = crossover(other.asInstanceOf[Permutation], Random.nextInt(size))
+  def crossover(other: Permutation): Permutation = crossover(other.asInstanceOf[Permutation], Random.nextInt(size))
 
   def crossover(other: Permutation, num: Int): Permutation = {
     def repair(locations: Seq[Int]): Seq[Int] = {

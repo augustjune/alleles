@@ -4,7 +4,19 @@ import scala.concurrent.duration.Duration
 import scala.util.Random
 
 package object genetic {
-  type Population = List[Genotype]
+  type Population[A] = List[A]
+
+  trait Fitness[A] {
+    def value(a: A): Int
+  }
+
+  trait Mutator[A] {
+    def mutate(a: A): A
+  }
+
+  trait Combinator[A] {
+    def combine(a: A, b: A): A
+  }
 
   implicit class RandomExtension(rand: Random) {
     /**

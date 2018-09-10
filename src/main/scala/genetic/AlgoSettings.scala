@@ -8,8 +8,8 @@ object AlgoSettings {
     * @param operators Sequence of genetic operators applied after selection stage
     * @return Settings with established cycle of genetic operators
     */
-  def apply(selection: Selection, operators: Seq[GeneticOperator]): AlgoSettings =
-    AlgoSettings(operators.foldLeft(selection: Population => Population)(_ andThen _))
+  def apply[A](selection: Selection[A], operators: Seq[GeneticOperator[A]]): AlgoSettings[A] =
+    AlgoSettings(operators.foldLeft(selection: Population[A] => Population[A])(_ andThen _))
 
   /**
     * @param selection Selection function
@@ -17,7 +17,7 @@ object AlgoSettings {
     * @param mutation Mutation function
     * @return Settings with established cycle of genetic operators
     */
-  def apply(selection: Selection = Same, crossover: Crossover = Same, mutation: Mutation = Same): AlgoSettings =
+  def apply[A](selection: Selection[A] = Same(), crossover: Crossover[A] = Same(), mutation: Mutation[A] = Same()): AlgoSettings[A] =
     AlgoSettings(selection andThen crossover andThen mutation)
 }
 
@@ -25,4 +25,4 @@ object AlgoSettings {
   * A wrapper around the set of genetic operators used in genetic algorithm
   * @param cycle Set of genetic operators combined in a cycle
   */
-case class AlgoSettings(cycle: Population => Population)
+case class AlgoSettings[A](cycle: Population[A] => Population[A])
