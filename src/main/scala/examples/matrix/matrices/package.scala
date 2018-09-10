@@ -1,4 +1,4 @@
-package genetic.examples.matrix
+package examples.matrix
 
 package object matrices {
 

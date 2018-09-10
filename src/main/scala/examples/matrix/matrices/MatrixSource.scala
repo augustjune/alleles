@@ -1,4 +1,4 @@
-package genetic.examples.matrix.matrices
+package examples.matrix.matrices
 
 import scala.io.Source.{fromFile, fromURL}
 

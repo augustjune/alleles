@@ -1,6 +1,6 @@
-package genetic.examples.matrix
+package examples.matrix
 
-import genetic.examples.matrix.matrices.{FlowMatrix, RangeMatrix}
+import examples.matrix.matrices.{FlowMatrix, RangeMatrix}
 
 import scala.util.Random
 

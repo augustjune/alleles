@@ -1,8 +1,8 @@
-package genetic.examples.matrix
+package examples.matrix
 
 import cats.kernel.Semigroup
 import genetic.{Fitness, Mutator}
-import genetic.examples.matrix.matrices.{FlowMatrix, RangeMatrix}
+import examples.matrix.matrices.{FlowMatrix, RangeMatrix}
 
 import scala.util.Random
 
@@ -25,7 +25,7 @@ object Permutation {
     def value(perm: Permutation): Int = cache.get(perm) match {
       case Some(value) => value
       case None =>
-        val value = inner(perm)
+        val value = inner.value(perm)
         cache += (perm -> value)
         value
     }
