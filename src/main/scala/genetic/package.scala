@@ -1,6 +1,3 @@
-import genetic.operators.{Crossover, Mutation, Same, Selection}
-
-import scala.concurrent.duration.Duration
 import scala.util.Random
 
 package object genetic {
@@ -12,10 +9,6 @@ package object genetic {
 
   trait Mutator[A] {
     def mutate(a: A): A
-  }
-
-  trait Combinator[A] {
-    def combine(a: A, b: A): A
   }
 
   implicit class RandomExtension(rand: Random) {
