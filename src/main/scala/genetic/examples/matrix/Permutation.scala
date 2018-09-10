@@ -1,17 +1,15 @@
 package genetic.examples.matrix
 
+import cats.kernel.Semigroup
+import genetic.{Fitness, Mutator}
 import genetic.examples.matrix.matrices.{FlowMatrix, RangeMatrix}
 
 import scala.util.Random
 
-class Permutation(flowMatrix: FlowMatrix, rangeMatrix: RangeMatrix, private val locations: Seq[Int]) {
-  require(flowMatrix.size == rangeMatrix.size)
-  require(flowMatrix.size == locations.length)
+object Permutation {
 
-  val size: Int = locations.length
-
-  lazy val fitnessValue: Int = {
-    val locationMap: Map[Int, Int] = locations.zipWithIndex.toMap
+  def fitness(flowMatrix: FlowMatrix, rangeMatrix: RangeMatrix): Fitness[Permutation] = (perm: Permutation) => {
+    val locationMap: Map[Int, Int] = perm.locations.zipWithIndex.toMap
 
     def relationPrices(currentLocation: Int, currentNum: Int): Int =
       locationMap.foldLeft(0) { case (left, (loc, num)) => left + rangeMatrix(currentLocation - 1, loc - 1) * flowMatrix(currentNum, num) }
@@ -19,19 +17,44 @@ class Permutation(flowMatrix: FlowMatrix, rangeMatrix: RangeMatrix, private val 
     locationMap.foldLeft(0) { case (left, (loc, num)) => left + relationPrices(loc, num) }
   }
 
-  def switchPair(n1: Int, n2: Int): Permutation = {
-    val loc1 = locations(n1)
-    create(locations.updated(n1, locations(n2)).updated(n2, loc1))
+  def cacheFitness(flowMatrix: FlowMatrix, rangeMatrix: RangeMatrix): Fitness[Permutation] = cacheFitness(fitness(flowMatrix, rangeMatrix))
+
+  def cacheFitness(inner: Fitness[Permutation]): Fitness[Permutation] = new Fitness[Permutation] {
+    private var cache: Map[Permutation, Int] = Map.empty
+
+    def value(perm: Permutation): Int = cache.get(perm) match {
+      case Some(value) => value
+      case None =>
+        val value = inner(perm)
+        cache += (perm -> value)
+        value
+    }
   }
 
-  def greedyGuess: Permutation = {
+
+  val mutator: Mutator[Permutation] = (perm: Permutation) => {
+    def switchPair(n1: Int, n2: Int): Permutation = {
+      val val1 = perm.locations(n1)
+      new Permutation(perm.locations.updated(n1, perm.locations(n2)).updated(n2, val1))
+    }
+
+    switchPair(Random.nextInt(perm.size), Random.nextInt(perm.size))
+  }
+
+  val crossover: Semigroup[Permutation] = (x: Permutation, y: Permutation) => x.crossover(y)
+}
+
+class Permutation(private val locations: Seq[Int]) {
+  val size: Int = locations.length
+
+  def greedyGuess(implicit f: Fitness[Permutation]): Permutation = {
     def pairSwitchedPerm: Stream[Permutation] =
       for {
         i <- locations.indices.toStream
         j <- i + 1 until size
       } yield switchPair(i, j)
 
-    pairSwitchedPerm.find(_.fitnessValue < fitnessValue) match {
+    pairSwitchedPerm.find(f.value(_) < f.value(this)) match {
       case Some(betterPerm) => betterPerm
       case None => this
     }
@@ -52,13 +75,15 @@ class Permutation(flowMatrix: FlowMatrix, rangeMatrix: RangeMatrix, private val 
       replaceDuplicates(missing.toList, locations.toList)
     }
 
-    create(repair(locations.take(num) ++ other.locations.drop(num)))
-//    ???
+    new Permutation(repair(locations.take(num) ++ other.locations.drop(num)))
   }
 
   def mutate: Permutation = switchPair(Random.nextInt(size), Random.nextInt(size))
 
-  private def create(locations: Seq[Int]) = new Permutation(flowMatrix, rangeMatrix, locations)
+  def switchPair(n1: Int, n2: Int): Permutation = {
+    val loc1 = locations(n1)
+    new Permutation(locations.updated(n1, locations(n2)).updated(n2, loc1))
+  }
 
   override def toString: String = locations mkString("[", ", ", "]")
 }
