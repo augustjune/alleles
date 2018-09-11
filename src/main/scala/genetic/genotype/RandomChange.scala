@@ -14,11 +14,3 @@ package genetic.genotype
 trait RandomChange[A] {
   def modify(a: A): A
 }
-
-object RandomChange {
-  /**
-    * Applies trait function from the implicit scope;
-    * allows to use trait as context bounds
-    */
-  def apply[A](a: A)(implicit m: RandomChange[A]): A = m.modify(a)
-}
