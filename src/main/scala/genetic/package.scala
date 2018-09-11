@@ -10,12 +10,21 @@ package object genetic {
       */
     def shot(chance: Double): Boolean = rand.nextDouble() < chance
 
+
+    /**
+      * Returns a value from the `pool` chosen by corresponding priority
+      * @param pool sequence of tuples representing value and corresponding priority
+      */
+    def choose[A](pool: Seq[(A, Int)]): A = {
+      val sum = pool.map(_._2).sum
+      choose(pool.map {case (x, p) => x -> (p.toDouble / sum)})
+    }
+
     /**
       * Returns a value from the `pool` chosen by corresponding chance
-      * Note: all chances should sum to 1
-      * @param pool sequence of tuples representing value and corresponding chance to be chosen
+      * Note: total sum of all chances must equal 1
       */
-    def choose[A](pool: Seq[(A, Double)]): A = choose(Random.nextDouble(), pool.toList)
+    private def choose[A](pool: Seq[(A, Double)]): A = choose(Random.nextDouble(), pool.toList)
 
     private def choose[A](shot: Double, pool: List[(A, Double)]): A = pool match {
       case Nil => throw new RuntimeException("Pool chances should sum to 1")
