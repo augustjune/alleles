@@ -1,7 +1,7 @@
 package examples.matrix
 
 import cats.kernel.Semigroup
-import genetic.{Fitness, Mutator}
+import genetic.{Fitness, RandomChange}
 import examples.matrix.matrices.{FlowMatrix, RangeMatrix}
 
 import scala.util.Random
@@ -32,7 +32,7 @@ object Permutation {
   }
 
 
-  val mutator: Mutator[Permutation] = (perm: Permutation) => {
+  val mutator: RandomChange[Permutation] = (perm: Permutation) => {
     def switchPair(n1: Int, n2: Int): Permutation = {
       val val1 = perm.locations(n1)
       new Permutation(perm.locations.updated(n1, perm.locations(n2)).updated(n2, val1))

@@ -6,7 +6,7 @@ import genetic.operators.Mutation
 import scala.annotation.tailrec
 import scala.util.Random
 
-case class ComplexMutation[A](chance: Double, complexity: Double)(implicit m: Mutator[A]) extends Mutation[A] {
+case class ComplexMutation[A: RandomChange](chance: Double, complexity: Double) extends Mutation[A] {
   def apply(population: Population[A]): Population[A] = population.map(
     if (Random.shot(chance)) mutateSingleChromosome(complexity)
     else identity
@@ -15,7 +15,7 @@ case class ComplexMutation[A](chance: Double, complexity: Double)(implicit m: Mu
   //ToDo - rename
   @tailrec
   private def mutateSingleChromosome(complexity: Double)(a: A): A = {
-    val mutated = m.mutate(a)
+    val mutated = RandomChange(a)
     if (Random.shot(complexity)) mutateSingleChromosome(complexity)(mutated)
     else mutated
   }

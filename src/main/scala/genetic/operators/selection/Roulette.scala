@@ -5,12 +5,12 @@ import genetic._
 
 import scala.util.Random
 
-case class Roulette[A](implicit f: Fitness[A]) extends Selection[A] {
+case class Roulette[A: Fitness]() extends Selection[A] {
   def apply(population: Population[A]): Population[A] = {
-    val largestFitness = population.map(f.value).max
-    val range: Double = population.map(largestFitness - f.value(_)).sum
+    val largestFitness = population.map(Fitness(_)).max
+    val range: Double = population.map(largestFitness - Fitness(_)).sum
 
-    val rouletteSectors = population.map(x => x -> ((largestFitness - f.value(x)) / range)).toMap
+    val rouletteSectors = population.map(x => x -> ((largestFitness - Fitness(x)) / range)).toMap
 
     def selectOne: A = Random.shotSeq(rouletteSectors.map(_.swap))
 

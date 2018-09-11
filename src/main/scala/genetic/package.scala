@@ -3,14 +3,6 @@ import scala.util.Random
 package object genetic {
   type Population[A] = List[A]
 
-  trait Fitness[A] {
-    def value(a: A): Int
-  }
-
-  trait Mutator[A] {
-    def mutate(a: A): A
-  }
-
   implicit class RandomExtension(rand: Random) {
     /**
       * Returns a random boolean with custom probability

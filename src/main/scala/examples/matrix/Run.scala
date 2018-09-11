@@ -4,7 +4,7 @@ package examples.matrix
 import cats.kernel.Semigroup
 
 import concurrent.duration._
-import genetic.{AlgoSettings, Fitness, GeneticAlgorithm, Mutator, Population}
+import genetic.{AlgoSettings, Fitness, GeneticAlgorithm, RandomChange, Population}
 import examples.matrix.matrices.{FlowMatrix, MatrixSource, RangeMatrix}
 import genetic.operators.mixing.ClassicCrossover
 import genetic.operators.mutation.{ComplexMutation}
@@ -18,7 +18,7 @@ object Run extends App {
 
   implicit val fitness: Fitness[Permutation] = Permutation.fitness(range, flow)
   implicit val combinator: Semigroup[Permutation] = (perm1: Permutation, perm2: Permutation) => perm1.crossover(perm2)
-  implicit val mutator: Mutator[Permutation] = (perm: Permutation) => perm.mutate
+  implicit val mutator: RandomChange[Permutation] = (perm: Permutation) => perm.mutate
 
 
   val init: Population[Permutation] = permutations.candidates.take(100).toList
