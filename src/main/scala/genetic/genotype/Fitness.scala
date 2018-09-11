@@ -15,4 +15,8 @@ object Fitness {
     * allows to use trait as context bounds
     */
   def apply[A](a: A)(implicit f: Fitness[A]): Int = f.value(a)
+
+  implicit class FitnessObj[A](a: A)(implicit f: Fitness[A]) {
+    def fitness: Int = f.value(a)
+  }
 }

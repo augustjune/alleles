@@ -6,10 +6,12 @@ trait Design[A] {
   def create: A
 
   def samples: Stream[A] = create #:: samples
+
+  def make(n: Int): Population[A] = samples.take(n).toList
 }
 
 object Design {
-  def make[A](n: Int)(implicit source: Design[A]): Population[A] = source.samples.take(n).toList
+  def make[A](n: Int)(implicit source: Design[A]): Population[A] = source.make(n)
 
   def pure[A](f: () => A): Design[A] = new Design[A] {
     def create: A = f()

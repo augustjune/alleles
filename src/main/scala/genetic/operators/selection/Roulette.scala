@@ -13,6 +13,6 @@ case class Roulette[A: Fitness]() extends Selection[A] {
 
     val sectors = fitnesses.map { case (x, f) => x -> (largestFitness - f)}
 
-    for(_ <- population) yield Random.choose(sectors)
+    for(_ <- population) yield Random.chooseByPriorities(sectors)
   }
 }

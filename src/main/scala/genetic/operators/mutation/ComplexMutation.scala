@@ -2,6 +2,7 @@ package genetic.operators.mutation
 
 import genetic._
 import genetic.genotype.RandomChange
+import genetic.genotype.syntax.RandomChangeObj
 import genetic.operators.Mutation
 
 import scala.annotation.tailrec
@@ -16,7 +17,7 @@ case class ComplexMutation[A: RandomChange](chance: Double, complexity: Double) 
   //ToDo - rename
   @tailrec
   private def mutateSingleChromosome(complexity: Double)(a: A): A = {
-    val mutated = RandomChange(a)
+    val mutated = a.mutated
     if (Random.shot(complexity)) mutateSingleChromosome(complexity)(mutated)
     else mutated
   }

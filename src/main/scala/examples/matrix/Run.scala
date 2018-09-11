@@ -10,6 +10,7 @@ import genetic.genotype._
 import genetic.operators.mixing.ClassicCrossover
 import genetic.operators.mutation.ComplexMutation
 import genetic.operators.selection.{Roulette, Tournament}
+import genetic.genotype.syntax._
 
 import scala.language.postfixOps
 
@@ -24,10 +25,10 @@ object Run extends App {
   val settings = AlgoSettings[Permutation](100, Tournament(20), ClassicCrossover(0.5), ComplexMutation(0.2, 0.7))
   val evolved: Population[Permutation] = GeneticAlgorithm.iterate(settings, 3 seconds)
 
-  def minFitness(population: Population[Permutation]): Int = population.map(fitness.value).min
+  def minFitness(population: Population[Permutation]): Int = population.map(_.fitness).min
 
   println(s"Best before: ${minFitness(settings.initialPopulation)}")
   private val after: Int = minFitness(evolved)
   println(s"Best after: $after")
-  if (after < 1670) println(evolved.minBy(fitness.value))
+  if (after < 1670) println(evolved.minBy(_.fitness))
 }
