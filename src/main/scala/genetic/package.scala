@@ -11,15 +11,15 @@ package object genetic {
     def shot(chance: Double): Boolean = rand.nextDouble() < chance
 
     /**
-      * Returns a value from the 'chancesMap' with corresponding randomized chance
-      * @param chancesMap map of chances and their elements with all chances summing to 1
+      * Returns a value from the `pool` chosen by corresponding chance
+      * Note: all chances should sum to 1
+      * @param pool sequence of tuples representing value and corresponding chance to be chosen
       */
-    def shotSeq[A](chancesMap: Map[Double, A]): A = {
-      def loop(chances: List[Double], shot: Double): A = chances match {
-        case Nil => throw new RuntimeException("All chances should sum to 1")
-        case h :: t => if (shot <= h) chancesMap(h) else loop(t, shot - h)
-      }
-      loop(chancesMap.keys.toList.sorted.reverse, Random.nextDouble())
+    def choose[A](pool: Seq[(A, Double)]): A = choose(Random.nextDouble(), pool.toList)
+
+    private def choose[A](shot: Double, pool: List[(A, Double)]): A = pool match {
+      case Nil => throw new RuntimeException("Pool chances should sum to 1")
+      case (x, chance) :: t => if (shot < chance) x else choose(shot - chance, t)
     }
   }
 }

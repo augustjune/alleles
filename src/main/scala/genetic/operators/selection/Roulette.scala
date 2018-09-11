@@ -8,18 +8,13 @@ import scala.util.Random
 
 case class Roulette[A: Fitness]() extends Selection[A] {
   def apply(population: Population[A]): Population[A] = {
-    val largestFitness = population.map(Fitness(_)).max
-    val range: Double = population.map(largestFitness - Fitness(_)).sum
+    val fitnesses = population.map(x => (x, Fitness(x)))
+    val largestFitness = fitnesses.map(_._2).max
 
-    val rouletteSectors = population.map(x => x -> ((largestFitness - Fitness(x)) / range)).toMap
+    val range = fitnesses.map(largestFitness - _._2).sum
 
-    def selectOne: A = Random.shotSeq(rouletteSectors.map(_.swap))
+    val sectors = fitnesses.map{ case (x, f) => (x, (largestFitness - f) * 1.0 / range)}
 
-    def selectUntil(newPopSize: Int, acc: List[A]): List[A] =
-      if (acc.length < newPopSize)
-        selectUntil(newPopSize, selectOne :: acc)
-      else acc
-
-    selectUntil(population.length, Nil)
+    for(_ <- population) yield Random.choose(sectors)
   }
 }
