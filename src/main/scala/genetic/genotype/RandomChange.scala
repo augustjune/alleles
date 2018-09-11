@@ -1,18 +1,18 @@
 package genetic.genotype
 
 /**
-  * Any function which allows to make a new instance of type `A`
+  * Any function which allows to make a new instance of type `G`
   * which differs from the original one in random place
   *
   * Laws:
   *   1. Modified instance does not equal to original one
-  *     f(a) != a
+  *     modify(g) != g
   *   2. After a certain number of modification the same input produces different outputs
-  *     def f5(a: A) = f(f(f(f(f(a)))))
-  *     f5(a) != f5(a)
+  *     def modify5(g: G) = modify(modify(modify(modify(modify(g)))))
+  *     modify5(g) != modify5(g)
   */
-trait RandomChange[A] {
-  def modify(a: A): A
+trait RandomChange[G] {
+  def modify(g: G): G
 }
 
 object RandomChange {
@@ -20,5 +20,5 @@ object RandomChange {
     * Applies trait function from the implicit scope;
     * allows to use trait as context bounds
     */
-  def apply[A](a: A)(implicit m: RandomChange[A]): A = m.modify(a)
+  def apply[G](g: G)(implicit m: RandomChange[G]): G = m.modify(g)
 }

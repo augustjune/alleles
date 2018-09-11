@@ -6,12 +6,12 @@ import genetic.genotype.Fitness
 
 import scala.util.Random
 
-case class Roulette[A: Fitness]() extends Selection[A] {
-  def apply(population: Population[A]): Population[A] = {
-    val fitnesses = population.map(x => x -> Fitness(x))
+case class Roulette[G: Fitness]() extends Selection[G] {
+  def apply(population: Population[G]): Population[G] = {
+    val fitnesses = population.map(g => g -> Fitness(g))
     val largestFitness = fitnesses.map(_._2).max
 
-    val sectors = fitnesses.map { case (x, f) => x -> (largestFitness - f)}
+    val sectors = fitnesses.map { case (g, f) => g -> (largestFitness - f)}
 
     for(_ <- population) yield Random.chooseByPriorities(sectors)
   }

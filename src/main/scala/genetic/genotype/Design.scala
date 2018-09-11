@@ -2,23 +2,23 @@ package genetic.genotype
 
 import genetic.Population
 
-trait Design[A] {
-  def create: A
+trait Design[G] {
+  def create: G
 
-  def samples: Stream[A] = create #:: samples
+  def samples: Stream[G] = create #:: samples
 
-  def make(n: Int): Population[A] = samples.take(n).toList
+  def make(n: Int): Population[G] = samples.take(n).toList
 }
 
 object Design {
-  def make[A](n: Int)(implicit source: Design[A]): Population[A] = source.make(n)
+  def make[G](n: Int)(implicit source: Design[G]): Population[G] = source.make(n)
 
-  def pure[A](f: () => A): Design[A] = new Design[A] {
-    def create: A = f()
+  def pure[G](f: () => G): Design[G] = new Design[G] {
+    def create: G = f()
   }
 
-  def fromOne[A](a: A): Design[A] = new Design[A] {
-    def create: A = a
+  def fromOne[G](a: G): Design[G] = new Design[G] {
+    def create: G = a
   }
 }
 

@@ -9,8 +9,8 @@ object GeneticAlgorithm {
     * @param times Number of iteration
     * @return Evolved population
     */
-  def iterate[A](settings: AlgoSettings[A], times: Int): Population[A] =
-    iterate[A, Int](settings)(0, _ < times, _ + 1)
+  def iterate[G](settings: AlgoSettings[G], times: Int): Population[G] =
+    iterate[G, Int](settings)(0, _ < times, _ + 1)
 
   /**
     * Evolves initial population with genetic operators for a provided time
@@ -18,13 +18,13 @@ object GeneticAlgorithm {
     * @param duration Duration of evolving
     * @return Evolved population
     */
-  def iterate[A](settings: AlgoSettings[A], duration: Duration): Population[A] = {
+  def iterate[G](settings: AlgoSettings[G], duration: Duration): Population[G] = {
     val start = System.currentTimeMillis()
-    iterate[A, Long](settings)(start, _ < start + duration.toMillis, _ => System.currentTimeMillis())
+    iterate[G, Long](settings)(start, _ < start + duration.toMillis, _ => System.currentTimeMillis())
   }
 
-  protected def iterate[A, B](settings: AlgoSettings[A])(start: B, until: B => Boolean, click: B => B): Population[A] = {
-    def loop(pop: Population[A], condition: B): Population[A] =
+  protected def iterate[G, B](settings: AlgoSettings[G])(start: B, until: B => Boolean, click: B => B): Population[G] = {
+    def loop(pop: Population[G], condition: B): Population[G] =
       if (until(condition)) loop(settings.cycle(pop), click(condition))
       else pop
 

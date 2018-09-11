@@ -30,7 +30,7 @@ package object genetic {
       * Returns a value from the `pool` chosen by corresponding chance
       * Note: total sum of all chances must equal 1
       */
-    private def chooseByChances[A](pool: Seq[(A, Double)]): A = choose(Random.nextDouble(), pool.toList)
+    def chooseByChances[A](pool: Seq[(A, Double)]): A = choose(Random.nextDouble(), pool.toList)
 
     private def choose[A](shot: Double, pool: List[(A, Double)]): A = pool match {
       case Nil => throw new RuntimeException("Pool chances should sum to 1")

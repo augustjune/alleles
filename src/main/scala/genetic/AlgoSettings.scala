@@ -9,12 +9,12 @@ object AlgoSettings {
     * @param operators Sequence of genetic operators applied after selection stage
     * @return Settings with established cycle of genetic operators
     */
-  def apply[A: Design](initPopSize: Int, selection: Selection[A], operators: Seq[GeneticOperator[A]]): AlgoSettings[A] =
-    new AlgoSettings[A] {
-      lazy val cycle: Population[A] => Population[A] =
-        operators.foldLeft(selection: Population[A] => Population[A])(_ andThen _)
+  def apply[G: Design](initPopSize: Int, selection: Selection[G], operators: Seq[GeneticOperator[G]]): AlgoSettings[G] =
+    new AlgoSettings[G] {
+      lazy val cycle: Population[G] => Population[G] =
+        operators.foldLeft(selection: Population[G] => Population[G])(_ andThen _)
 
-      def initialPopulation: Population[A] = Design.make(initPopSize)
+      def initialPopulation: Population[G] = Design.make(initPopSize)
     }
 
   /**
@@ -23,18 +23,15 @@ object AlgoSettings {
     * @param mutation Mutation function
     * @return Settings with established cycle of genetic operators
     */
-  def apply[A: Design](initPopSize: Int, selection: Selection[A] = Same(), crossover: Crossover[A] = Same(), mutation: Mutation[A] = Same()): AlgoSettings[A] =
-    new AlgoSettings[A] {
-      lazy val cycle: Population[A] => Population[A] = selection andThen crossover andThen mutation
+  def apply[G: Design](initPopSize: Int, selection: Selection[G] = Same(), crossover: Crossover[G] = Same(), mutation: Mutation[G] = Same()): AlgoSettings[G] =
+    new AlgoSettings[G] {
+      lazy val cycle: Population[G] => Population[G] = selection andThen crossover andThen mutation
 
-      def initialPopulation: Population[A] = Design.make(initPopSize)
+      def initialPopulation: Population[G] = Design.make(initPopSize)
     }
 }
 
-/**
-  * A wrapper around the set of genetic operators used in genetic algorithm
-  */
-trait AlgoSettings[A] {
-  def cycle: Population[A] => Population[A]
-  def initialPopulation: Population[A]
+trait AlgoSettings[G] {
+  def cycle: Population[G] => Population[G]
+  def initialPopulation: Population[G]
 }
