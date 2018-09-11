@@ -6,7 +6,11 @@ import genetic.operators.Selection
 
 import scala.util.Random
 
-case class Tournament[G: Fitness](size: Int) extends Selection[G] {
+object Tournament {
+  def apply[G: Fitness](size: Int): Tournament[G] = new Tournament(size)
+}
+
+class Tournament[G: Fitness](size: Int) extends Selection[G] {
   def apply(population: Population[G]): Population[G] =
     for (_ <- population) yield
     Random.shuffle(population).take(size).minBy(Fitness(_))

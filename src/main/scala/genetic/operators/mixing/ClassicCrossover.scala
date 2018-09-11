@@ -7,7 +7,11 @@ import genetic.operators.Crossover
 
 import scala.util.Random
 
-case class ClassicCrossover[G: Semigroup](parentChance: Double) extends Crossover[G] {
+object ClassicCrossover {
+  def apply[G: Semigroup](parentChance: Double): ClassicCrossover[G] = new ClassicCrossover(parentChance)
+}
+
+class ClassicCrossover[G: Semigroup](parentChance: Double) extends Crossover[G] {
   def apply(population: Population[G]): Population[G] = {
     def loop(pool: Population[G], acc: List[G]): List[G] = pool match {
       case Nil | List(_) => acc

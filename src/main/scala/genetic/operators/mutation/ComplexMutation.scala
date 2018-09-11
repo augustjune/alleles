@@ -6,7 +6,11 @@ import genetic.genotype.RandomChange
 import scala.annotation.tailrec
 import scala.util.Random
 
-case class ComplexMutation[G: RandomChange](chance: Double, complexity: Double) extends GenotypeMutation[G](chance) {
+object ComplexMutation {
+  def apply[G: RandomChange](chance: Double, complexity: Double): ComplexMutation[G] = new ComplexMutation(chance, complexity)
+}
+
+class ComplexMutation[G: RandomChange](chance: Double, complexity: Double) extends GenotypeMutation[G](chance) {
 
   @tailrec
   final protected def modifyGenotype(g: G): G = {
