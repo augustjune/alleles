@@ -9,5 +9,5 @@ abstract class GenotypeMutation[G](chance: Double) extends Mutation[G] {
   def apply(pop: Population[G]): Population[G] = for (g <- pop) yield
     if (Random.shot(chance)) modifyGenotype(g) else g
 
-  protected def modifyGenotype(a: G): G
+  protected def modifyGenotype(g: G): G
 }

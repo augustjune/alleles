@@ -9,8 +9,8 @@ import scala.util.Random
 case class ComplexMutation[G: RandomChange](chance: Double, complexity: Double) extends GenotypeMutation[G](chance) {
 
   @tailrec
-  final protected def modifyGenotype(a: G): G = {
-    val mutated = RandomChange(a)
+  final protected def modifyGenotype(g: G): G = {
+    val mutated = RandomChange(g)
     if (Random.shot(complexity)) modifyGenotype(mutated)
     else mutated
   }
