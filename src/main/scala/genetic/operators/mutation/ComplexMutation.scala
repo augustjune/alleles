@@ -1,6 +1,7 @@
 package genetic.operators.mutation
 
 import genetic._
+import genetic.genotype.RandomChange
 import genetic.operators.Mutation
 
 import scala.annotation.tailrec

@@ -1,7 +1,8 @@
 package genetic.operators.selection
 
 import genetic.operators.Selection
-import genetic.{Fitness, Population}
+import genetic.Population
+import genetic.genotype.Fitness
 
 import scala.util.Random
 

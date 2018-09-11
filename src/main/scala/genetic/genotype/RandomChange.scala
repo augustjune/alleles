@@ -1,7 +1,7 @@
-package genetic
+package genetic.genotype
 
 /**
-  * Any function which allows to create a new instance of type `A`
+  * Any function which allows to make a new instance of type `A`
   * which differs from the original one in random place
   *
   * Laws:

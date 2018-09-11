@@ -1,6 +1,7 @@
 package genetic.operators.mutation
 
-import genetic.{RandomChange, Population, RandomExtension}
+import genetic.genotype.RandomChange
+import genetic.{Population, RandomExtension}
 import genetic.operators.Mutation
 
 import scala.util.Random

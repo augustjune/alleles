@@ -1,12 +1,14 @@
 package examples.matrix
 
 import cats.kernel.Semigroup
-import genetic.{Fitness, RandomChange}
 import examples.matrix.matrices.{FlowMatrix, RangeMatrix}
+import genetic.genotype.{Fitness, RandomChange}
 
 import scala.util.Random
 
 object Permutation {
+
+  def create(flowMatrix: FlowMatrix, range: RangeMatrix): Permutation = new Permutation(Random.shuffle((1 to flowMatrix.size).toVector))
 
   def fitness(flowMatrix: FlowMatrix, rangeMatrix: RangeMatrix): Fitness[Permutation] = (perm: Permutation) => {
     val locationMap: Map[Int, Int] = perm.locations.zipWithIndex.toMap

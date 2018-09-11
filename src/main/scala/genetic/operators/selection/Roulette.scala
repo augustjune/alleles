@@ -2,6 +2,7 @@ package genetic.operators.selection
 
 import genetic.operators.Selection
 import genetic._
+import genetic.genotype.Fitness
 
 import scala.util.Random
 
