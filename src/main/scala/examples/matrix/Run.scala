@@ -21,7 +21,7 @@ object Run extends App {
   implicit val fitness: Fitness[Permutation] = Permutation.fitness(range, flow)
   implicit val combinator: Semigroup[Permutation] = (perm1: Permutation, perm2: Permutation) => perm1.crossover(perm2)
   implicit val mutator: RandomChange[Permutation] = (perm: Permutation) => perm.mutate
-  implicit val source: Design[Permutation] = Design.pure(() => Permutation.create(flow, range))
+  implicit val source: Scheme[Permutation] = Scheme.pure(() => Permutation.create(flow, range))
 
   val settings = AlgoSettings[Permutation](100, Tournament(20), ClassicCrossover(0.25), ComplexMutation(0.3, 0.7))
 

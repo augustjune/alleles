@@ -2,7 +2,7 @@ package genetic.genotype
 
 import genetic.Population
 
-trait Design[G] {
+trait Scheme[+G] {
   def create: G
 
   def samples: Stream[G] = create #:: samples
@@ -10,14 +10,14 @@ trait Design[G] {
   def make(n: Int): Population[G] = samples.take(n).toList
 }
 
-object Design {
-  def make[G](n: Int)(implicit source: Design[G]): Population[G] = source.make(n)
+object Scheme {
+  def make[G](n: Int)(implicit source: Scheme[G]): Population[G] = source.make(n)
 
-  def pure[G](f: () => G): Design[G] = new Design[G] {
+  def pure[G](f: () => G): Scheme[G] = new Scheme[G] {
     def create: G = f()
   }
 
-  def fromOne[G](a: G): Design[G] = new Design[G] {
+  def fromOne[G](a: G): Scheme[G] = new Scheme[G] {
     def create: G = a
   }
 }

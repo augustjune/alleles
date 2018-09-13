@@ -1,6 +1,6 @@
 package genetic
 
-import genetic.genotype.Design
+import genetic.genotype.Scheme
 import genetic.operators._
 
 object AlgoSettings {
@@ -9,12 +9,12 @@ object AlgoSettings {
     * @param operators Sequence of genetic operators applied after selection stage
     * @return Settings with established cycle of genetic operators
     */
-  def apply[G: Design](initPopSize: Int, selection: Selection[G], operators: Seq[GeneticOperator[G]]): AlgoSettings[G] =
+  def apply[G: Scheme](initPopSize: Int, selection: Selection[G], operators: Seq[GeneticOperator[G]]): AlgoSettings[G] =
     new AlgoSettings[G] {
       lazy val cycle: Population[G] => Population[G] =
         operators.foldLeft(selection: Population[G] => Population[G])(_ andThen _)
 
-      def initialPopulation: Population[G] = Design.make(initPopSize)
+      def initialPopulation: Population[G] = Scheme.make(initPopSize)
     }
 
   /**
@@ -23,11 +23,11 @@ object AlgoSettings {
     * @param mutation Mutation function
     * @return Settings with established cycle of genetic operators
     */
-  def apply[G: Design](initPopSize: Int, selection: Selection[G] = Same(), crossover: Crossover[G] = Same(), mutation: Mutation[G] = Same()): AlgoSettings[G] =
+  def apply[G: Scheme](initPopSize: Int, selection: Selection[G] = Same(), crossover: Crossover[G] = Same(), mutation: Mutation[G] = Same()): AlgoSettings[G] =
     new AlgoSettings[G] {
       lazy val cycle: Population[G] => Population[G] = selection andThen crossover andThen mutation
 
-      def initialPopulation: Population[G] = Design.make(initPopSize)
+      def initialPopulation: Population[G] = Scheme.make(initPopSize)
     }
 }
 

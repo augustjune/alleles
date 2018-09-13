@@ -3,7 +3,7 @@ import genetic.genotype.Fitness
 import scala.util.Random
 
 package object genetic {
-  type Population[A] = List[A]
+  type Population[+A] = List[A]
 
   implicit class PopulationExtension[A](population: Population[A]) {
     def best(implicit f: Fitness[A]): A = population.minBy(f.value)
