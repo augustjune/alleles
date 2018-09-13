@@ -29,7 +29,7 @@ object Run extends App {
   val settings = AlgoSettings[Permutation](100, Tournament(20), ClassicCrossover(0.25), ComplexMutation(0.3, 0.7))
 
   def evolve(settings: AlgoSettings[Permutation]): Future[Permutation] = Future {
-    GeneticAlgorithm.iterate(settings, 200).best
+    GeneticAlgorithm.evolve(settings, 200).best
   }
 
   val evolved: List[Permutation] = Await.result(Future.traverse((1 to 1).toList)(_ => evolve(settings)), Duration.Inf)
