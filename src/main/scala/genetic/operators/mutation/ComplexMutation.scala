@@ -4,7 +4,6 @@ import genetic._
 import genetic.genotype.RandomChange
 
 import scala.annotation.tailrec
-import scala.util.Random
 
 object ComplexMutation {
   def apply[G: RandomChange](chance: Double, complexity: Double): ComplexMutation[G] = new ComplexMutation(chance, complexity)
@@ -15,7 +14,7 @@ class ComplexMutation[G: RandomChange](chance: Double, complexity: Double) exten
   @tailrec
   final protected def modifyGenotype(g: G): G = {
     val mutated = RandomChange(g)
-    if (Random.shot(complexity)) modifyGenotype(mutated)
+    if (RRandom.shot(complexity)) modifyGenotype(mutated)
     else mutated
   }
 

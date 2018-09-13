@@ -2,13 +2,12 @@ package examples.matrix
 
 import cats.kernel.Semigroup
 import examples.matrix.matrices.{FlowMatrix, RangeMatrix}
+import genetic.RRandom
 import genetic.genotype.{Fitness, RandomChange}
-
-import scala.util.Random
 
 object Permutation {
 
-  def create(flowMatrix: FlowMatrix, range: RangeMatrix): Permutation = new Permutation(Random.shuffle((1 to flowMatrix.size).toVector))
+  def create(flowMatrix: FlowMatrix, range: RangeMatrix): Permutation = new Permutation(RRandom.shuffle((1 to flowMatrix.size).toVector))
 
   def fitness(flowMatrix: FlowMatrix, rangeMatrix: RangeMatrix): Fitness[Permutation] = (perm: Permutation) => {
     val locationMap: Map[Int, Int] = perm.locations.zipWithIndex.toMap
@@ -40,7 +39,7 @@ object Permutation {
       new Permutation(perm.locations.updated(n1, perm.locations(n2)).updated(n2, val1))
     }
 
-    switchPair(Random.nextInt(perm.size), Random.nextInt(perm.size))
+    switchPair(RRandom.nextInt(perm.size), RRandom.nextInt(perm.size))
   }
 
   val crossover: Semigroup[Permutation] = (x: Permutation, y: Permutation) => x.crossover(y)
@@ -62,7 +61,7 @@ class Permutation(private val locations: Seq[Int]) {
     }
   }
 
-  def crossover(other: Permutation): Permutation = crossover(other.asInstanceOf[Permutation], Random.nextInt(size))
+  def crossover(other: Permutation): Permutation = crossover(other.asInstanceOf[Permutation], RRandom.nextInt(size))
 
   def crossover(other: Permutation, num: Int): Permutation = {
     def repair(locations: Seq[Int]): Seq[Int] = {
@@ -80,7 +79,7 @@ class Permutation(private val locations: Seq[Int]) {
     new Permutation(repair(locations.take(num) ++ other.locations.drop(num)))
   }
 
-  def mutate: Permutation = switchPair(Random.nextInt(size), Random.nextInt(size))
+  def mutate: Permutation = switchPair(RRandom.nextInt(size), RRandom.nextInt(size))
 
   def switchPair(n1: Int, n2: Int): Permutation = {
     val loc1 = locations(n1)

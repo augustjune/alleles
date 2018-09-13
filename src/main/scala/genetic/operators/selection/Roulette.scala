@@ -4,7 +4,6 @@ import genetic.operators.Selection
 import genetic._
 import genetic.genotype.Fitness
 
-import scala.util.Random
 
 object Roulette {
   def apply[G: Fitness]: Roulette[G] = new Roulette()
@@ -17,6 +16,6 @@ class Roulette[G: Fitness] extends Selection[G] {
 
     val sectors = fitnesses.map { case (g, f) => g -> (largestFitness - f)}
 
-    for(_ <- population) yield Random.chooseByPriorities(sectors)
+    for(_ <- population) yield RRandom.chooseByPriorities(sectors)
   }
 }
