@@ -8,7 +8,6 @@ import scala.language.reflectiveCalls
 
 object CounterGA extends GeneticAlgorithm[({ type T[A] = (Int, A) })#T]{
 
-
   def evolveUntilReached[G: Fitness](settings: AlgoSettings[G], fitnessThreshold: Int): (Int, Population[G]) = {
     var c = 0
     def loop(pop: Population[G]): Population[G] =
