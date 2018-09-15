@@ -2,11 +2,11 @@ package genetic.engines
 
 import cats.data.Writer
 import genetic.genotype.Fitness
-import genetic.{AlgoSettings, Population, PopulationExtension}
+import genetic.{AlgoSettings, GeneticAlgorithm, Population, PopulationExtension}
 
 import scala.language.reflectiveCalls
 
-object CounterGA extends GeneticAlgorithm[({ type T[A] = (Int, A) })#T]{
+object CountingGA extends GeneticAlgorithm[({ type T[A] = (Int, A) })#T]{
 
   def evolveUntilReached[G: Fitness](settings: AlgoSettings[G], fitnessThreshold: Int): (Int, Population[G]) = {
     var c = 0

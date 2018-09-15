@@ -2,9 +2,9 @@ package genetic.engines
 
 import cats.Id
 import genetic.genotype.Fitness
-import genetic.{AlgoSettings, Population, PopulationExtension}
+import genetic.{AlgoSettings, GeneticAlgorithm, Population, PopulationExtension}
 
-object ConcreteGA extends GeneticAlgorithm[Id] {
+object BasicGA extends GeneticAlgorithm[Id] {
 
   def evolveUntilReached[G: Fitness](settings: AlgoSettings[G], fitnessThreshold: Int): Population[G] = {
     def loop(pop: Population[G]): Population[G] =

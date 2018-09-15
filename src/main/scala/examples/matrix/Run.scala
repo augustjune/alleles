@@ -2,7 +2,7 @@ package examples.matrix
 
 
 import genetic._
-import genetic.engines.CounterGA
+import genetic.engines.CountingGA
 import genetic.genotype.syntax._
 import genetic.operators.mixing.ClassicCrossover
 import genetic.operators.mutation.ComplexMutation
@@ -20,7 +20,7 @@ object Run extends App {
   val settings = AlgoSettings[Permutation](100, Tournament(20), ClassicCrossover(0.25), ComplexMutation(0.3, 0.7))
 
   def evolve(settings: AlgoSettings[Permutation]) = Future {
-    val (iters, finalPop) = CounterGA.evolve(settings, 5 seconds)
+    val (iters, finalPop) = CountingGA.evolve(settings, 5 seconds)
     (iters, finalPop.best)
   }
 

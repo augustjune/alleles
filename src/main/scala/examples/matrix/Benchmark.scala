@@ -1,6 +1,6 @@
 package examples.matrix
 
-import genetic.engines.CounterGA
+import genetic.engines.CountingGA
 import genetic.operators.mixing.ClassicCrossover
 import genetic.operators.mutation.ComplexMutation
 import genetic.operators.selection.Tournament
@@ -25,7 +25,7 @@ object Benchmark extends App {
     new Measurer.IgnoringGC
   } measure {
     RRandom.setSeed(1563046509)
-    CounterGA.evolve(settings, 100)
+    CountingGA.evolve(settings, 100)
   }
   println(s"Total time: $time")
 }

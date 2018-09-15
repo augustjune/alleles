@@ -1,7 +1,6 @@
-package genetic.engines
+package genetic
 
 import genetic.genotype.Fitness
-import genetic.{AlgoSettings, Population}
 
 import scala.concurrent.duration.Duration
 import scala.language.higherKinds
