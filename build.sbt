@@ -11,8 +11,3 @@ libraryDependencies ++= Seq (
   "org.scalactic" %% "scalactic" % "3.0.5",
   "org.scalatest" %% "scalatest" % "3.0.5" % "test"
 )
-
-resolvers += "Sonatype OSS Snapshots" at
-  "https://oss.sonatype.org/content/repositories/releases"
-
-libraryDependencies += "com.storm-enroute" %% "scalameter-core" % "0.8.2"
