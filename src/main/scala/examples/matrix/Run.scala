@@ -5,7 +5,7 @@ import genetic._
 import genetic.engines.CountingGA
 import genetic.genotype.syntax._
 import genetic.operators.mixing.ClassicCrossover
-import genetic.operators.mutation.ComplexMutation
+import genetic.operators.mutation.GenotypeMutation
 import genetic.operators.selection.Tournament
 
 import scala.concurrent.ExecutionContext.Implicits.global
@@ -17,7 +17,7 @@ object Run extends App {
   val implicits = new MatrixImplicits("http://anjos.mgi.polymtl.ca/qaplib/data.d/had20.dat")
   import implicits._
 
-  val settings = AlgoSettings[Permutation](100, Tournament(20), ClassicCrossover(0.25), ComplexMutation(0.3, 0.7))
+  val settings = AlgoSettings[Permutation](100, Tournament(20), ClassicCrossover(0.25), GenotypeMutation(0.3, 0.7))
 
   def evolve(settings: AlgoSettings[Permutation]) = Future {
     val (iters, finalPop) = CountingGA.evolve(settings, 5 seconds)
