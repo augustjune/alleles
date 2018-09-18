@@ -5,8 +5,10 @@ package genetic.genotype
   * how close a given design solution is to achieving the set aims
   * Note: The smaller - the better
   */
-trait Fitness[-G] {
+trait Fitness[G] {
   def value(g: G): Int
+
+  def cached: CachedFitness[G] = new CachedFitness[G](this)
 }
 
 object Fitness {

@@ -18,21 +18,6 @@ object Permutation {
     locationMap.foldLeft(0) { case (left, (loc, num)) => left + relationPrices(loc, num) }
   }
 
-  def cacheFitness(flowMatrix: FlowMatrix, rangeMatrix: RangeMatrix): Fitness[Permutation] = cacheFitness(fitness(flowMatrix, rangeMatrix))
-
-  def cacheFitness(inner: Fitness[Permutation]): Fitness[Permutation] = new Fitness[Permutation] {
-    private var cache: Map[Permutation, Int] = Map.empty
-
-    def value(perm: Permutation): Int = cache.get(perm) match {
-      case Some(value) => value
-      case None =>
-        val value = inner.value(perm)
-        cache += (perm -> value)
-        value
-    }
-  }
-
-
   val mutator: RandomChange[Permutation] = (perm: Permutation) => {
     def switchPair(n1: Int, n2: Int): Permutation = {
       val val1 = perm.locations(n1)
