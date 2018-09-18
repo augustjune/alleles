@@ -4,8 +4,6 @@ import genetic._
 import genetic.genotype.RandomChange
 import genetic.operators.Mutation
 
-import scala.annotation.tailrec
-
 object GenotypeMutation {
   def apply[G: RandomChange](individualChance: Double, repetitiveChance: Double = 0): GenotypeMutation[G] =
     new GenotypeMutation(individualChance, repetitiveChance)
@@ -22,11 +20,12 @@ class GenotypeMutation[G: RandomChange](individualChance: Double, repetitiveChan
   def apply(pop: Population[G]): Population[G] = for (g <- pop) yield
     if (RRandom.shot(individualChance)) modifyGenotype(g) else g
 
-  @tailrec
-  final protected def modifyGenotype(g: G): G = {
-    val mutated = RandomChange(g)
-    if (RRandom.shot(repetitiveChance)) modifyGenotype(mutated)
-    else mutated
+  protected def modifyGenotype(g: G): G = {
+    def mutateNext(genotype: G): G =
+      if (RRandom.shot(repetitiveChance)) mutateNext(genotype)
+      else genotype
+
+    mutateNext(RandomChange(g))
   }
 
   override def toString: String = s"GenotypeMutation with single genotype mutation chance $individualChance and mutation complexity $repetitiveChance"
