@@ -5,7 +5,7 @@ import genetic.operators.Mutation
 import genetic.{Population, RRandom}
 
 case class RepetitiveMutation(individualChance: Double, repetitiveChance: Double) extends Mutation {
-  def apply[G: Modification](g: G): G =
+  def single[G: Modification](g: G): G =
     if (RRandom.shot(individualChance)) modifyGenotype(g)
     else g
 

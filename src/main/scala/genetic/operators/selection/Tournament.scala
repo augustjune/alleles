@@ -35,7 +35,7 @@ object Tournament {
 }
 
 class Tournament(roundSize: Int, fittestChance: Double) extends Selection {
-  def apply[G: Fitness](pop: Population[G]): (G, G) = (choose(pop), choose(pop))
+  def single[G: Fitness](pop: Population[G]): (G, G) = (choose(pop), choose(pop))
 
   /*
     OptimizationPoint: compose `shuffle` and `take` to one function to
@@ -49,7 +49,7 @@ class Tournament(roundSize: Int, fittestChance: Double) extends Selection {
       case (x, i) => x -> fittestChance * math.pow(1 - fittestChance, i)
     }
 
-  def expand[G: Fitness]: Population[G] => Population[(G, G)] =
-    pop => for (_ <- (1 to pop.size / 2).toList) yield apply(pop)
+  def generation[G: Fitness](pop: Population[G]): Population[(G, G)] =
+    for (_ <- (1 to pop.size / 2).toList) yield single(pop)
 
 }

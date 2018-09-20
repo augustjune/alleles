@@ -44,6 +44,5 @@ trait GeneticAlgorithm[F[_]] {
 
 case class AlgoSettings[G](initial: Population[G], selection: Selection, crossover: Crossover, mutation: Mutation) {
   def loop(population: Population[G]) (implicit f: Fitness[G], s: Semigroup[G], m: Modification[G]) =
-    crossover.expand.apply(selection.expand.apply(population))
-//    mutation.expand.apply(crossover.expand.apply(selection.applyExpanded(population)))
+    mutation.generation(crossover.generation(selection.generation(population)))
 }

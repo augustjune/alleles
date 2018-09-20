@@ -10,9 +10,9 @@ package object operators {
     * genomes from a population for later breeding
     */
   trait Selection extends {
-    def apply[G: Fitness](population: Population[G]): (G, G)
+    def single[G: Fitness](population: Population[G]): (G, G)
 
-    def expand[G: Fitness]: Population[G] => Population[(G, G)]
+    def generation[G: Fitness](population: Population[G]): Population[(G, G)]
   }
 
   /**
@@ -20,9 +20,9 @@ package object operators {
     * information of two parents to generate new offspring.
     */
   trait Crossover {
-    def apply[G: Semigroup](parents: (G, G)): IterablePair[G]
+    def single[G: Semigroup](parents: (G, G)): IterablePair[G]
 
-    def expand[G: Semigroup]: Population[(G, G)] => Population[G] = _.flatMap(apply(_))
+    def generation[G: Semigroup](population: Population[(G, G)]): Population[G] = population.flatMap(single(_))
   }
 
   /**
@@ -30,8 +30,8 @@ package object operators {
     * generation of a population of genetic algorithm chromosomes to the next.
     */
   trait Mutation {
-    def apply[G: Modification](individual: G): G
+    def single[G: Modification](individual: G): G
 
-    def expand[G: Modification]: Population[G] => Population[G] = _.map(apply(_))
+    def generation[G: Modification](population: Population[G]): Population[G] = population.map(single(_))
   }
 }

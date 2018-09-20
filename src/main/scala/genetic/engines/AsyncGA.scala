@@ -32,10 +32,10 @@ class AsyncGA(implicit mat: ActorMaterializer, exContext: ExecutionContext) exte
                                                 (selection: Selection, crossover: Crossover, mutation: Mutation)
                                                 (parallelism: Int): Future[Population[G]] = {
     Source(1 to size)
-      .mapAsyncUnordered(parallelism)(_ => Future(selection(population)))
-      .mapAsyncUnordered(parallelism)(parents => Future(crossover(parents)))
+      .mapAsyncUnordered(parallelism)(_ => Future(selection.single(population)))
+      .mapAsyncUnordered(parallelism)(parents => Future(crossover.single(parents)))
       .mapConcat(identity)
-      .mapAsyncUnordered(parallelism)(x => Future(mutation(x)))
+      .mapAsyncUnordered(parallelism)(x => Future(mutation.single(x)))
       .runWith(Sink.seq[G])
   }
 }

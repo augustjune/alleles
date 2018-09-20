@@ -17,12 +17,12 @@ class Truncation(proportion: Double) extends Selection {
       Optimization point: do not sort rest of the population after reaching needed proportion
       One more: DELETE EVERYTHING FOR FUCKS SAKE
    */
-  def apply[G: Fitness](pop: Population[G]): (G, G) =
+  def single[G: Fitness](pop: Population[G]): (G, G) =
     pop.sortBy(Fitness(_)).take(2) match {
       case List(x, y) => (x, y)
     }
 
-  def expand[G: Fitness]: Population[G] => Population[(G, G)] = pop => {
+  def generation[G: Fitness](pop: Population[G]): Population[(G, G)] = {
     val selection = pop.sortBy(Fitness(_)).take((pop.size * proportion).toInt)
     val (bef, after) = RRandom.shuffle(selection).splitAt(selection.size / 2)
     bef.zip(after)

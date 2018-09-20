@@ -27,26 +27,24 @@ import genetic.{Population, RRandom}
   * Note: chromosomes with the largest fitness value will never enter the next pop
   */
 object Roulette extends Selection {
-  def apply[G: Fitness](population: Population[G]): (G, G) = {
-    val fitnesses = population.map(g => g -> Fitness(g))
-    val largestFitness = fitnesses.map(_._2).max
-
-    val sectors = fitnesses.map { case (g, f) => g -> (largestFitness - f) }
-
-    def choose: G = RRandom.chooseByPriorities(sectors)
-
-    (choose, choose)
+  def single[G: Fitness](population: Population[G]): (G, G) = {
+    val sectors = prioritize(population)
+    (chooseByPriorities(sectors), chooseByPriorities(sectors))
   }
 
 
-  def expand[G: Fitness]: Population[G] => Population[(G, G)] = population => {
+  def generation[G: Fitness](population: Population[G]): Population[(G, G)] = {
+    val sectors = prioritize(population)
+    for (_ <- (1 to population.size / 2).toList) yield (chooseByPriorities(sectors), chooseByPriorities(sectors))
+  }
+
+  private def prioritize[G: Fitness](population: Population[G]): Population[(G, Int)] = {
     val fitnesses = population.map(g => g -> Fitness(g))
     val largestFitness = fitnesses.map(_._2).max
-    val sectors = fitnesses.map { case (g, f) => g -> (largestFitness - f) }
-
-    def choose: G = RRandom.chooseByPriorities(sectors)
-
-    for (_ <- (1 to population.size / 2).toList) yield (choose, choose)
+    fitnesses.map { case (g, f) => g -> (largestFitness - f) }
   }
+
+  private def chooseByPriorities[G](popWithPriorities: Population[(G, Int)]) =
+    RRandom.chooseByPriorities(popWithPriorities)
 
 }

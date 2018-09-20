@@ -5,7 +5,7 @@ import genetic._
 import genetic.engines.CountingGA
 import genetic.genotype.Scheme
 import genetic.genotype.syntax._
-import genetic.operators.crossover.ParentChanceCrossover
+import genetic.operators.crossover.ParentsOrBreed
 import genetic.operators.mutation.RepetitiveMutation
 import genetic.operators.selection.Tournament
 
@@ -22,7 +22,7 @@ object Run extends App {
   val settings = AlgoSettings[Permutation](
     Scheme.make(100),
     Tournament(10),
-    ParentChanceCrossover(0.25),
+    ParentsOrBreed(0.25),
     RepetitiveMutation(0.7, 0.25))
 
   def evolve(settings: AlgoSettings[Permutation]) = Future {
