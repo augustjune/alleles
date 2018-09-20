@@ -2,7 +2,7 @@ package genetic.engines
 
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Sink, Source}
-import genetic.collections.IterablePair
+import cats.Semigroup
 import genetic.genotype.{Fitness, Mutation}
 import genetic.operators._
 import genetic.{AlgoSettings, GeneticAlgorithm, Population}
@@ -24,18 +24,18 @@ class AsyncGA(implicit mat: ActorMaterializer, exContext: ExecutionContext) exte
     * @param fitnessThreshold Threshold to be crossed
     * @return Evolved population
     */
-  def evolveUntilReached[G: Fitness](settings: AlgoSettings[G], fitnessThreshold: Int): ParallelizableFuture[Population[G]] = ???
+  def evolveUntilReached[G: Fitness: Semigroup: Mutation](settings: AlgoSettings[G], fitnessThreshold: Int): ParallelizableFuture[Population[G]] = ???
 
-  protected def evolve[G, B](settings: AlgoSettings[G])(start: B, until: B => Boolean, click: B => B): ParallelizableFuture[Population[G]] = ???
+  protected def evolve[G: Fitness: Semigroup: Mutation, B](settings: AlgoSettings[G])(start: B, until: B => Boolean, click: B => B): ParallelizableFuture[Population[G]] = ???
 
-  def stage[G](population: Population[G], size: Int)
-              (selection: Selection[G], crossover: Crossover[G], mutation: Mutation[G])
+  def stage[G: Fitness: Semigroup: Mutation](population: Population[G], size: Int)
+              (selection: IndividualSelection, crossover: IndividualCrossover, mutation: IndividualMutation)
               (parallelism: Int): Future[Seq[G]] = {
     Source(1 to size)
       .mapAsyncUnordered(parallelism)(_ => Future(selection(population)))
-      .mapAsyncUnordered(parallelism){ case (left, right) => Future(IterablePair(crossover(left, right), crossover(right, left)))}
+      .mapAsyncUnordered(parallelism){ case (left, right) => Future(crossover(left, right))}
       .mapConcat(identity)
-      .mapAsyncUnordered(parallelism)(x => Future(mutation.modify(x)))
+      .mapAsyncUnordered(parallelism)(x => Future(mutation(x)))
       .runWith(Sink.seq[G])
   }
 }

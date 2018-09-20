@@ -1,13 +1,8 @@
-package genetic.operators.selection
+package genetic.operators.population
 
-import genetic.operators.SelectionStage
 import genetic._
 import genetic.genotype.Fitness
-
-
-object Roulette {
-  def apply[G: Fitness]: Roulette[G] = new Roulette()
-}
+import genetic.operators.PopulationSelection
 
 /**
   * Fitness proportionate selection of selection size equal to previous population size,
@@ -31,13 +26,15 @@ object Roulette {
   *
   * Note: chromosomes with the largest fitness value will never enter the next pop
   */
-class Roulette[G: Fitness] extends SelectionStage[G] {
-  def apply(population: Population[G]): Population[G] = {
+object RouletteStage extends PopulationSelection {
+  def apply[G: Fitness](population: Population[G]): Population[(G, G)] = {
     val fitnesses = population.map(g => g -> Fitness(g))
     val largestFitness = fitnesses.map(_._2).max
 
     val sectors = fitnesses.map { case (g, f) => g -> (largestFitness - f)}
 
-    for(_ <- population) yield RRandom.chooseByPriorities(sectors)
+    def choose: G = RRandom.chooseByPriorities(sectors)
+
+    for(_ <- population) yield (choose, choose)
   }
 }

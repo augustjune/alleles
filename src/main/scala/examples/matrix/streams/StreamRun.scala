@@ -4,11 +4,8 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Sink, Source}
 import examples.matrix.{MatrixImplicits, Permutation}
-import genetic.genotype.Fitness
-import genetic.operators.mixing.ClassicCrossover
-import genetic.operators.mutation.GenotypeMutation
-import genetic.operators.selection.Tournament
-import genetic.{AlgoSettings, Population, PopulationExtension, RRandom}
+import genetic.genotype.{Fitness, Scheme}
+import genetic.{Population, RRandom}
 
 import scala.concurrent.Future
 
@@ -21,14 +18,7 @@ object StreamRun extends App {
 
   import implicits._
 
-  val tournament = Tournament(10)
-  val crossover = ClassicCrossover(0.25)
-  val mutation = GenotypeMutation(0.7)
-
-
-  val initPopSize = 100
-  val settings = AlgoSettings(initPopSize, tournament, crossover, mutation)
-  val initPop: Population[Permutation] = settings.initialPopulation
+  val initPop: Population[Permutation] = Scheme.make(100)
 
   val parallelism = 4
 

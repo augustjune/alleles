@@ -3,10 +3,10 @@ package examples.matrix
 
 import genetic._
 import genetic.engines.CountingGA
+import genetic.genotype.Scheme
 import genetic.genotype.syntax._
-import genetic.operators.mixing.ClassicCrossover
-import genetic.operators.mutation.GenotypeMutation
-import genetic.operators.selection.Tournament
+import genetic.operators.individual.{ParentChanceCrossover, RepetitiveMutation, Tournament}
+import genetic.operators.population.{CrossoverStage, MutationStage, SelectionStage}
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -17,7 +17,11 @@ object Run extends App {
   val implicits = new MatrixImplicits("http://anjos.mgi.polymtl.ca/qaplib/data.d/had20.dat")
   import implicits._
 
-  val settings = AlgoSettings[Permutation](100, Tournament(20), ClassicCrossover(0.25), GenotypeMutation(0.3, 0.7))
+  val settings = AlgoSettings[Permutation](
+    Scheme.make(100),
+    new SelectionStage(Tournament(10)),
+    new CrossoverStage(ParentChanceCrossover(0.25)),
+    new MutationStage(RepetitiveMutation(0.7, 0.25)))
 
   def evolve(settings: AlgoSettings[Permutation]) = Future {
     val (iters, finalPop) = CountingGA.evolve(settings, 5 seconds)
@@ -26,7 +30,7 @@ object Run extends App {
 
   val evolved = Await.result(Future.traverse((1 to 1).toList)(_ => evolve(settings)), Duration.Inf)
 
-  println(s"Best before: ${settings.initialPopulation.best.fitness}")
+  println(s"Best before: ${settings.initial.best.fitness}")
 
   evolved.foreach { case (iters, best) =>
     val f = fitness.value(best)
