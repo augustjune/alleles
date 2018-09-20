@@ -8,7 +8,7 @@ object syntax {
   }
 
   implicit class RandomChangeObj[G](private val g: G) extends AnyVal {
-    def mutated(implicit c: Mutation[G]): G = c.modify(g)
+    def mutated(implicit c: Modification[G]): G = c.modify(g)
   }
 
   implicit class SchemeObj[G](private val g: G) extends AnyVal {

@@ -1,7 +1,7 @@
-package genetic.operators.individual
+package genetic.operators.selection
 
 import genetic.genotype.Fitness
-import genetic.operators.IndividualSelection
+import genetic.operators.Selection
 import genetic.{Population, RRandom}
 
 /**
@@ -34,7 +34,7 @@ object Tournament {
   def apply[G: Fitness](roundSize: Int): Tournament = new Tournament(roundSize, 1)
 }
 
-class Tournament(roundSize: Int, fittestChance: Double) extends IndividualSelection {
+class Tournament(roundSize: Int, fittestChance: Double) extends Selection {
   def apply[G: Fitness](pop: Population[G]): (G, G) = (choose(pop), choose(pop))
 
   /*
@@ -48,4 +48,8 @@ class Tournament(roundSize: Int, fittestChance: Double) extends IndividualSelect
     sample.sortBy(Fitness(_)).zipWithIndex.map {
       case (x, i) => x -> fittestChance * math.pow(1 - fittestChance, i)
     }
+
+  def expand[G: Fitness]: Population[G] => Population[(G, G)] =
+    pop => for (_ <- (1 to pop.size / 2).toList) yield apply(pop)
+
 }

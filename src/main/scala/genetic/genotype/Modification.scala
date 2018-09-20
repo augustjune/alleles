@@ -11,14 +11,14 @@ package genetic.genotype
   *     def modify5(g: G) = modify(modify(modify(modify(modify(g)))))
   *     modify5(g) != modify5(g)
   */
-trait Mutation[G] {
+trait Modification[G] {
   def modify(g: G): G
 }
 
-object Mutation {
+object Modification {
   /**
     * Applies trait function from the implicit scope;
     * allows to use trait as context bounds
     */
-  def apply[G](g: G)(implicit m: Mutation[G]): G = m.modify(g)
+  def apply[G](g: G)(implicit m: Modification[G]): G = m.modify(g)
 }

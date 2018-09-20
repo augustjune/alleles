@@ -3,7 +3,7 @@ package examples.matrix
 import cats.kernel.Semigroup
 import examples.matrix.matrices.{FlowMatrix, RangeMatrix}
 import genetic.RRandom
-import genetic.genotype.{Fitness, Mutation}
+import genetic.genotype.{Fitness, Modification}
 
 object Permutation {
 
@@ -18,7 +18,7 @@ object Permutation {
     locationMap.foldLeft(0) { case (left, (loc, num)) => left + relationPrices(loc, num) }
   }
 
-  val mutator: Mutation[Permutation] = (perm: Permutation) => {
+  val mutator: Modification[Permutation] = (perm: Permutation) => {
     def switchPair(n1: Int, n2: Int): Permutation = {
       val val1 = perm.locations(n1)
       new Permutation(perm.locations.updated(n1, perm.locations(n2)).updated(n2, val1))

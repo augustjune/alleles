@@ -5,8 +5,9 @@ import genetic._
 import genetic.engines.CountingGA
 import genetic.genotype.Scheme
 import genetic.genotype.syntax._
-import genetic.operators.individual.{ParentChanceCrossover, RepetitiveMutation, Tournament}
-import genetic.operators.population.{CrossoverStage, MutationStage, SelectionStage}
+import genetic.operators.crossover.ParentChanceCrossover
+import genetic.operators.mutation.RepetitiveMutation
+import genetic.operators.selection.Tournament
 
 import scala.concurrent.ExecutionContext.Implicits.global
 import scala.concurrent.duration._
@@ -15,13 +16,14 @@ import scala.language.postfixOps
 
 object Run extends App {
   val implicits = new MatrixImplicits("http://anjos.mgi.polymtl.ca/qaplib/data.d/had20.dat")
+
   import implicits._
 
   val settings = AlgoSettings[Permutation](
     Scheme.make(100),
-    new SelectionStage(Tournament(10)),
-    new CrossoverStage(ParentChanceCrossover(0.25)),
-    new MutationStage(RepetitiveMutation(0.7, 0.25)))
+    Tournament(10),
+    ParentChanceCrossover(0.25),
+    RepetitiveMutation(0.7, 0.25))
 
   def evolve(settings: AlgoSettings[Permutation]) = Future {
     val (iters, finalPop) = CountingGA.evolve(settings, 5 seconds)
