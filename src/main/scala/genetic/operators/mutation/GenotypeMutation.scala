@@ -1,11 +1,11 @@
 package genetic.operators.mutation
 
 import genetic._
-import genetic.genotype.RandomChange
-import genetic.operators.Mutation
+import genetic.genotype.Mutation
+import genetic.operators.MutationStage
 
 object GenotypeMutation {
-  def apply[G: RandomChange](individualChance: Double, repetitiveChance: Double = 0): GenotypeMutation[G] =
+  def apply[G: Mutation](individualChance: Double, repetitiveChance: Double = 0): GenotypeMutation[G] =
     new GenotypeMutation(individualChance, repetitiveChance)
 }
 
@@ -16,7 +16,7 @@ object GenotypeMutation {
   * @param individualChance Chance of instance to be modified by mutation
   * @param repetitiveChance Probability of repetitive mutation of the same instance
   */
-class GenotypeMutation[G: RandomChange](individualChance: Double, repetitiveChance: Double) extends Mutation[G] {
+class GenotypeMutation[G: Mutation](individualChance: Double, repetitiveChance: Double) extends MutationStage[G] {
   def apply(pop: Population[G]): Population[G] = for (g <- pop) yield
     if (RRandom.shot(individualChance)) modifyGenotype(g) else g
 
@@ -25,7 +25,7 @@ class GenotypeMutation[G: RandomChange](individualChance: Double, repetitiveChan
       if (RRandom.shot(repetitiveChance)) mutateNext(genotype)
       else genotype
 
-    mutateNext(RandomChange(g))
+    mutateNext(Mutation(g))
   }
 
   override def toString: String = s"GenotypeMutation with single genotype mutation chance $individualChance and mutation complexity $repetitiveChance"

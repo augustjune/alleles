@@ -2,7 +2,7 @@ package genetic.operators.selection
 
 import genetic.{Population, RRandom}
 import genetic.genotype.Fitness
-import genetic.operators.Selection
+import genetic.operators.SelectionStage
 
 /**
   * Selecting an individual from a randomly taken sample of population sorted by fitness values and
@@ -35,7 +35,7 @@ object Tournament {
   def apply[G: Fitness](roundSize: Int): Tournament[G] = new Tournament(roundSize, 1)
 }
 
-class Tournament[G: Fitness](roundSize: Int, fittestChance: Double) extends Selection[G] {
+class Tournament[G: Fitness](roundSize: Int, fittestChance: Double) extends SelectionStage[G] {
   /*
     OptimizationPoint: compose `shuffle` and `take` to one function to
                        avoid unnecessary shuffling of the rest of sequence

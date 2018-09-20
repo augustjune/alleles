@@ -1,6 +1,6 @@
 package genetic.operators.selection
 
-import genetic.operators.Selection
+import genetic.operators.SelectionStage
 import genetic._
 import genetic.genotype.Fitness
 
@@ -31,7 +31,7 @@ object Roulette {
   *
   * Note: chromosomes with the largest fitness value will never enter the next pop
   */
-class Roulette[G: Fitness] extends Selection[G] {
+class Roulette[G: Fitness] extends SelectionStage[G] {
   def apply(population: Population[G]): Population[G] = {
     val fitnesses = population.map(g => g -> Fitness(g))
     val largestFitness = fitnesses.map(_._2).max
