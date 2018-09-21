@@ -1,4 +1,4 @@
-package genetic.engines
+package genetic.engines.async
 
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.{Sink, Source}
@@ -9,14 +9,7 @@ import genetic.{AlgoSettings, GeneticAlgorithm, Population}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-object AsyncGA {
-  type ParallelizableFuture[A] = (Int => Future[A])
-}
-
-
-import AsyncGA.ParallelizableFuture
-
-class AsyncGA(parallelism: Int)(implicit mat: ActorMaterializer, exContext: ExecutionContext) extends GeneticAlgorithm[Future] {
+class FutureAsyncGA(parallelism: Int)(implicit mat: ActorMaterializer, exContext: ExecutionContext) extends GeneticAlgorithm[Future] {
 
   protected def evolve[G: Fitness : Semigroup : Modification, B]
   (settings: AlgoSettings[G])
@@ -36,9 +29,9 @@ class AsyncGA(parallelism: Int)(implicit mat: ActorMaterializer, exContext: Exec
     loop(Future.successful(settings.initial), start)
   }
 
-  private def stage[G: Fitness : Semigroup : Modification](population: Population[G], size: Int)
-                                                  (selection: Selection, crossover: Crossover, mutation: Mutation)
-                                                  (parallelism: Int): Future[Population[G]] = {
+  protected def stage[G: Fitness : Semigroup : Modification](population: Population[G], size: Int)
+                                                          (selection: Selection, crossover: Crossover, mutation: Mutation)
+                                                          (parallelism: Int): Future[Population[G]] = {
     Source(1 to size)
       .mapAsyncUnordered(parallelism)(_ => Future(selection.single(population)))
       .mapAsyncUnordered(parallelism)(parents => Future(crossover.single(parents)))
