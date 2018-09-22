@@ -11,6 +11,32 @@ import scala.concurrent.{ExecutionContext, Future}
 
 object ParallelizableAsyncGA extends GeneticAlgorithm[ParallelizableFuture] {
 
+
+  /**
+    * Evolves initial population with genetic operators for a finite number of iterations
+    *
+    * @param settings   Set of genetic operators which define iterative cycle
+    * @param iterations Number of iterations
+    * @return Evolved population
+    */
+  override def evolve[G: Fitness : Semigroup : Modification](settings: AlgoSettings[G], iterations: Int)
+  : ParallelizableFuture[Population[G]] = {
+    var i = 0
+    val initial = settings.initial
+    val size = initial.size / 2
+    var pop = ParallelizableFuture.pure(settings.initial)
+    val selection = settings.selection
+    val crossover = settings.crossover
+    val mutation = settings.mutation
+    while (i < iterations) {
+      pop = pop.flatMap(x => stage(x, size)(selection, crossover, mutation))
+      i += 1
+    }
+
+    pop
+
+  }
+
   protected def evolve[G: Fitness : Semigroup : Modification, B]
   (settings: AlgoSettings[G])
   (start: B, until: (B, Population[G]) => Boolean, click: B => B): ParallelizableFuture[Population[G]] = {

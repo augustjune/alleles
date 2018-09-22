@@ -11,6 +11,30 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class FutureAsyncGA(parallelism: Int)(implicit mat: ActorMaterializer, exContext: ExecutionContext) extends GeneticAlgorithm[Future] {
 
+
+  /**
+    * Evolves initial population with genetic operators for a finite number of iterations
+    *
+    * @param settings   Set of genetic operators which define iterative cycle
+    * @param iterations Number of iterations
+    * @return Evolved population
+    */
+  override def evolve[G: Fitness : Semigroup : Modification](settings: AlgoSettings[G], iterations: Int): Future[Population[G]] = {
+    var i = 0
+    val initial = settings.initial
+    val size = initial.size / 2
+    var pop = Future.successful(settings.initial)
+    val selection = settings.selection
+    val crossover = settings.crossover
+    val mutation = settings.mutation
+    while (i < iterations) {
+      pop = pop.flatMap(x => stage(x, size)(selection, crossover, mutation))
+      i += 1
+    }
+
+    pop
+  }
+
   protected def evolve[G: Fitness : Semigroup : Modification, B]
   (settings: AlgoSettings[G])
   (start: B, until: (B, Population[G]) => Boolean, click: B => B): Future[Population[G]] = {
@@ -21,7 +45,7 @@ class FutureAsyncGA(parallelism: Int)(implicit mat: ActorMaterializer, exContext
     def loop(futPop: Future[Population[G]], condition: B): Future[Population[G]] = {
       futPop.flatMap { pop =>
         if (until(condition, pop)) {
-          loop(stage(pop, pop.size)(selection, crossover, mutation)(parallelism), click(condition))
+          loop(stage(pop, pop.size)(selection, crossover, mutation), click(condition))
         } else futPop
       }
     }
@@ -29,9 +53,9 @@ class FutureAsyncGA(parallelism: Int)(implicit mat: ActorMaterializer, exContext
     loop(Future.successful(settings.initial), start)
   }
 
-  protected def stage[G: Fitness : Semigroup : Modification](population: Population[G], size: Int)
-                                                          (selection: Selection, crossover: Crossover, mutation: Mutation)
-                                                          (parallelism: Int): Future[Population[G]] = {
+  def stage[G: Fitness : Semigroup : Modification]
+  (population: Population[G], size: Int)
+  (selection: Selection, crossover: Crossover, mutation: Mutation): Future[Population[G]] = {
     Source(1 to size)
       .mapAsyncUnordered(parallelism)(_ => Future(selection.single(population)))
       .mapAsyncUnordered(parallelism)(parents => Future(crossover.single(parents)))
