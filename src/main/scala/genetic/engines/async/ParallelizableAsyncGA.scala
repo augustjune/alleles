@@ -29,7 +29,7 @@ object ParallelizableAsyncGA extends GeneticAlgorithm[ParallelizableFuture] {
     val crossover = settings.crossover
     val mutation = settings.mutation
     while (i < iterations) {
-      pop = pop.flatMap(x => stage(x, size)(selection, crossover, mutation))
+      pop = pop.flatMap(stage(_, size)(selection, crossover, mutation))
       i += 1
     }
 
