@@ -1,7 +1,9 @@
 package genetic.genotype
 
+import scala.collection.concurrent.TrieMap
+
 private[genotype] class CachedFitness[G](inner: Fitness[G]) extends Fitness[G] {
-  private var cache: Map[G, Int] = Map()
+  private var cache: TrieMap[G, Int] = TrieMap.empty
 
   def value(g: G): Int = cache.get(g) match {
     case Some(fitness) => fitness
