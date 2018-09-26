@@ -1,11 +1,12 @@
-package examples.matrix
+package examples
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
+import examples.matrix.{MatrixImplicits, Permutation}
 import genetic.engines.streaming.StreamingGA
-import genetic.genotype.syntax._
 import genetic.genotype.{Fitness, Scheme}
+import genetic.genotype.syntax._
 import genetic.operators.crossover.ParentsOrBreed
 import genetic.operators.mutation.RepetitiveMutation
 import genetic.operators.selection.Tournament
@@ -51,8 +52,6 @@ object Compare extends App {
   implicit val ex: ExecutionContextExecutor = system.dispatcher
 
 
-//  val asyncGA = new FutureAsyncGA(4)
-  val streamGa = new StreamingGA()
   val iterations = 5
 
 
@@ -60,10 +59,7 @@ object Compare extends App {
     ("Basic sync", () => GeneticAlgorithm.evolve(initialPop, operators, iterations)),
     ("Parallel sync", () => GeneticAlgorithm.par.evolve(initialPop, operators, iterations)),
     ("Streaming GA", () => Await.result(GeneticAlgorithm.stream.evolve(initialPop, operators).take(iterations).runWith(Sink.last[Population[Permutation]]), Duration.Inf))
-//    ("ParallelizableFuture async", () => Await.result(ParallelizableAsyncGA.evolve(settings, iterations).run(4), Duration.Inf)),
-//    ("Future async", () => Await.result(asyncGA.evolve(settings, iterations), Duration.Inf))
   ))
 
-//  streamGa.evolve(initialPop, operators).map(x => {val b = x.best; (b, b.fitness)}).runForeach(println)
   system.terminate()
 }
