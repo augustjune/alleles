@@ -23,5 +23,13 @@ trait SynchronousGA extends GeneticAlgorithmTemplate[Id] {
 
 
   protected def evolve[G: Fitness : Semigroup : Modification, B]
-  (population: Population[G], operators: OperatorSet)(start: B, until: B => Boolean, click: B => B): Population[G]
+  (population: Population[G], operators: OperatorSet)(start: B, until: B => Boolean, click: B => B): Population[G] = {
+    def loop(pop: Population[G], condition: B): Population[G] =
+      if (until(condition)) loop(evolutionStep(pop, operators), click(condition))
+      else pop
+
+    loop(population, start)
+  }
+
+  def evolutionStep[G: Fitness : Semigroup : Modification](population: Population[G], operators: OperatorSet): Population[G]
 }

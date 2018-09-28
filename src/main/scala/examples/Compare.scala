@@ -4,13 +4,13 @@ import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
 import examples.matrix.{MatrixImplicits, Permutation}
-import genetic.engines.streaming.StreamingGA
 import genetic.genotype.{Fitness, Scheme}
 import genetic.genotype.syntax._
 import genetic.operators.crossover.ParentsOrBreed
 import genetic.operators.mutation.RepetitiveMutation
 import genetic.operators.selection.Tournament
 import genetic.{GeneticAlgorithm, OperatorSet, Population, PopulationExtension}
+import genetic.engines.streaming._
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor}
@@ -18,7 +18,7 @@ import scala.concurrent.{Await, ExecutionContextExecutor}
 object Compare extends App {
 
   def measureN[R: Fitness](list: List[(String, () => Population[R])]): Unit = {
-    for ((label, popF) <- list){
+    for ((label, popF) <- list) {
       println("Measuring: " + label)
       val (time, res) = measure(popF())
       printMeasure(label, time, res)
@@ -56,9 +56,10 @@ object Compare extends App {
 
 
   measureN(List(
-    ("Basic sync", () => GeneticAlgorithm.evolve(initialPop, operators, iterations)),
-    ("Parallel sync", () => GeneticAlgorithm.par.evolve(initialPop, operators, iterations)),
-    ("Streaming GA", () => Await.result(GeneticAlgorithm.stream.evolve(initialPop, operators).take(iterations).runWith(Sink.last[Population[Permutation]]), Duration.Inf))
+    //    ("Basic sync", () => GeneticAlgorithm.evolve(initialPop, operators, iterations)),
+    ("Streaming GA", () => Await.result(GeneticAlgorithm.stream.evolve(initialPop, operators, iterations).runWith(Sink.last[Population[Permutation]]), Duration.Inf)),
+    ("Streaming GA2", () => Await.result(GeneticAlgorithm.par.stream.evolve(initialPop, operators, iterations).runWith(Sink.last[Population[Permutation]]), Duration.Inf)),
+    ("Parallel sync", () => GeneticAlgorithm.par.evolve(initialPop, operators, iterations))
   ))
 
   system.terminate()

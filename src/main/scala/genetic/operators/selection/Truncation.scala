@@ -13,10 +13,6 @@ object Truncation {
 }
 
 class Truncation(proportion: Double) extends Selection {
-  /*
-      Optimization point: do not sort rest of the population after reaching needed proportion
-      One more: DELETE EVERYTHING FOR FUCKS SAKE
-   */
   def single[G: Fitness](pop: Population[G]): (G, G) =
     pop.sortBy(Fitness(_)).take(2) match {
       case List(x, y) => (x, y)
