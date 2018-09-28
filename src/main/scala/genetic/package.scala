@@ -14,8 +14,4 @@ package object genetic {
     def generation[G: Fitness : Semigroup : Modification](population: Population[G]): Population[G] =
       mutation.generation(crossover.generation(selection.generation(population)))
   }
-
-  object GeneticAlgorithm extends BasicGA {
-    val par: SynchronousGA = ParallelGA
-  }
 }

@@ -3,14 +3,16 @@ package examples
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
+import cats.Semigroup
 import examples.matrix.{MatrixImplicits, Permutation}
-import genetic.genotype.{Fitness, Scheme}
+import genetic.genotype.{Fitness, Modification, Scheme}
 import genetic.genotype.syntax._
 import genetic.operators.crossover.ParentsOrBreed
 import genetic.operators.mutation.RepetitiveMutation
 import genetic.operators.selection.Tournament
-import genetic.{GeneticAlgorithm, OperatorSet, Population, PopulationExtension}
+import genetic.{OperatorSet, Population, PopulationExtension}
 import genetic.engines.streaming._
+import genetic.engines.sync.{BasicGA, ParallelGA, SynchronousGA}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor}
@@ -54,12 +56,17 @@ object Compare extends App {
 
   val iterations = 5
 
+  object GeneticAlgorithm extends SynchronousGA {
+    def par: SynchronousGA = ParallelGA
+
+    def evolutionStep[G: Fitness : Semigroup : Modification](population: Population[G], operators: OperatorSet): Population[G] =
+      BasicGA.evolutionStep(population, operators)
+  }
 
   measureN(List(
-    //    ("Basic sync", () => GeneticAlgorithm.evolve(initialPop, operators, iterations)),
-    ("Streaming GA", () => Await.result(GeneticAlgorithm.stream.evolve(initialPop, operators, iterations).runWith(Sink.last[Population[Permutation]]), Duration.Inf)),
-    ("Streaming GA2", () => Await.result(GeneticAlgorithm.par.stream.evolve(initialPop, operators, iterations).runWith(Sink.last[Population[Permutation]]), Duration.Inf)),
-    ("Parallel sync", () => GeneticAlgorithm.par.evolve(initialPop, operators, iterations))
+    ("Basic sync", () => GeneticAlgorithm.evolve(initialPop, operators, iterations)),
+    ("Parallel sync", () => GeneticAlgorithm.par.evolve(initialPop, operators, iterations)),
+    ("Streaming GA", () => Await.result(GeneticAlgorithm.par.stream.evolve(initialPop, operators, iterations).runWith(Sink.last[Population[Permutation]]), Duration.Inf))
   ))
 
   system.terminate()
