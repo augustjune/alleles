@@ -32,7 +32,7 @@ object Fun {
     }
 
     def calcFitness(values: Map[Double, Double]): Fitness[Fun] = (fun: Fun) => {
-      (values.foldLeft(0.0) { case (sum, (x, y)) => sum + math.abs(fun(x) - y) } * 1000).toInt
+      values.foldLeft(0.0) { case (sum, (x, y)) => sum + math.abs(fun(x) - y) }
     }
   }
 

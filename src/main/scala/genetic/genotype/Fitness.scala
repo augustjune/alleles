@@ -6,7 +6,7 @@ package genetic.genotype
   * Note: The smaller - the better
   */
 trait Fitness[G] {
-  def value(g: G): Int
+  def value(g: G): Double
 
   def cached: CachedFitness[G] = new CachedFitness[G](this)
 }
@@ -16,5 +16,5 @@ object Fitness {
     * Applies trait function from the implicit scope;
     * allows to use trait as context bounds
     */
-  def apply[G](g: G)(implicit f: Fitness[G]): Int = f.value(g)
+  def apply[G](g: G)(implicit f: Fitness[G]): Double = f.value(g)
 }

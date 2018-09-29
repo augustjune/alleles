@@ -20,9 +20,9 @@ class ReusableRandom(private var s: Long) extends util.Random(s) {
     *
     * @param pool sequence of tuples representing value and corresponding priority
     */
-  def chooseByPriorities[A](pool: Seq[(A, Int)]): A = {
+  def chooseByPriorities[A](pool: Seq[(A, Double)]): A = {
     val sum = pool.map(_._2).sum
-    chooseByChances(pool.map { case (x, p) => x -> (p.toDouble / sum) })
+    chooseByChances(pool.map { case (x, p) => x -> (p / sum) })
   }
 
   /**

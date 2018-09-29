@@ -4,7 +4,7 @@ import genetic.Population
 
 object syntax {
   implicit class FitnessObj[G](private val g: G) extends AnyVal {
-    def fitness(implicit f: Fitness[G]): Int = f.value(g)
+    def fitness(implicit f: Fitness[G]): Double = f.value(g)
   }
 
   implicit class RandomChangeObj[G](private val g: G) extends AnyVal {
