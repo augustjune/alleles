@@ -9,7 +9,7 @@ object syntax {
   }
 
   implicit class JoinObj[G](private val g: G) extends AnyVal {
-    def ><(other: G)(implicit join: Join[G]): IterablePair[G] = join.group(g, other)
+    def ><(other: G)(implicit join: Join[G]): IterablePair[G] = join.cross(g, other)
   }
 
   implicit class RandomChangeObj[G](private val g: G) extends AnyVal {
