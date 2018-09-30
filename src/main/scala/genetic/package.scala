@@ -1,6 +1,4 @@
-import cats.Semigroup
-import genetic.engines.sync.{BasicGA, ParallelGA, SynchronousGA}
-import genetic.genotype.{Fitness, Modification}
+import genetic.genotype.{Fitness, Join, Modification}
 import genetic.operators._
 
 package object genetic {
@@ -11,7 +9,7 @@ package object genetic {
   }
 
   case class OperatorSet(selection: Selection, crossover: Crossover, mutation: Mutation) {
-    def generation[G: Fitness : Semigroup : Modification](population: Population[G]): Population[G] =
+    def generation[G: Fitness : Join : Modification](population: Population[G]): Population[G] =
       mutation.generation(crossover.generation(selection.generation(population)))
   }
 }

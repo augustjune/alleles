@@ -1,6 +1,5 @@
 package examples.matrix
 
-import cats.kernel.Semigroup
 import examples.matrix.matrices.{FlowMatrix, RangeMatrix}
 import genetic.RRandom
 import genetic.genotype.{Fitness, Modification}
@@ -26,8 +25,6 @@ object Permutation {
 
     switchPair(RRandom.nextInt(perm.size), RRandom.nextInt(perm.size))
   }
-
-  val crossover: Semigroup[Permutation] = (x: Permutation, y: Permutation) => x.crossover(y)
 }
 
 class Permutation(private val locations: Seq[Int]) {

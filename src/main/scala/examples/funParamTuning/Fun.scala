@@ -1,8 +1,7 @@
 package examples.funParamTuning
 
-import cats.kernel.Semigroup
 import genetic.RRandom
-import genetic.genotype.{Fitness, Modification, Scheme}
+import genetic.genotype.{Fitness, Join, Modification, Scheme}
 
 case class Fun(arguments: Vector[Double]) extends (Double => Double) {
   def apply(x: Double): Double =
@@ -14,8 +13,8 @@ case class Fun(arguments: Vector[Double]) extends (Double => Double) {
 object Fun {
 
   object Genotype {
-    implicit val sem: Semigroup[Fun] = (x: Fun, y: Fun) => (x, y) match {
-      case (Fun(args1), Fun(args2)) => Fun(args1.zipAll(args2, 0, 0).map { case (a: Double, b: Double) => (a + b) / 2 })
+    implicit val join: Join[Fun] = Join.commutative {
+      case (Fun(args1), Fun(args2)) => Fun(args1.zipAll(args2, 0.0, 0.0).map { case (a, b) => (a + b) / 2 })
     }
 
     implicit val scheme: Scheme[Fun] = Scheme.fromOne(Fun(Vector.fill(2)(0)))

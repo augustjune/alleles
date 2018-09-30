@@ -1,8 +1,7 @@
 package genetic
 
-import cats.kernel.Semigroup
 import genetic.collections.IterablePair
-import genetic.genotype.{Fitness, Modification}
+import genetic.genotype.{Fitness, Join, Modification}
 
 package object operators {
   /**
@@ -20,9 +19,9 @@ package object operators {
     * information of two parents to generate new offspring.
     */
   trait Crossover {
-    def single[G: Semigroup](parents: (G, G)): IterablePair[G]
+    def single[G: Join](parents: (G, G)): IterablePair[G]
 
-    def generation[G: Semigroup](population: Population[(G, G)]): Population[G] = population.flatMap(single(_))
+    def generation[G: Join](population: Population[(G, G)]): Population[G] = population.flatMap(single(_))
   }
 
   /**

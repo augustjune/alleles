@@ -3,9 +3,8 @@ package examples
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
-import cats.Semigroup
 import examples.matrix.{MatrixImplicits, Permutation}
-import genetic.genotype.{Fitness, Modification, Scheme}
+import genetic.genotype.{Fitness, Join, Modification, Scheme}
 import genetic.genotype.syntax._
 import genetic.operators.crossover.ParentsOrBreed
 import genetic.operators.mutation.RepetitiveMutation
@@ -59,7 +58,7 @@ object Compare extends App {
   object GeneticAlgorithm extends SynchronousGA {
     def par: SynchronousGA = ParallelGA
 
-    def evolutionStep[G: Fitness : Semigroup : Modification](population: Population[G], operators: OperatorSet): Population[G] =
+    def evolutionStep[G: Fitness : Join : Modification](population: Population[G], operators: OperatorSet): Population[G] =
       BasicGA.evolutionStep(population, operators)
   }
 
