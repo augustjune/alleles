@@ -1,17 +1,22 @@
 package genetic.engines.sync
 
-import cats.Semigroup
-import genetic.genotype.{Fitness, Modification}
+import genetic.genotype.{Fitness, Join, Modification}
 import genetic.{OperatorSet, Population}
 
 import scala.collection.parallel.immutable.ParVector
 
-class ParallelGA extends SynchronousGA {
+/**
+  * Parallel implementation of SynchronousGA
+  */
+object ParallelGA extends SynchronousGA {
 
-  protected def evolve[G: Fitness : Semigroup : Modification, B]
+  /**
+    * Overridden implementation of parametrised loop with shared base parallel collection for each iteration
+    */
+  override protected def evolve[G: Fitness : Join : Modification, B]
   (population: Population[G], operators: genetic.OperatorSet)
   (start: B, until: B => Boolean, click: B => B): Population[G] = {
-    val parallelBase = ParVector.fill(population.size)(())
+    val parallelBase = ParVector.fill(population.size / 2)(())
 
     def loop(generation: Population[G], condition: B): Population[G] =
       if (until(condition)) operators match {
@@ -25,4 +30,11 @@ class ParallelGA extends SynchronousGA {
 
     loop(population, start)
   }
+
+  /**
+    * Single step of evolution of population with set of genetic operators
+    */
+  def evolutionStep[G: Fitness : Join : Modification](population: Population[G],
+                                                      operators: OperatorSet): Population[G] =
+    evolve[G, Boolean](population, operators)(true, identity, _ => false)
 }

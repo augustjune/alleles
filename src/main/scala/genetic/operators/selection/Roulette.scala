@@ -38,13 +38,13 @@ object Roulette extends Selection {
     for (_ <- (1 to population.size / 2).toList) yield (chooseByPriorities(sectors), chooseByPriorities(sectors))
   }
 
-  private def prioritize[G: Fitness](population: Population[G]): Population[(G, Int)] = {
+  private def prioritize[G: Fitness](population: Population[G]): Population[(G, Double)] = {
     val fitnesses = population.map(g => g -> Fitness(g))
     val largestFitness = fitnesses.map(_._2).max
     fitnesses.map { case (g, f) => g -> (largestFitness - f) }
   }
 
-  private def chooseByPriorities[G](popWithPriorities: Population[(G, Int)]) =
+  private def chooseByPriorities[G](popWithPriorities: Population[(G, Double)]) =
     RRandom.chooseByPriorities(popWithPriorities)
 
 }

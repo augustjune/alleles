@@ -1,8 +1,18 @@
 package genetic.operators.mutation
 
+import genetic.RRandom
 import genetic.genotype.Modification
 import genetic.operators.Mutation
-import genetic.{Population, RRandom}
+
+/**
+  * Technique of mutation, which affects individual genotype with probability `individualChance` and
+  * continues to recursively modify current individual with chance of each next modification `repetitiveChance`
+  *
+  * Probability of n-th modification is p(n) = individualChance * repetetiveChance^^(n)
+  *
+  * @param individualChance Probability of first modification
+  * @param repetitiveChance Probability of each next modification
+  */
 
 case class RepetitiveMutation(individualChance: Double, repetitiveChance: Double) extends Mutation {
   def single[G: Modification](g: G): G =

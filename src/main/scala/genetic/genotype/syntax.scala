@@ -1,10 +1,18 @@
 package genetic.genotype
 
 import genetic.Population
+import genetic.collections.IterablePair
 
+/**
+  * Set of implicit value classes, which enable neat type classes' function extensions
+  */
 object syntax {
   implicit class FitnessObj[G](private val g: G) extends AnyVal {
-    def fitness(implicit f: Fitness[G]): Int = f.value(g)
+    def fitness(implicit f: Fitness[G]): Double = f.value(g)
+  }
+
+  implicit class JoinObj[G](private val g: G) extends AnyVal {
+    def ><(other: G)(implicit join: Join[G]): IterablePair[G] = join.cross(g, other)
   }
 
   implicit class RandomChangeObj[G](private val g: G) extends AnyVal {
@@ -15,4 +23,3 @@ object syntax {
     def populate(n: Int): Population[G] = Scheme.fromOne(g).make(n)
   }
 }
-

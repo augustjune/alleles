@@ -1,33 +1,21 @@
-import akka.stream.ActorMaterializer
-import cats.Semigroup
-import genetic.engines.streaming.StreamingGA
-import genetic.engines.sync.{BasicGA, ParallelGA}
-import genetic.genotype.{Fitness, Modification}
+import genetic.genotype.{Fitness, Join, Modification}
 import genetic.operators._
 
-import scala.concurrent.ExecutionContext
-
-
-
 package object genetic {
+  /**
+    * Bag of individual genotypes used in genetic algorithm
+    */
   type Population[+A] = Seq[A]
-
-  /*object Population {
-    def of[G: Scheme](n: Int): Population[G] = Scheme.make(n)
-  }*/
 
   implicit class PopulationExtension[A](population: Population[A]) {
     def best(implicit f: Fitness[A]): A = population.minBy(f.value)
   }
 
+  /**
+    * Set of genetic operators which defines generation cycle
+    */
   case class OperatorSet(selection: Selection, crossover: Crossover, mutation: Mutation) {
-    def generation[G: Fitness : Semigroup : Modification](population: Population[G]): Population[G] =
+    def generationCycle[G: Fitness : Join : Modification](population: Population[G]): Population[G] =
       mutation.generation(crossover.generation(selection.generation(population)))
-  }
-
-  object GeneticAlgorithm extends BasicGA {
-    val par: ParallelGA = new ParallelGA()
-
-    def stream(implicit mat: ActorMaterializer, ex: ExecutionContext): StreamingGA = new StreamingGA()
   }
 }
