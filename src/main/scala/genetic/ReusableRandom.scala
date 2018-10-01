@@ -1,5 +1,8 @@
 package genetic
 
+/**
+  * Implementation of scala.util.Random with available seed lookup for further reusage
+  */
 class ReusableRandom(private var s: Long) extends util.Random(s) {
   def seed: Long = s
 
@@ -11,7 +14,7 @@ class ReusableRandom(private var s: Long) extends util.Random(s) {
   /**
     * Returns a random boolean with custom probability
     *
-    * @param chance probability of true
+    * @param chance probability of `true` value
     */
   def shot(chance: Double): Boolean = nextDouble() < chance
 

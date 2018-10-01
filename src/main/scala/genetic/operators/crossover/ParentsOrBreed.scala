@@ -1,11 +1,17 @@
 package genetic.operators.crossover
 
-import genetic.genotype.syntax.JoinObj
 import genetic.RRandom
 import genetic.collections.IterablePair
 import genetic.genotype.Join
+import genetic.genotype.syntax.JoinObj
 import genetic.operators.Crossover
 
+/**
+  * Technique of combining genetic information of two parents into new offspring
+  * with the probability of keeping the original genotypes in population without mixing
+  *
+  * @param parentChance Probability of original genotypes to be chosen to the next population
+  */
 case class ParentsOrBreed(parentChance: Double) extends Crossover {
   def single[G: Join](parents: (G, G)): IterablePair[G] = parents match {
     case (p1, p2) =>

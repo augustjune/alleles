@@ -11,7 +11,7 @@ import genetic.operators.mutation.RepetitiveMutation
 import genetic.operators.selection.Tournament
 import genetic.{OperatorSet, Population, PopulationExtension}
 import genetic.engines.streaming._
-import genetic.engines.sync.{BasicGA, ParallelGA, SynchronousGA}
+import genetic.engines.sync.{SequentialGA, ParallelGA, SynchronousGA}
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor}
@@ -59,7 +59,7 @@ object Compare extends App {
     def par: SynchronousGA = ParallelGA
 
     def evolutionStep[G: Fitness : Join : Modification](population: Population[G], operators: OperatorSet): Population[G] =
-      BasicGA.evolutionStep(population, operators)
+      SequentialGA.evolutionStep(population, operators)
   }
 
   measureN(List(
