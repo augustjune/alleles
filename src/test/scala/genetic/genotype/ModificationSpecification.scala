@@ -2,7 +2,6 @@ package genetic.genotype
 
 import genetic.RRandom
 import genetic.genotype.syntax._
-import org.scalacheck
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Prop._
 import org.scalacheck.{Gen, Properties}
@@ -19,25 +18,31 @@ import org.scalacheck.{Gen, Properties}
   * def modify5(g: G) = modify(modify(modify(modify(modify(g)))))
   * modify5(g) != modify5(g)
   */
-class ModificationSpecification[G: Modification: scalacheck.Gen] extends Properties("Modification laws") {
-  val gen = implicitly[Gen[G]]
+object ModificationSpecification extends Properties("Modification laws") {
 
-  property("Modified instance does not equals to original one") = forAll(gen) { g: G =>
-    g.mutated != g
+  def specifyFor[G](modification: Modification[G], gen: Gen[G]) = {
+    implicit val m = modification
+
+    property("Modified instance does not equals to original one") = forAll(gen) { g: G =>
+      g.mutated != g
+    }
+
+    property("After a certain number of modification the same input produces different outputs") =
+      forAll(gen) { g: G =>
+        def modify5(g: G) = g.mutated.mutated.mutated.mutated.mutated
+
+        modify5(g) != modify5(g)
+      }
+
   }
 
-  property("After a certain number of modification the same input produces different outputs") =
-    forAll(gen) { g: G =>
-      def modify5(g: G) = g.mutated.mutated.mutated.mutated.mutated
+  object StringModification {
+    private val buffer = "The quick brown fox jumps over the lazy dog"
+    val gen = Gen.nonEmptyListOf[Char](arbChar.arbitrary).map(_.mkString)
+    val modification: Modification[String] =
+      (g: String) => g.updated(RRandom.nextInt(g.length), buffer(RRandom.nextInt(buffer.length)))
+  }
 
-      modify5(g) != modify5(g)
-    }
-}
+  specifyFor(StringModification.modification, StringModification.gen)
 
-object O extends App {
-  val buffer = "The quick brown fox jumps over the lazy dog"
-  implicit val modification: Modification[String] =
-    (g: String) => g.updated(RRandom.nextInt(g.length), buffer(RRandom.nextInt(buffer.length)))
-  val nonEmptyStringGen = Gen.nonEmptyListOf[Char](arbChar.arbitrary).map(_.mkString)
-  new ModificationSpecification[String]()(modification, nonEmptyStringGen)
 }
