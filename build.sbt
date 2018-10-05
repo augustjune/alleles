@@ -1,4 +1,4 @@
-name := "allele"
+name := "alleles"
 
 version := "0.1"
 
