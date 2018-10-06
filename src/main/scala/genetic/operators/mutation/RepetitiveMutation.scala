@@ -15,6 +15,8 @@ import genetic.operators.Mutation
   */
 
 case class RepetitiveMutation(individualChance: Double, repetitiveChance: Double) extends Mutation {
+  require(repetitiveChance < 1)
+
   def single[G: Modification](g: G): G =
     if (RRandom.shot(individualChance)) modifyGenotype(g)
     else g
