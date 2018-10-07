@@ -25,13 +25,13 @@ import genetic.{Population, RRandom}
   * Repeat rounds until new population is not filled
   */
 object Tournament {
-  def apply[G: Fitness](roundSize: Int, fittestChance: Double): Tournament = new Tournament(roundSize, fittestChance)
+  def apply(roundSize: Int, fittestChance: Double): Tournament = new Tournament(roundSize, fittestChance)
 
   /*
     OptimizationPoint: create separate class for Tournament with chance
                       1 with overridden apply which takes only min value
  */
-  def apply[G: Fitness](roundSize: Int): Tournament = new Tournament(roundSize, 1)
+  def apply(roundSize: Int): Tournament = new Tournament(roundSize, 1)
 }
 
 class Tournament(roundSize: Int, fittestChance: Double) extends Selection {
@@ -52,4 +52,5 @@ class Tournament(roundSize: Int, fittestChance: Double) extends Selection {
   def generation[G: Fitness](pop: Population[G]): Population[(G, G)] =
     for (_ <- (1 to pop.size / 2).toList) yield single(pop)
 
+  override def toString: String = s"Tournament(roundSize: $roundSize, fittestChance: $fittestChance)"
 }
