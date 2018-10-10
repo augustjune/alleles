@@ -6,23 +6,22 @@ import genetic.operators.mutation.RepetitiveMutation
 import genetic.operators.{Crossover, Mutation, Selection}
 import genetic.operators.selection._
 import genetic.{GenotypeImplicits, OperatorSet, Population}
-import org.scalacheck.{Gen, Properties}
+import org.scalacheck.{Gen, Prop, Properties}
 import org.scalacheck.Prop._
 import org.scalacheck.Gen._
-import org.scalacheck.Arbitrary._
+
+import concurrent.duration._
 
 abstract class SynchronousGAProps(name: String) extends Properties(name + " with SynchronousGA props") {
   def implGen: Gen[SynchronousGA]
 
-  type G = String
-  val implicits = GenotypeImplicits[G]
+  type G
+
+  val implicits: GenotypeImplicits[G]
 
   import implicits._
 
-  def popGen: Gen[Population[G]] = for {
-    head <- alphaStr
-    tail <- nonEmptyListOf(alphaStr)
-  } yield head +: tail
+  def popGen: Gen[Population[G]] = smallNumberGen.map(Scheme.make(_))
 
   def operatorsGen: Gen[OperatorSet] = for {
     selection <- selectionGen
@@ -30,7 +29,7 @@ abstract class SynchronousGAProps(name: String) extends Properties(name + " with
     mutation <- mutationGen
   } yield OperatorSet(selection, crossover, mutation)
 
-  def selectionGen: Gen[Selection] = oneOf(tournamentGen, rouletteGen)
+  def selectionGen: Gen[Selection] = tournamentGen //oneOf(tournamentGen, rouletteGen)
 
   def tournamentGen: Gen[Tournament] = sized(n => choose(1, math.max(1, n))).map(Tournament(_))
 
@@ -41,21 +40,50 @@ abstract class SynchronousGAProps(name: String) extends Properties(name + " with
   def mutationGen: Gen[Mutation] = for {
     indChance <- choose(0.0, 1.0)
     repChance <- choose(0.0, 1.0)
-  } yield RepetitiveMutation(0.0, repChance)
+  } yield RepetitiveMutation(indChance, repChance)
 
-  def iterationNumberGen: Gen[Int] = choose(1, 100)
+  def smallNumberGen: Gen[Int] = choose(1, 50)
 
-  property("Evolution holds population size") = forAll(implGen, popGen :| "Population", operatorsGen, iterationNumberGen :| "IterationsN") {
+  def smallDurationGen: Gen[Duration] = choose(10, 1000).map(x => Duration.fromNanos(x * 1000000))
+
+
+  property("Evolution holds population size") = forAll(implGen, popGen :| "Population", operatorsGen, smallNumberGen :| "IterationsN") {
     (ga, population, operators, iterations) =>
-      val evolvedSize = ga.evolve(population, operators, iterations).length
       val originalSize = population.length
-      evolvedSize == originalSize || evolvedSize == originalSize - 1
+      val evolvedSize = ga.evolve(population, operators, iterations).length
+      s"Original size: $originalSize, evolvedSize: $evolvedSize" |: Prop.atLeastOne(
+        evolvedSize ?= originalSize,
+        evolvedSize ?= originalSize - 1
+      )
   }
 
-  property("Average fitness is better or same") = forAll(implGen, popGen :| "Population", operatorsGen, iterationNumberGen :| "IterationsN") {
-    (ga, originalPop, operators, iterations) =>
-      def averageFitness(pop: Population[G]): Double = pop.map(Fitness(_)).sum / pop.size
-      val evolved = ga.evolve(originalPop, operators, iterations)
-      averageFitness(evolved) <= averageFitness(originalPop)
+  property("Genetic algorithms creates population of proper size") =
+    forAll(implGen, oneOf[Int](10, 20, 30, 40, 50), operatorsGen, smallNumberGen) {
+      (ga, popSize, operators, iterations) =>
+        val evolved = ga.createAndEvolve(popSize, operators, iterations)
+        evolved.length ?= popSize
+    }
+
+  property("Evolution provides to better population") = forAll(implGen, popGen, crossoverGen, smallNumberGen :| "IterationsN") {
+    (ga, originalPop, crossover, iterations) =>
+      def averageFitness(pop: Population[G]) = if (pop.isEmpty) 0.0 else pop.map(Fitness(_)).sum / pop.length
+
+      val ops = OperatorSet(Tournament(originalPop.size + 1 / 2), crossover, RepetitiveMutation(0.0, 0.0))
+      val evolved = ga.evolve(originalPop, ops, iterations)
+      val evolvedAvg = averageFitness(evolved)
+      val originalAvg = averageFitness(originalPop)
+
+      s"Original population: $originalPop \nEvolved population: $evolved\n" +
+        s"Original average fitness: $originalAvg; Evolved average fitness: $evolvedAvg" |: (evolvedAvg <= originalAvg)
   }
+
+  val breakingTimeMillis = 100
+  property("Evolution ends in certain time") = forAll(implGen, popGen, operatorsGen, smallDurationGen) {
+    (ga, originalPop, operators, duration) =>
+      within(duration.toMillis + breakingTimeMillis) {
+        ga.evolve(originalPop, operators, duration)
+        passed
+      }
+  }
+
 }
