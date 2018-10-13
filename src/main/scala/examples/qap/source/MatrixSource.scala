@@ -1,7 +1,15 @@
-package examples.matrix.matrices
+package examples.qap.source
 
 import scala.io.Source.{fromFile, fromURL}
 
+/**
+  * Format of matrices input:
+  * Number of facilities
+  *
+  * Range matrix
+  *
+  * Flow matrix
+  */
 class MatrixSource(source: String) {
   private val LINES_SEPARATION_COUNT = 1
   private val VALUES_SEPARATOR = " "

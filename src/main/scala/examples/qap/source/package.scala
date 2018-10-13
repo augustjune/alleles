@@ -1,6 +1,6 @@
-package examples.matrix
+package examples.qap
 
-package object matrices {
+package object source {
 
   class Matrix[V](values: Vector[Vector[V]]) extends ((Int, Int) => V) {
     def apply(row: Int, column: Int): V = values(row)(column)

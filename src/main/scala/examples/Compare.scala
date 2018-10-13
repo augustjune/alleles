@@ -3,7 +3,7 @@ package examples
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
-import examples.matrix.{MatrixImplicits, Permutation}
+import examples.qap.{PermutationOps, Permutation}
 import genetic.genotype.{Fitness, Join, Modification, Scheme}
 import genetic.genotype.syntax._
 import genetic.operators.crossover.ParentsOrOffspring
@@ -37,7 +37,7 @@ object Compare extends App {
     (System.currentTimeMillis() - start, res)
   }
 
-  val implicits = new MatrixImplicits("http://anjos.mgi.polymtl.ca/qaplib/data.d/had20.dat")
+  val implicits = new PermutationOps("http://anjos.mgi.polymtl.ca/qaplib/data.d/had20.dat")
 
   import implicits._
 
