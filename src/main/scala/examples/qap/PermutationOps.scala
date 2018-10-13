@@ -7,6 +7,9 @@ import genetic.genotype.{Fitness, Join, Modification, Scheme}
 class PermutationOps(matrixSource: String) {
   val (flow, range): (FlowMatrix, RangeMatrix) = new MatrixSource(matrixSource).toMatrices
 
+  /**
+    * Sum of the distances multiplied by the corresponding flows
+    */
   implicit val fitness: Fitness[Permutation] = (perm: Permutation) => {
     val locationMap: Map[Int, Int] = perm.zipWithIndex.toMap
 
@@ -16,6 +19,9 @@ class PermutationOps(matrixSource: String) {
     locationMap.foldLeft(0) { case (left, (loc, num)) => left + relationPrices(loc, num) }
   }
 
+  /**
+    * Single-point crossover with fixing violating permutations
+    */
   implicit val combinator: Join[Permutation] = (perm1: Permutation, perm2: Permutation) => {
     val pivot = RRandom.nextInt(perm1.size)
 
@@ -34,6 +40,9 @@ class PermutationOps(matrixSource: String) {
     fix(perm1.take(pivot) ++ perm2.drop(pivot))
   }
 
+  /**
+    * Switching two facilities' positions
+    */
   implicit val mutator: Modification[Permutation] = (perm: Permutation) => {
     def switchPair(n1: Int, n2: Int): Permutation = {
       val val1 = perm(n1)
@@ -43,5 +52,8 @@ class PermutationOps(matrixSource: String) {
     switchPair(RRandom.nextInt(perm.size), RRandom.nextInt(perm.size))
   }
 
+  /**
+    * Randomly created permutation, which fits to the flow and range matrices
+    */
   implicit val scheme: Scheme[Permutation] = Scheme.pure(() => RRandom.shuffle((0 until flow.size).toVector))
 }
