@@ -1,4 +1,4 @@
-package examples.matrix.matrices
+package examples.qap.source
 
 import scala.io.Source.{fromFile, fromURL}
 
