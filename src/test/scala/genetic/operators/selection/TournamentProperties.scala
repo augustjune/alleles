@@ -12,7 +12,7 @@ import org.scalacheck.Prop._
 object TournamentProperties extends SelectionProperties("Tournament props") {
   type G = Int
   val implGen: Gen[Tournament] = posNum[Int].map(Tournament(_))
-  val populationGen: Gen[Population[G]] = posNum[Int].flatMap(n => listOfN(n, arbitrary[Int]))
+  val populationGen: Gen[Population[G]] = posNum[Int].flatMap(n => listOfN(n, arbitrary[Int]).map(_.toVector))
 
   implicit val fitness: Fitness[G] = identity[G]
 

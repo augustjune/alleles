@@ -35,7 +35,7 @@ object Roulette extends Selection {
 
   def generation[G: Fitness](population: Population[G]): Population[(G, G)] = {
     val sectors = prioritize(population)
-    for (_ <- (1 to population.size / 2).toList) yield (chooseByPriorities(sectors), chooseByPriorities(sectors))
+    for (_ <- (1 to population.size / 2).toVector) yield (chooseByPriorities(sectors), chooseByPriorities(sectors))
   }
 
   private def prioritize[G: Fitness](population: Population[G]): Population[(G, Double)] = {

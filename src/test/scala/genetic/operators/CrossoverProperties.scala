@@ -17,7 +17,7 @@ abstract class CrossoverProperties(name: String) extends Properties(name + " wit
   def popOfPairsGen: Gen[Population[(G, G)]] = for {
     n <- posNum[Int]
     pop <- listOfN(n, gPairGen)
-  } yield pop
+  } yield pop.toVector
 
   property("Generation of joined individuals holds the same size") = forAll(popOfPairsGen, implGen) {
     (pop, implementation) => implementation.generation(pop).size == pop.size * 2

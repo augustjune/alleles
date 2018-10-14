@@ -16,7 +16,7 @@ abstract class MutationProperties(name: String) extends Properties(name + " with
   def populationGen: Gen[Population[G]] = for {
     n <- posNum[Int]
     pop <- listOfN(n, gGen)
-  } yield pop
+  } yield pop.toVector
 
   property("Generation of mutated individuals holds the same size") = forAll(implGen, populationGen) {
     (implementation, pop) => implementation.generation(pop).size == pop.size

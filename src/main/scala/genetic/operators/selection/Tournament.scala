@@ -50,7 +50,7 @@ class Tournament(roundSize: Int, fittestChance: Double) extends Selection {
     }
 
   def generation[G: Fitness](pop: Population[G]): Population[(G, G)] =
-    for (_ <- (1 to pop.size / 2).toList) yield single(pop)
+    for (_ <- (1 to pop.size / 2).toVector) yield single(pop)
 
   override def toString: String = s"Tournament(roundSize: $roundSize, fittestChance: $fittestChance)"
 }
