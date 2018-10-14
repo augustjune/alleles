@@ -5,7 +5,7 @@ package object genetic {
   /**
     * Bag of individual genotypes used in genetic algorithm
     */
-  type Population[+A] = Seq[A]
+  type Population[+A] = Vector[A]
 
   implicit class PopulationExtension[A](population: Population[A]) {
     def best(implicit f: Fitness[A]): A = population.minBy(f.value)

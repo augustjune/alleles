@@ -24,12 +24,12 @@ object ModificationSpecification extends Properties("Modification laws") {
     implicit val m = modification
 
     property("Modified instance does not equals to original one") = forAll(gen) { g: G =>
-      g.mutated != g
+      g.modified != g
     }
 
     property("After a certain number of modification the same input produces different outputs") =
       forAll(gen) { g: G =>
-        def modify5(g: G) = g.mutated.mutated.mutated.mutated.mutated
+        def modify5(g: G) = g.modified.modified.modified.modified.modified
 
         modify5(g) != modify5(g)
       }

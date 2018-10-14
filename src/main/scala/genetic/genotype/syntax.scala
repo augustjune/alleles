@@ -15,8 +15,8 @@ object syntax {
     def ><(other: G)(implicit join: Join[G]): IterablePair[G] = join.cross(g, other)
   }
 
-  implicit class RandomChangeObj[G](private val g: G) extends AnyVal {
-    def mutated(implicit c: Modification[G]): G = c.modify(g)
+  implicit class ModifiableObj[G](private val g: G) extends AnyVal {
+    def modified(implicit c: Modification[G]): G = c.modify(g)
   }
 
   implicit class SchemeObj[G](private val g: G) extends AnyVal {
