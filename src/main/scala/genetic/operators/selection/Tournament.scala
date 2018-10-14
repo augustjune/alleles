@@ -37,12 +37,8 @@ object Tournament {
 class Tournament(roundSize: Int, fittestChance: Double) extends Selection {
   def single[G: Fitness](pop: Population[G]): (G, G) = (choose(pop), choose(pop))
 
-  /*
-    OptimizationPoint: compose `shuffle` and `take` to one function to
-                       avoid unnecessary shuffling of the rest of sequence
-   */
   private def choose[G: Fitness](pop: Population[G]) =
-    RRandom.chooseByChances(assignChances(RRandom.shuffle(pop).take(roundSize)))
+    RRandom.chooseByChances(assignChances(RRandom.take(roundSize, pop)))
 
   private def assignChances[G: Fitness](sample: Population[G]): Population[(G, Double)] =
     sample.sortBy(Fitness(_)).zipWithIndex.map {

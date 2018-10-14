@@ -1,5 +1,7 @@
 package genetic
 
+import scala.collection.BitSet
+
 /**
   * Implementation of scala.util.Random with available seed lookup for further reusage
   */
@@ -9,6 +11,31 @@ class ReusableRandom(private var s: Long) extends util.Random(s) {
   override def setSeed(seed: Long): Unit = {
     s = seed
     super.setSeed(seed)
+  }
+
+
+  /**
+    * Takes `n` elements from original population in random order
+    * Replaces combination of `shuffle` and `take` functions,
+    * which doesn't perform redundant shuffling
+    */
+  def take[G](n: Int, original: Population[G]): Population[G] = {
+    val originalSize = original.size
+    if (n >= originalSize) RRandom.shuffle(original)
+    else {
+      val newPop = Vector.newBuilder[G]
+      var taken = 0
+      var takenIndexes = BitSet()
+      while (taken < n) {
+        val index = RRandom.nextInt(originalSize)
+        if (!takenIndexes.contains(index)) {
+          takenIndexes += index
+          newPop += original(index)
+          taken += 1
+        }
+      }
+      newPop.result()
+    }
   }
 
   /**
