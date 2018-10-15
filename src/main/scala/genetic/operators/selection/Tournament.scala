@@ -42,7 +42,7 @@ class Tournament(roundSize: Int, fittestChance: Double) extends Selection {
 
   private def assignChances[G](sample: Population[WithFitness[G]]): Population[(G, Double)] =
     sample.sortBy(_._2).zipWithIndex.map {
-      case ((x, fit), i) => x -> fittestChance * math.pow(1 - fittestChance, i)
+      case ((x, _), i) => x -> fittestChance * math.pow(1 - fittestChance, i)
     }
 
   def generation[G](pop: Population[WithFitness[G]]): Population[(G, G)] =

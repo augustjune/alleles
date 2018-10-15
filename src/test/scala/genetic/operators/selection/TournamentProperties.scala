@@ -1,6 +1,6 @@
 package genetic.operators.selection
 
-import genetic.Population
+import genetic.{Population, PopulationExtension}
 import genetic.genotype.Fitness
 import genetic.genotype.syntax._
 import genetic.operators.SelectionProperties
@@ -15,8 +15,7 @@ object TournamentProperties extends SelectionProperties("Tournament props") {
   val populationGen: Gen[Population[(G, Double)]] = for {
     n <- posNum[Int]
     pop <- listOfN(n, arbitrary[Int])
-    g <- pop.toVector
-  } yield g -> Fitness(g)
+  } yield pop.toVector.withFitnesses
 
   implicit val fitness: Fitness[G] = identity[G]
 
