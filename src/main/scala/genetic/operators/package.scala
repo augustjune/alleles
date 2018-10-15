@@ -9,9 +9,11 @@ package object operators {
     * genomes from a population for later breeding
     */
   trait Selection extends {
-    def single[G: Fitness](population: Population[G]): (G, G)
+    type WithFitness[A] = (A, Double)
 
-    def generation[G: Fitness](population: Population[G]): Population[(G, G)]
+    def single[G](population: Population[WithFitness[G]]): (G, G)
+
+    def generation[G](population: Population[WithFitness[G]]): Population[(G, G)]
   }
 
   /**

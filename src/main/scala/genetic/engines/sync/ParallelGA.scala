@@ -22,7 +22,7 @@ object ParallelGA extends SynchronousGA {
       if (until(condition)) operators match {
         case OperatorSet(selection, crossover, mutation) =>
           loop(parallelBase
-            .map(_ => selection.single(generation))
+            .map(_ => selection.single(generation.map(g => g -> Fitness(g))))
             .flatMap(crossover.single(_))
             .map(mutation.single(_))
             .seq, click(condition))
