@@ -1,6 +1,6 @@
 package genetic.operators.selection
 
-import genetic.Population
+import genetic.{Population, PopulationExtension}
 import genetic.genotype.Fitness
 import genetic.genotype.syntax._
 import genetic.operators.SelectionProperties
@@ -12,7 +12,10 @@ import org.scalacheck.Prop._
 object TournamentProperties extends SelectionProperties("Tournament props") {
   type G = Int
   val implGen: Gen[Tournament] = posNum[Int].map(Tournament(_))
-  val populationGen: Gen[Population[G]] = posNum[Int].flatMap(n => listOfN(n, arbitrary[Int]).map(_.toVector))
+  val populationGen: Gen[Population[(G, Double)]] = for {
+    n <- posNum[Int]
+    pop <- listOfN(n, arbitrary[Int])
+  } yield pop.toVector.withFitnesses
 
   implicit val fitness: Fitness[G] = identity[G]
 
@@ -20,7 +23,7 @@ object TournamentProperties extends SelectionProperties("Tournament props") {
     (pop, roundSize) =>
       val tournament = Tournament(roundSize)
       val (g1, g2) = tournament.single(pop)
-      val bestOfRound = pop.map(_.fitness).sorted.takeRight(roundSize).head
+      val bestOfRound = pop.map(_._2).sorted.takeRight(roundSize).head
       g1.fitness <= bestOfRound && g2.fitness <= bestOfRound
   }
 

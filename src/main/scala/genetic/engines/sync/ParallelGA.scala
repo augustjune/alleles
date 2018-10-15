@@ -1,8 +1,9 @@
 package genetic.engines.sync
 
 import genetic.genotype.{Fitness, Join, Modification}
-import genetic.{OperatorSet, Population}
+import genetic.{OperatorSet, Population, PopulationExtension}
 
+import scala.annotation.tailrec
 import scala.collection.parallel.immutable.ParVector
 
 /**
@@ -13,22 +14,28 @@ object ParallelGA extends SynchronousGA {
   /**
     * Overridden implementation of parametrised loop with shared base parallel collection for each iteration
     */
+  type ParPop[G] = ParVector[G]
+
   override protected def evolve[G: Fitness : Join : Modification, B]
   (population: Population[G], operators: genetic.OperatorSet)
   (start: B, until: B => Boolean, click: B => B): Population[G] = {
     val parallelBase = ParVector.fill(population.size / 2)(())
 
-    def loop(generation: Population[G], condition: B): Population[G] =
-      if (until(condition)) operators match {
+    @tailrec
+    def loop(parPop: ParVector[G], condition: B): ParVector[G] = {
+      val withFitness = parPop.map(g => g -> Fitness(g)).seq
+
+      if (!until(condition)) parPop
+      else operators match {
         case OperatorSet(selection, crossover, mutation) =>
           loop(parallelBase
-            .map(_ => selection.single(generation))
+            .map(_ => selection.single(withFitness))
             .flatMap(crossover.single(_))
-            .map(mutation.single(_))
-            .seq, click(condition))
-      } else generation
+            .map(mutation.single(_)), click(condition))
+      }
+    }
 
-    loop(population, start)
+    loop(population.par, start).seq
   }
 
   /**

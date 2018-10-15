@@ -9,6 +9,10 @@ package object genetic {
 
   implicit class PopulationExtension[A](population: Population[A]) {
     def best(implicit f: Fitness[A]): A = population.minBy(f.value)
+
+    def withFitnesses(implicit f: Fitness[A]): Population[(A, Double)] =
+      population.map(x => x -> f.value(x))
+
   }
 
   /**
@@ -16,6 +20,6 @@ package object genetic {
     */
   case class OperatorSet(selection: Selection, crossover: Crossover, mutation: Mutation) {
     def generationCycle[G: Fitness : Join : Modification](population: Population[G]): Population[G] =
-      mutation.generation(crossover.generation(selection.generation(population)))
+      mutation.generation(crossover.generation(selection.generation(population.withFitnesses)))
   }
 }
