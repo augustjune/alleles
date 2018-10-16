@@ -1,5 +1,6 @@
 package genetic.operators.crossover
 
+import genetic.GenotypeImplicits
 import genetic.collections.IterablePair
 import genetic.genotype.Join
 import genetic.genotype.syntax._
@@ -15,7 +16,7 @@ object ParentsOrOffspringProperties extends CrossoverProperties("ParentsOrOffspr
   val implGen: Gen[ParentsOrOffspring] = choose[Double](0.0, 1.0).map(ParentsOrOffspring(_))
   val gPairGen: Gen[(G, G)] = arbTuple2[String, String].arbitrary
 
-  implicit val join: Join[G] = (x: String, y: String) => x.take(x.length / 2) + y.drop(y.length / 2)
+  implicit val join: Join[G] = GenotypeImplicits[String].join
 
   property("Either parents or offspring") = forAll(gPairGen, implGen) { case ((p1, p2), crossover) =>
     val parents = IterablePair(p1, p2)

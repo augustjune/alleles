@@ -24,7 +24,7 @@ object GenotypeImplicits {
     */
   implicit val intImplicits: GenotypeImplicits[Int] = new GenotypeImplicits[Int] {
     val fitness: Fitness[Int] = x => math.abs(x.toDouble)
-    val join: Join[Int] = (x: Int, y: Int) => (x + y) / 2
+    val join: Join[Int] = Join.commutative { case (x, y) => (x + y) / 2 }
     val modification: Modification[Int] = _ + 1
     val scheme: Scheme[Int] = Scheme.pure(() => arbitrary[Int].sample.get)
   }
@@ -34,7 +34,7 @@ object GenotypeImplicits {
     */
   implicit val stringImplicits: GenotypeImplicits[String] = new GenotypeImplicits[String] {
     val fitness: Fitness[String] = _.length
-    val join: Join[String] = (x: String, y: String) => x.take(x.length / 2) + y.drop(y.length / 2)
+    val join: Join[String] = Join.singlePoint[String](x => x.splitAt(x.length / 2)) { case (x, y) => x + y }
 
     private val buffer = "The quick brown fox jumps over the lazy dog".replaceAll(" ", "")
     val modification: Modification[String] = { x =>
