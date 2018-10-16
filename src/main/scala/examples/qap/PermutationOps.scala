@@ -22,23 +22,23 @@ class PermutationOps(matrixSource: String) {
   /**
     * Single-point crossover with fixing violating permutations
     */
-  implicit val combinator: Join[Permutation] = (perm1: Permutation, perm2: Permutation) => {
-    val pivot = RRandom.nextInt(perm1.size)
 
-    def fix(locations: Vector[Int]): Vector[Int] = {
-      def replaceDuplicates(loc: List[Int], pool: List[Int]): List[Int] = loc match {
-        case h :: t =>
-          if (t.contains(h)) pool.head :: replaceDuplicates(t, pool.tail)
-          else h :: replaceDuplicates(t, pool)
-        case Nil => Nil
+  implicit val combinator: Join[Permutation] =
+    Join.samePoint[Permutation, Int]((p1, _) => RRandom.nextInt(p1.length), p => p.splitAt(_)) { case (x, y) =>
+      def fix(locations: Vector[Int]): Vector[Int] = {
+        def replaceDuplicates(loc: List[Int], pool: List[Int]): List[Int] = loc match {
+          case h :: t =>
+            if (t.contains(h)) pool.head :: replaceDuplicates(t, pool.tail)
+            else h :: replaceDuplicates(t, pool)
+          case Nil => Nil
+        }
+
+        val missing = locations.indices filterNot locations.contains
+        replaceDuplicates(locations.toList, missing.toList).toVector
       }
 
-      val missing = perm1.indices filterNot locations.contains
-      replaceDuplicates(locations.toList, missing.toList).toVector
+      fix(x ++ y)
     }
-
-    fix(perm1.take(pivot) ++ perm2.drop(pivot))
-  }
 
   /**
     * Switching two facilities' positions
