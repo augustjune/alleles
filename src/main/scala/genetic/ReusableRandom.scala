@@ -45,6 +45,8 @@ class ReusableRandom(private var s: Long) extends util.Random(s) {
     */
   def shot(chance: Double): Boolean = nextDouble() < chance
 
+
+  def chooseOne[A](seq: Seq[A]): A = seq(nextInt(seq.length))
   /**
     * Returns a value from the `pool` chosen by corresponding priority
     *
