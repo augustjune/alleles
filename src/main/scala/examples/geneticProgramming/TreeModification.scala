@@ -1,6 +1,5 @@
 package examples.geneticProgramming
 
-import examples.geneticProgramming.Tree._
 import genetic.RRandom
 import genetic.genotype.Modification
 import lazyOr._
