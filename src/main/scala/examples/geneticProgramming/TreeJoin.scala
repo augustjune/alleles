@@ -29,7 +29,7 @@ object TreeJoin extends Join[FunTree] {
       (ap(other, b), a) >|| (ap(a, other), b) >|| insert(a, other).mapFirst(ap(_, b)) >|| insert(b, other).mapFirst(ap(a, _))
 
     base match {
-      case X | Y | Value(_) => (other, base)
+      case Variable(_) | Value(_) => (other, base)
       case Sin(a) => insert1(Sin, a)
       case Cos(a) => insert1(Cos, a)
       case Plus(a, b) => insert2(Plus, a, b)
@@ -47,7 +47,7 @@ object TreeJoin extends Join[FunTree] {
       insert(x, y) >|| crossPair(x, a).mapSecond(ap(_, b)) >|| crossPair(x, b).mapSecond(ap(a, _))
 
     y match {
-      case X | Y | Value(_) => insert(x, y)
+      case Variable(_) | Value(_) => insert(x, y)
       case Sin(a) => crossOne(Sin, a)
       case Cos(a) => crossOne(Cos, a)
       case Plus(a, b) => crossTwo(Plus, a, b)

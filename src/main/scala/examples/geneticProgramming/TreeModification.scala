@@ -6,7 +6,7 @@ import genetic.genotype.Modification
 import lazyOr._
 
 object TreeModification extends Modification[FunTree] {
-  private def randomLeaf(): FunTree = X >|| Y >|| Value((RRandom.nextDouble() - 0.5) * 100)
+  private def randomLeaf(): FunTree = Variable("x") >|| Variable("y") >|| Value((RRandom.nextDouble() - 0.5) * 100)
 
   private def randomNode(): FunTree =
     Sin(randomTree()) >|| Cos(randomTree()) >||
@@ -25,7 +25,7 @@ object TreeModification extends Modification[FunTree] {
     randomTree() >|| ap(modify(a), b) >|| ap(a, modify(b))
 
   def modify(t: FunTree): FunTree = t match {
-    case X | Y | Value(_) => randomTree()
+    case Variable(_) | Value(_) => randomTree()
     case Sin(a) => modify1(Sin, a)
     case Cos(a) => modify1(Sin, a)
     case Plus(a, b) => modify2(Plus, a, b)

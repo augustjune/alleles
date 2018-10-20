@@ -6,9 +6,7 @@ object Tree extends App {
 
   sealed trait FunTree
 
-  final case object X extends FunTree
-
-  final case object Y extends FunTree
+  final case class Variable(name: String) extends FunTree
 
   final case class Value(v: Double) extends FunTree
 
@@ -28,10 +26,12 @@ object Tree extends App {
     def eval(t: T): Double
   }
 
-  def calc(x: Double, y: Double): Calc[FunTree] = new Calc[FunTree] {
+  def calc(variables: Map[String, Double]): Calc[FunTree] = new Calc[FunTree] {
     def eval(t: FunTree): Double = t match {
-      case X => x
-      case Y => y
+      case Variable(name) => variables.get(name.toLowerCase()) match {
+        case Some(value) => value
+        case None => throw new RuntimeException(s"Unknown variable :'$name'")
+      }
       case Value(v) => v
       case Plus(a, b) => eval(a) + eval(b)
       case Minus(a, b) => eval(a) - eval(b)
