@@ -5,24 +5,24 @@ import genetic.RRandom
 import scala.language.implicitConversions
 
 package object lazyOr {
-  implicit def anyToLazyOr[A](a: => A): LazyOr[A] = NilOr >| a
+  implicit def anyToLazyOr[A](a: => A): LazyOr[A] = NilOr >|| a
 
-  implicit def lazyOrCall[A](or: LazyOr[A]): A = or.call()
+  implicit def lazyOrCall[A](or: LazyOr[A]): A = or.one()
 
   trait LazyOr[+T] {
-    def call(): T
+    def one(): T
 
-    def >|[U >: T](next: => U): LazyOr[U] = add(next)
+    def >||[U >: T](next: => U): LazyOr[U] = lor(next)
 
-    def add[U >: T](next: => U): LazyOr[U]
+    def lor[U >: T](next: => U): LazyOr[U]
 
     private[lazyOr] def call(idx: Int): T
   }
 
   private[lazyOr] class LazyOrCons[+T](element: => T, tail: LazyOr[T], size: Int) extends LazyOr[T] {
-    def call(): T = call(RRandom.nextInt(size))
+    def one(): T = call(RRandom.nextInt(size))
 
-    def add[U >: T](next: => U): LazyOrCons[U] = new LazyOrCons[U](next, this, size + 1)
+    def lor[U >: T](next: => U): LazyOrCons[U] = new LazyOrCons[U](next, this, size + 1)
 
     def call(idx: Int): T =
       if (idx == 0) element
@@ -30,11 +30,11 @@ package object lazyOr {
   }
 
   private[lazyOr] object NilOr extends LazyOr[Nothing] {
-    def call(): Nothing = call(0)
+    def one(): Nothing = call(0)
 
     def call(idx: Int): Nothing = throw new RuntimeException("There is nothing to call boi")
 
-    def add[A](next: => A): LazyOr[A] = new LazyOrCons[A](next, this, 1)
+    def lor[A](next: => A): LazyOr[A] = new LazyOrCons[A](next, this, 1)
   }
 
 }

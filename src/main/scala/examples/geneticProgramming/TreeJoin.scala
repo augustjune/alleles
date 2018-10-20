@@ -1,9 +1,9 @@
 package examples.geneticProgramming
 
 import examples.geneticProgramming.Tree._
-import genetic.RRandom
 import genetic.collections.IterablePair
 import genetic.genotype.Join
+import lazyOr._
 
 object TreeJoin extends Join[FunTree] {
 
@@ -19,17 +19,14 @@ object TreeJoin extends Join[FunTree] {
     def map[V](f: (T1, T2) => V): V = f(tuple._1, tuple._2)
   }
 
+
   // (new, left)
   def insert(base: FunTree, other: FunTree): (FunTree, FunTree) = {
     def insert1(ap: FunTree => FunTree, a: FunTree): (FunTree, FunTree) =
-      if (RRandom.nextBoolean()) (ap(other), a) else insert(a, other).mapFirst(ap)
+      (ap(other), a) >|| insert(a, other).mapFirst(ap)
 
-    def insert2(ap: (FunTree, FunTree) => FunTree, a: FunTree, b: FunTree): (FunTree, FunTree) = RRandom.nextInt(4) match {
-      case 0 => (ap(other, b), a)
-      case 1 => (ap(a, other), b)
-      case 2 => insert(a, other).mapFirst(ap(_, b))
-      case 3 => insert(b, other).mapFirst(Plus(a, _))
-    }
+    def insert2(ap: (FunTree, FunTree) => FunTree, a: FunTree, b: FunTree): (FunTree, FunTree) =
+      (ap(other, b), a) >|| (ap(a, other), b) >|| insert(a, other).mapFirst(ap(_, b)) >|| insert(b, other).mapFirst(ap(a, _))
 
     base match {
       case X | Y | Value(_) => (other, base)
@@ -44,14 +41,10 @@ object TreeJoin extends Join[FunTree] {
 
   def crossPair(x: FunTree, y: FunTree): (FunTree, FunTree) = {
     def crossOne(ap: FunTree => FunTree, a: FunTree) =
-      if (RRandom.nextBoolean()) insert(x, y) else crossPair(x, a).mapSecond(ap)
+      insert(x, y) >|| crossPair(x, a).mapSecond(ap)
 
     def crossTwo(ap: (FunTree, FunTree) => FunTree, a: FunTree, b: FunTree) =
-      RRandom.nextInt(3) match {
-        case 0 => insert(x, y)
-        case 1 => crossPair(x, a).mapSecond(ap(_, b))
-        case 2 => crossPair(x, b).mapSecond(ap(a, _))
-      }
+      insert(x, y) >|| crossPair(x, a).mapSecond(ap(_, b)) >|| crossPair(x, b).mapSecond(ap(a, _))
 
     y match {
       case X | Y | Value(_) => insert(x, y)

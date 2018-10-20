@@ -3,35 +3,26 @@ package examples.geneticProgramming
 import examples.geneticProgramming.Tree._
 import genetic.RRandom
 import genetic.genotype.Modification
+import lazyOr._
 
 object TreeModification extends Modification[FunTree] {
-  private def randomLeaf(): FunTree = RRandom.nextInt(3) match {
-    case 0 => X
-    case 1 => Y
-    case 2 => Value(RRandom.nextDouble() * 100)
-  }
+  private def randomLeaf(): FunTree = X >|| Y >|| Value((RRandom.nextDouble() - 0.5) * 100)
 
-  private def randomNode(): FunTree = RRandom.nextInt(6) match {
-    case 0 => Sin(randomTree())
-    case 1 => Cos(randomTree())
-    case 2 => Plus(randomTree(), randomTree())
-    case 3 => Minus(randomTree(), randomTree())
-    case 4 => Multiply(randomTree(), randomTree())
-    case 5 => Divide(randomTree(), randomTree())
-  }
+  private def randomNode(): FunTree =
+    Sin(randomTree()) >|| Cos(randomTree()) >||
+      Plus(randomTree(), randomTree()) >||
+      Minus(randomTree(), randomTree()) >||
+      Multiply(randomTree(), randomTree()) >||
+      Divide(randomTree(), randomTree())
 
   private def randomTree(): FunTree =
-    if (RRandom.shot(0.5)) randomLeaf()
-    else randomNode()
+    randomLeaf() >|| randomNode()
 
   private def modify1(ap: FunTree => FunTree, arg: FunTree): FunTree =
-    if (RRandom.shot(0.5)) randomTree() else ap(modify(arg))
+    randomTree() >|| ap(modify(arg))
 
-  private def modify2(ap: (FunTree, FunTree) => FunTree, a: FunTree, b: FunTree): FunTree = RRandom.nextInt(3) match {
-    case 0 => randomTree()
-    case 1 => ap(modify(a), b)
-    case 2 => ap(a, modify(b))
-  }
+  private def modify2(ap: (FunTree, FunTree) => FunTree, a: FunTree, b: FunTree): FunTree =
+    randomTree() >|| ap(modify(a), b) >|| ap(a, modify(b))
 
   def modify(t: FunTree): FunTree = t match {
     case X | Y | Value(_) => randomTree()
