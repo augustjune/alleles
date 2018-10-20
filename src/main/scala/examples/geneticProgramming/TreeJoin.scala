@@ -1,6 +1,5 @@
 package examples.geneticProgramming
 
-import examples.geneticProgramming.Tree._
 import genetic.collections.IterablePair
 import genetic.genotype.Join
 import lazyOr._
