@@ -6,19 +6,6 @@ import lazyOr._
 
 object TreeJoin extends Join[FunTree] {
 
-  implicit class MapTuple[T1, T2](private val tuple: (T1, T2)) extends AnyVal {
-    def mapFirst[V](f: T1 => V): (V, T2) = tuple match {
-      case (x, y) => (f(x), y)
-    }
-
-    def mapSecond[V](f: T2 => V): (T1, V) = tuple match {
-      case (x, y) => (x, f(y))
-    }
-
-    def map[V](f: (T1, T2) => V): V = f(tuple._1, tuple._2)
-  }
-
-
   // (new, left)
   def insert(base: FunTree, other: FunTree): (FunTree, FunTree) = {
     def insert1(ap: FunTree => FunTree, a: FunTree): (FunTree, FunTree) =
@@ -39,6 +26,7 @@ object TreeJoin extends Join[FunTree] {
   }
 
   def crossPair(x: FunTree, y: FunTree): (FunTree, FunTree) = {
+
     def crossOne(ap: FunTree => FunTree, a: FunTree) =
       insert(x, y) >|| crossPair(x, a).mapSecond(ap)
 
@@ -47,12 +35,12 @@ object TreeJoin extends Join[FunTree] {
 
     y match {
       case Variable(_) | Value(_) => insert(x, y)
-      case Sin(a) => crossOne(Sin, a)
-      case Cos(a) => crossOne(Cos, a)
-      case Plus(a, b) => crossTwo(Plus, a, b)
-      case Minus(a, b) => crossTwo(Minus, a, b)
-      case Multiply(a, b) => crossTwo(Multiply, a, b)
-      case Divide(a, b) => crossTwo(Divide, a, b)
+      case Sin(a) => insert(x, y) >|| crossPair(x, a).mapSecond(Sin)// crossOne(Sin, a)
+      case Cos(a) => insert(x, y) >|| crossPair(x, a).mapSecond(Cos)
+      case Plus(a, b) => insert(x,y) >|| crossPair(x, a).mapSecond(Plus(_, a)) >|| crossPair(x, b).mapSecond(Plus(a, _))   // crossTwo(Plus, a, b)
+      case Minus(a, b) => insert(x,y) >|| crossPair(x, a).mapSecond(Minus(_, a)) >|| crossPair(x, b).mapSecond(Minus(a, _))
+      case Multiply(a, b) => insert(x,y) >|| crossPair(x, a).mapSecond(Multiply(_, a)) >|| crossPair(x, b).mapSecond(Multiply(a, _))
+      case Divide(a, b) => insert(x,y) >|| crossPair(x, a).mapSecond(Divide(_, a)) >|| crossPair(x, b).mapSecond(Divide(a, _))
     }
   }
 
