@@ -23,13 +23,5 @@ object TreeModification extends Modification[FunTree] {
   private def modify2(ap: (FunTree, FunTree) => FunTree, a: FunTree, b: FunTree): FunTree =
     randomTree() >|| ap(modify(a), b) >|| ap(a, modify(b))
 
-  def modify(t: FunTree): FunTree = t match {
-    case Variable(_) | Value(_) => randomTree()
-    case Sin(a) => modify1(Sin, a)
-    case Cos(a) => modify1(Sin, a)
-    case Plus(a, b) => modify2(Plus, a, b)
-    case Minus(a, b) => modify2(Minus, a, b)
-    case Multiply(a, b) => modify2(Multiply, a, b)
-    case Divide(a, b) => modify2(Divide, a, b)
-  }
+  def modify(t: FunTree): FunTree = t.insert(randomTree())._1
 }
