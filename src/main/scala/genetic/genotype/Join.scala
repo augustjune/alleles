@@ -11,7 +11,10 @@ trait Join[G] {
 }
 
 object Join {
-  def pair[G](combine: (G, G) => G): Join[G] = (a: G, b: G) => IterablePair(combine(a, b), combine(b, a))
+  /**
+    * Join which uses identical function for combining both elements of output pair
+    */
+  def symmetric[G](combine: (G, G) => G): Join[G] = (a: G, b: G) => IterablePair(combine(a, b), combine(b, a))
 
   /**
     * Commutative version of Join, which allows to avoid overhead while computing both combinations of input pair
@@ -19,6 +22,10 @@ object Join {
   def commutative[G](combine: (G, G) => G): Join[G] = (a: G, b: G) => {
     val res = combine(a, b)
     IterablePair(res, res)
+  }
+
+  def pair[G](cross: (G, G) => (G, G)): Join[G] = (a: G, b: G) => cross(a, b) match {
+    case (as, bs) => IterablePair(as, bs)
   }
 
   def singlePoint[G](split: G => (G, G))(combineParts: (G, G) => G): Join[G] = (x: G, y: G) => {
