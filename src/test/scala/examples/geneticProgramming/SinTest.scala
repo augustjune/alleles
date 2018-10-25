@@ -8,7 +8,7 @@ class SinTest extends FunSuite {
 
   test("Insert variable") {
     val variable = Variable("y")
-    val possibleResults: Set[(FunTree, FunTree)] = Set(
+    val possibleResults: Set[(GPTree, GPTree)] = Set(
       (variable, sin),
       (Sin(variable), "x")
     )
@@ -17,7 +17,7 @@ class SinTest extends FunSuite {
 
   test("Insert Cos") {
     val cos = Cos("y")
-    val possibleResults: Set[(FunTree, FunTree)] = Set(
+    val possibleResults: Set[(GPTree, GPTree)] = Set(
       (cos, sin),
       (Sin(cos), "x")
     )
@@ -27,7 +27,7 @@ class SinTest extends FunSuite {
   test("Insert Plus") {
     val cos = Cos("y")
     val plus = Plus(cos, "z")
-    val possibleResults: Set[(FunTree, FunTree)] = Set(
+    val possibleResults: Set[(GPTree, GPTree)] = Set(
       (plus, sin),
       (Sin(plus), "x")
     )
@@ -36,13 +36,13 @@ class SinTest extends FunSuite {
 
   test("Cross variable") {
     val variable = Variable("y")
-    val possibleResults: Set[(FunTree, FunTree)] = Set((Variable("y"), Sin("x")), (Sin("y"), Variable("x")))
+    val possibleResults: Set[(GPTree, GPTree)] = Set((Variable("y"), Sin("x")), (Sin("y"), Variable("x")))
     assert((1 to 100).map(_ => sin.cross(variable)).toSet == possibleResults)
   }
 
   test("Cross Cos") {
     val cos = Cos("y")
-    val possibleResults: Set[(FunTree, FunTree)] = Set(
+    val possibleResults: Set[(GPTree, GPTree)] = Set(
       (cos, sin),
       (Sin(cos), "x"),
       (Sin("y"), Cos("x")),
@@ -58,7 +58,7 @@ class SinTest extends FunSuite {
     val cos = Cos(y)
     val plus = Plus(cos, z)
 
-    val possibleResults: Set[(FunTree, FunTree)] = Set(
+    val possibleResults: Set[(GPTree, GPTree)] = Set(
       (plus, sin),
       (cos, Plus(sin, z)),
       (y, Plus(Cos(sin), z)),

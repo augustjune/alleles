@@ -5,8 +5,8 @@ trait Calc[T] {
 }
 
 object Calc {
-  def tree(variables: Map[String, Double]): Calc[FunTree] = new Calc[FunTree] {
-    def eval(t: FunTree): Double = t match {
+  def tree(variables: Map[String, Double]): Calc[GPTree] = new Calc[GPTree] {
+    def eval(t: GPTree): Double = t match {
       case Variable(name) => variables.get(name.toLowerCase()) match {
         case Some(value) => value
         case None => throw new RuntimeException(s"Unknown variable :'$name'")

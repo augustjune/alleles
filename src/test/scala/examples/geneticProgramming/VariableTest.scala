@@ -3,7 +3,7 @@ package examples.geneticProgramming
 import org.scalatest.FunSuite
 
 class VariableTest extends FunSuite {
-  val variable: FunTree = Variable("x")
+  val variable: GPTree = Variable("x")
 
   test("Insert") {
     val var1 = Variable("y")
@@ -18,14 +18,14 @@ class VariableTest extends FunSuite {
 
   test("Cross variable") {
     val var1 = Variable("y")
-    val possibleResults: Set[(FunTree, FunTree)] = Set((var1, variable))
+    val possibleResults: Set[(GPTree, GPTree)] = Set((var1, variable))
     assert((1 to 100).map(_ => variable.cross(var1)).toSet == possibleResults)
   }
 
   test("Cross Sin") {
     val var1 = Variable("y")
     val sin = Sin(var1)
-    val possibleResults: Set[(FunTree, FunTree)] = Set((sin, variable), (var1, Sin(variable)))
+    val possibleResults: Set[(GPTree, GPTree)] = Set((sin, variable), (var1, Sin(variable)))
     assert((1 to 100).map(_ => variable.cross(sin)).toSet == possibleResults)
   }
 
@@ -33,7 +33,7 @@ class VariableTest extends FunSuite {
     val var1 = Variable("y")
     val sin = Sin(var1)
     val plus = Plus(var1, sin)
-    val possibleResults: Set[(FunTree, FunTree)] = Set(
+    val possibleResults: Set[(GPTree, GPTree)] = Set(
       (plus, variable),
       (var1, Plus(variable, Sin(var1))),
       (sin, Plus(var1, variable)),

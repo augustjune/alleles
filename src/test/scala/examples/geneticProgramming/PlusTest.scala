@@ -10,7 +10,7 @@ class PlusTest extends FunSuite {
 
   test("Insert Variable") {
     val variable = Variable("z")
-    val possibleResults: Set[(FunTree, FunTree)] = Set(
+    val possibleResults: Set[(GPTree, GPTree)] = Set(
       (variable, plus),
       (Plus(variable, y), sin),
       (Plus(Sin(variable), y), x),
@@ -22,7 +22,7 @@ class PlusTest extends FunSuite {
   test("Insert Cos") {
     val variable = Variable("z")
     val cos = Cos(variable)
-    val possibleResults: Set[(FunTree, FunTree)] = Set(
+    val possibleResults: Set[(GPTree, GPTree)] = Set(
       (cos, plus),
       (Plus(cos, y), sin),
       (Plus(Sin(cos), y), x),
@@ -34,7 +34,7 @@ class PlusTest extends FunSuite {
   test("Insert Minus") {
     val minus = Minus(Variable("z"), Variable("zz"))
 
-    val possibleResults: Set[(FunTree, FunTree)] = Set(
+    val possibleResults: Set[(GPTree, GPTree)] = Set(
       (minus, plus),
       (Plus(minus, y), sin),
       (Plus(Sin(minus), y), x),
@@ -46,7 +46,7 @@ class PlusTest extends FunSuite {
   test("Cross Cos") {
     val variable = Variable("z")
     val cos = Cos(variable)
-    val possibleResults: Set[(FunTree, FunTree)] = Set(
+    val possibleResults: Set[(GPTree, GPTree)] = Set(
       (cos, plus),
       (Plus(cos, y), sin),
       (Plus(Sin(cos), y), x),
@@ -64,7 +64,7 @@ class PlusTest extends FunSuite {
     val var2 = Variable("zz")
     val minus = Minus(var1, var2)
 
-    val possibleResults: Set[(FunTree, FunTree)] = Set(
+    val possibleResults: Set[(GPTree, GPTree)] = Set(
       (minus, plus),
       (Plus(minus, y), sin),
       (Plus(Sin(minus), y), x),
