@@ -3,15 +3,16 @@ package examples
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
-import examples.qap.{PermutationOps, Permutation}
+import examples.qap.{Permutation, PermutationOps}
 import genetic.genotype.{Fitness, Join, Modification, Scheme}
 import genetic.genotype.syntax._
 import genetic.operators.crossover.ParentsOrOffspring
 import genetic.operators.mutation.RepetitiveMutation
 import genetic.operators.selection.Tournament
-import genetic.{OperatorSet, Population, PopulationExtension}
+import genetic.{OperatorSet, Population, PopulationExtension, RRandom}
 import genetic.engines.streaming._
-import genetic.engines.sync.{SequentialGA, ParallelGA, SynchronousGA}
+import genetic.engines.sync.{ParallelGA, SequentialGA, SynchronousGA}
+import genetic.rebasedGA.ParallelEvolutionEngine
 
 import scala.concurrent.duration.Duration
 import scala.concurrent.{Await, ExecutionContextExecutor}
@@ -20,6 +21,7 @@ object Compare extends App {
 
   def measureN[R: Fitness](list: List[(String, () => Population[R])]): Unit = {
     for ((label, popF) <- list) {
+      RRandom.setSeed(0L)
       println("Measuring: " + label)
       val (time, res) = measure(popF())
       printMeasure(label, time, res)
@@ -41,7 +43,7 @@ object Compare extends App {
 
   import implicits._
 
-  val initialPopSize = 5000
+  val initialPopSize = 10000
   val initialPop = Scheme.make(initialPopSize)
   val operators = OperatorSet(
     Tournament(20),
@@ -53,7 +55,7 @@ object Compare extends App {
   implicit val ex: ExecutionContextExecutor = system.dispatcher
 
 
-  val iterations = 5
+  val iterations = 15
 
   object GeneticAlgorithm extends SynchronousGA {
     def par: SynchronousGA = ParallelGA
@@ -63,10 +65,14 @@ object Compare extends App {
   }
 
   measureN(List(
-    ("Basic sync", () => GeneticAlgorithm.evolve(initialPop, operators, iterations)),
-    ("Parallel sync", () => GeneticAlgorithm.par.evolve(initialPop, operators, iterations)),
-    ("Streaming GA", () => Await.result(GeneticAlgorithm.par.stream.evolve(initialPop, operators, iterations).runWith(Sink.last[Population[Permutation]]), Duration.Inf))
+    ("Basic sync", () => SequentialGA.evolve(initialPop, operators, iterations)),
+    ("Basic sync2", () => SequentialGA.evolve(initialPop, operators, iterations)),
+    ("Parallel sync", () => ParallelGA.evolve(initialPop, operators, iterations)),
+    ("Streaming GA", () => Await.result(ParallelGA.stream.evolve(initialPop, operators, iterations + 1).runWith(Sink.last), Duration.Inf)),
+    ("Rebased Streaming Parallel GA", () => Await.result(ParallelEvolutionEngine.evolve(initialPop, operators).take(iterations + 1).runWith(Sink.last), Duration.Inf))
   ))
+
+  println(Await.result(ParallelEvolutionEngine.evolve(initialPop, operators).take(iterations + 1).map(_.take(10)).runWith(Sink.foreach(println)), Duration.Inf))
 
   system.terminate()
 }
