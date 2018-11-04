@@ -1,13 +1,18 @@
 package examples.funParamTuning
 
-import genetic.engines.sync.ParallelGA
-import genetic.genotype.{Fitness, Join, Modification, Scheme}
+import akka.actor.ActorSystem
+import akka.stream.ActorMaterializer
+import akka.stream.scaladsl.Sink
+import genetic.engines.{EvolutionOptions, GeneticAlgorithm}
 import genetic.genotype.syntax._
+import genetic.genotype.{Fitness, Join, Modification, Scheme}
 import genetic.operators.crossover.ParentsOrOffspring
 import genetic.operators.mutation.RepetitiveMutation
 import genetic.operators.selection.Tournament
 import genetic.{OperatorSet, Population, PopulationExtension, RRandom}
-import concurrent.duration._
+
+import scala.concurrent.Await
+import scala.concurrent.duration._
 
 object FunTuningRun extends App {
 
@@ -36,6 +41,9 @@ object FunTuningRun extends App {
 
   import Genotype._
 
+  implicit val system = ActorSystem()
+  implicit val materializer = ActorMaterializer()
+
   val secretFun = Fun(Vector(5, -2, 1, 4))
 
   def createValues(fun: Fun, n: Int): Map[Double, Double] = (for (_ <- 1 to n) yield {
@@ -47,7 +55,10 @@ object FunTuningRun extends App {
   implicit val fitness = calcFitness(inputValues)
   val operators = OperatorSet(Tournament(10), ParentsOrOffspring(0.25), RepetitiveMutation(0.7, 0.4))
 
-  val population: Population[Fun] = ParallelGA.createAndEvolve(100, operators, 10 seconds)
+  val population: Population[Fun] = Await.result(
+    GeneticAlgorithm.evolve(EvolutionOptions(100, operators)).takeWithin(10 seconds).runWith(Sink.last[Population[Fun]]),
+    Duration.Inf)
+
   val best: Fun = population.best
 
   println(s"Best cost f: " + best.fitness)
