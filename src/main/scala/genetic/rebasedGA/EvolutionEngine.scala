@@ -10,9 +10,9 @@ import scala.collection.parallel.immutable.ParVector
 import scala.concurrent.{ExecutionContext, Future}
 
 trait EvolutionEngine {
-  def evolve[G: Fitness : Join : Modification](initial: Population[G], operators: OperatorSet): Source[Population[G], NotUsed] =
-    Source.repeat(()).scan(initial) {
-      case (prev, _) => evolutionStep(evalFitnesses(prev), operators)
+  def evolve[G: Fitness : Join : Modification](options: EvolutionOptions[G]): Source[Population[G], NotUsed] =
+    Source.repeat(()).scan(options.initialPopulation) {
+      case (prev, _) => evolutionStep(evalFitnesses(prev), options.operators)
     }
 
   def evalFitnesses[G: Fitness](population: Population[G]): Population[(G, Double)]
@@ -21,6 +21,18 @@ trait EvolutionEngine {
                                             operators: OperatorSet): Population[G]
 
   def withBest = new BestTrackingEvolutionEngine(this)
+
+  def async(implicit executionContext: ExecutionContext): AsyncEvolutionEngine = new AsyncEvolutionEngine(this)
+}
+
+trait EvolutionOptions[G] {
+  def initialPopulation: Population[G]
+  def operators: OperatorSet
+}
+
+final case class ConcreteEO[G](initialPopulation: Population[G], operators: OperatorSet) extends EvolutionOptions[G]
+final case class LazyEO[G: Scheme](populationSize: Int, operators: OperatorSet) extends EvolutionOptions[G] {
+  def initialPopulation: Population[G] = Scheme.make(populationSize)
 }
 
 class AsyncEvolutionEngine(inner: EvolutionEngine)(implicit executionContext: ExecutionContext) {
@@ -40,8 +52,6 @@ object SeqEvolutionEngine extends EvolutionEngine {
   def par: ParallelEvolutionEngine = new ParallelEvolutionEngine
 
   def par(taskSupport: TaskSupport): ParallelEvolutionEngine = new ConfigurableParallelEvolutionEngine(taskSupport)
-
-  def async(implicit executionContext: ExecutionContext): AsyncEvolutionEngine = new AsyncEvolutionEngine(this)
 
   def evalFitnesses[G: Fitness](population: Population[G]): Population[(G, Double)] =
     population.map(g => g -> Fitness(g))
