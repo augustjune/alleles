@@ -1,14 +1,11 @@
 package genetic.rebasedGA
 
 import akka.NotUsed
-import akka.stream.ActorMaterializer
-import akka.stream.impl.SeqStage
-import akka.stream.scaladsl.{Sink, Source}
-import cats.{Apply, Semigroupal}
+import akka.stream.scaladsl.Source
 import genetic._
-import genetic.collections.IterablePair
 import genetic.genotype._
 
+import scala.collection.parallel.TaskSupport
 import scala.collection.parallel.immutable.ParVector
 import scala.concurrent.{ExecutionContext, Future}
 
@@ -26,19 +23,25 @@ trait EvolutionEngine {
   def withBest = new BestTrackingEvolutionEngine(this)
 }
 
-abstract class AsyncEvolutionEngine(inner: EvolutionEngine)(implicit executionContext: ExecutionContext) {
-
+class AsyncEvolutionEngine(inner: EvolutionEngine)(implicit executionContext: ExecutionContext) {
   def evolve[G: AsyncFitness : Join : Modification](initial: Population[G], operators: OperatorSet): Source[Population[G], NotUsed] = {
     Source.repeat(()).scanAsync(initial) {
       case (prev, _) => Future.traverse(prev) { g =>
-        for (a <- Future.successful(g); b <- AsyncFitness(g)) yield (a, b)
+        for {
+          a <- Future.successful(g)
+          b <- AsyncFitness(g)
+        } yield (a, b)
       }.map(inner.evolutionStep(_, operators))
     }
   }
 }
 
 object SeqEvolutionEngine extends EvolutionEngine {
-  def par: ParallelEvolutionEngine.type = ParallelEvolutionEngine
+  def par: ParallelEvolutionEngine = new ParallelEvolutionEngine
+
+  def par(taskSupport: TaskSupport): ParallelEvolutionEngine = new ConfigurableParallelEvolutionEngine(taskSupport)
+
+  def async(implicit executionContext: ExecutionContext): AsyncEvolutionEngine = new AsyncEvolutionEngine(this)
 
   def evalFitnesses[G: Fitness](population: Population[G]): Population[(G, Double)] =
     population.map(g => g -> Fitness(g))
@@ -52,7 +55,7 @@ object SeqEvolutionEngine extends EvolutionEngine {
     )
 }
 
-object ParallelEvolutionEngine extends EvolutionEngine {
+class ParallelEvolutionEngine extends EvolutionEngine {
   def evalFitnesses[G: Fitness](population: Population[G]): Population[(G, Double)] =
     population.par.map(g => g -> Fitness(g)).seq
 
@@ -64,6 +67,14 @@ object ParallelEvolutionEngine extends EvolutionEngine {
         .flatMap(crossover.single(_))
         .map(mutation.single(_))
         .seq
+  }
+}
+
+class ConfigurableParallelEvolutionEngine(taskSupport: TaskSupport) extends ParallelEvolutionEngine {
+  override def evalFitnesses[G: Fitness](population: Population[G]): Population[(G, Double)] = {
+    val parPop = population.par
+    parPop.tasksupport = taskSupport
+    parPop.map(g => g -> Fitness(g)).seq
   }
 }
 
