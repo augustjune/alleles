@@ -1,11 +1,16 @@
 package genetic.rebasedGA
 
 import akka.NotUsed
-import akka.stream.scaladsl.Source
+import akka.stream.ActorMaterializer
+import akka.stream.impl.SeqStage
+import akka.stream.scaladsl.{Sink, Source}
+import cats.{Apply, Semigroupal}
 import genetic._
+import genetic.collections.IterablePair
 import genetic.genotype._
 
 import scala.collection.parallel.immutable.ParVector
+import scala.concurrent.{ExecutionContext, Future}
 
 trait EvolutionEngine {
   def evolve[G: Fitness : Join : Modification](initial: Population[G], operators: OperatorSet): Source[Population[G], NotUsed] =
@@ -19,6 +24,17 @@ trait EvolutionEngine {
                                             operators: OperatorSet): Population[G]
 
   def withBest = new BestTrackingEvolutionEngine(this)
+}
+
+abstract class AsyncEvolutionEngine(inner: EvolutionEngine)(implicit executionContext: ExecutionContext) {
+
+  def evolve[G: AsyncFitness : Join : Modification](initial: Population[G], operators: OperatorSet): Source[Population[G], NotUsed] = {
+    Source.repeat(()).scanAsync(initial) {
+      case (prev, _) => Future.traverse(prev) { g =>
+        for (a <- Future.successful(g); b <- AsyncFitness(g)) yield (a, b)
+      }.map(inner.evolutionStep(_, operators))
+    }
+  }
 }
 
 object SeqEvolutionEngine extends EvolutionEngine {
