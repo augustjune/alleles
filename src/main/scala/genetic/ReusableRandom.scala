@@ -1,6 +1,8 @@
 package genetic
 
 import scala.collection.BitSet
+import scala.collection.generic.CanBuildFrom
+import scala.language.higherKinds
 
 /**
   * Implementation of scala.util.Random with available seed lookup for further reusage
@@ -19,22 +21,23 @@ class ReusableRandom(private var s: Long) extends util.Random(s) {
     * Replaces combination of `shuffle` and `take` functions,
     * which doesn't perform redundant shuffling
     */
-  def take[G](n: Int, original: Population[G]): Population[G] = {
-    val originalSize = original.size
-    if (n >= originalSize) RRandom.shuffle(original)
+  def take[G, Col[T] <: IndexedSeq[T]](n: Int, from: Col[G])(implicit cbf: CanBuildFrom[Col[G], G, Col[G]]): Col[G] = {
+    val originalSize = from.size
+    if (n >= originalSize) RRandom.shuffle(from)
     else {
-      val newPop = Vector.newBuilder[G]
+      val popBuilder = cbf()
+      popBuilder.sizeHint(n)
       var taken = 0
       var takenIndexes = BitSet()
       while (taken < n) {
         val index = RRandom.nextInt(originalSize)
         if (!takenIndexes.contains(index)) {
           takenIndexes += index
-          newPop += original(index)
+          popBuilder += from(index)
           taken += 1
         }
       }
-      newPop.result()
+      popBuilder.result()
     }
   }
 
