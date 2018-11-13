@@ -3,8 +3,8 @@ package genetic.engines
 import akka.NotUsed
 import akka.stream.scaladsl.Source
 import cats.Functor
-import genetic.engines.async.AsyncEvolutionEngine
-import genetic.engines.bestTracking.BestTrackingEvolutionEngine
+import genetic.engines.async.AsyncFitnessEvolution
+import genetic.engines.bestTracking.BestTrackingEvolution
 import genetic.genotype.{Fitness, Join, Modification}
 import genetic.{OperatorSet, Population}
 
@@ -15,9 +15,7 @@ trait EvolutionEngine {
     * Functor upon which Fitness value is going to be evaluated for each population,
     * with standard scala implementation by default
     */
-  val populationFunctor: Functor[Population] = new Functor[Population] {
-    def map[A, B](fa: Population[A])(f: A => B): Population[B] = fa.map(f)
-  }
+  val populationFunctor: Functor[Population]
 
   def evolve[G: Fitness : Join : Modification](options: EvolutionOptions[G]): Source[Population[G], NotUsed] =
     Source.repeat(()).scan(options.initialPopulation) {
@@ -30,8 +28,7 @@ trait EvolutionEngine {
   def evolutionStep[G: Join : Modification](scoredPop: Population[(G, Double)],
                                             operators: OperatorSet): Population[G]
 
-  def bestTracking = new BestTrackingEvolutionEngine(this)
+  def bestTracking: BestTrackingEvolution = new BestTrackingEvolution(this)
 
-  def async(implicit executionContext: ExecutionContext): AsyncEvolutionEngine = new AsyncEvolutionEngine(this)
+  def async(implicit executionContext: ExecutionContext): AsyncFitnessEvolution = new AsyncFitnessEvolution(this)
 }
-

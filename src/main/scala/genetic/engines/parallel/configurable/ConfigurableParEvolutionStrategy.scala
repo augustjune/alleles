@@ -1,12 +1,15 @@
-package genetic.engines.parallel
+package genetic.engines.parallel.configurable
 
-import genetic.genotype.{Join, Modification}
 import genetic.{OperatorSet, Population}
+import genetic.engines.EvolutionEngine
+import genetic.genotype.{Join, Modification}
 
 import scala.collection.parallel.TaskSupport
 import scala.collection.parallel.immutable.ParVector
 
-class ConfigurableParallelEvolutionEngine(taskSupport: TaskSupport) extends ParallelEvolutionEngine {
+trait ConfigurableParEvolutionStrategy extends EvolutionEngine {
+  val taskSupport: TaskSupport
+
   def evolutionStep[G: Join : Modification](scoredPop: Population[(G, Double)],
                                             operators: genetic.OperatorSet): Population[G] = operators match {
     case OperatorSet(selection, crossover, mutation) =>

@@ -6,7 +6,7 @@ import genetic.engines.EvolutionEngine
 import genetic.genotype.{Fitness, Join, Modification}
 import genetic.{OperatorSet, Population}
 
-class BestTrackingEvolutionEngine(inner: EvolutionEngine) {
+class BestTrackingEvolution(inner: EvolutionEngine) {
   def evolve[G: Fitness : Join : Modification](initial: Population[G],
                                                operators: OperatorSet): Source[PopulationWithBest[G], NotUsed] =
     Source.repeat(()).scan((initial, (initial.head, Double.MaxValue))) {

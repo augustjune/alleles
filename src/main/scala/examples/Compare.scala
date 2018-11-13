@@ -6,7 +6,7 @@ import akka.stream.scaladsl.Sink
 import examples.qap.PermutationOps
 import genetic.engines.{EvolutionEngine, EvolutionOptions, GeneticAlgorithm}
 import genetic.genotype.syntax._
-import genetic.genotype.{Fitness, Join, Modification, Scheme}
+import genetic.genotype.{Fitness, Scheme}
 import genetic.operators.crossover.ParentsOrOffspring
 import genetic.operators.mutation.RepetitiveMutation
 import genetic.operators.selection.Tournament
@@ -32,7 +32,7 @@ object Compare extends App {
 
   import implicits._
 
-  val initialPopSize = 10000
+  val initialPopSize = 50000
   val initialPop = Scheme.make(initialPopSize)
   val operators = OperatorSet(
     Tournament(20),
@@ -46,7 +46,7 @@ object Compare extends App {
   val options = EvolutionOptions(initialPop, operators)
 
 
-  val iterations = 15
+  val iterations = 20
 
   def measureN(list: List[(String, EvolutionEngine)]): Unit = {
     for ((label, engine) <- list) {
@@ -54,13 +54,17 @@ object Compare extends App {
       println("Measuring: " + label)
       val (time, res) = measure(Await.result(engine.evolve(options).take(iterations).runWith(Sink.last), Duration.Inf))
       printMeasure(label, time, res)
+      Thread.sleep(3000)
     }
   }
 
   measureN(List(
     "Basic sync" -> GeneticAlgorithm,
-    "Parallel sync" -> GeneticAlgorithm.par,
+    "Fully parallel" -> GeneticAlgorithm.par,
+    "Parallel fitness" -> GeneticAlgorithm.parFitness
   ))
+
+  println("End")
 
   system.terminate()
 }
