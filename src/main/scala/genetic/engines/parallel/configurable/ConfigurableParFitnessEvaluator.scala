@@ -2,21 +2,21 @@ package genetic.engines.parallel.configurable
 
 import cats.Functor
 import genetic.Population
-import genetic.engines.EvolutionEngine
+import genetic.engines.FitnessEvaluator
 
 import scala.collection.parallel.TaskSupport
 
-trait ConfigurableParFitnessEvaluator extends EvolutionEngine {
-  val taskSupport: TaskSupport
+trait ConfigurableParFitnessEvaluator extends FitnessEvaluator {
+  protected val configuration: TaskSupport
 
   /**
     * Functor upon which Fitness value is going to be evaluated for each population,
     * with standard scala implementation by default
     */
-  val populationFunctor: Functor[Population] = new Functor[Population] {
+  protected val populationFunctor: Functor[Population] = new Functor[Population] {
     def map[A, B](fa: Population[A])(f: A => B): Population[B] = {
       val parPop = fa.par
-      parPop.tasksupport = taskSupport
+      parPop.tasksupport = configuration
       parPop.map(f).seq
     }
   }
