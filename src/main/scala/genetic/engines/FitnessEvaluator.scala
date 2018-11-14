@@ -11,6 +11,6 @@ trait FitnessEvaluator {
     */
   protected val populationFunctor: Functor[Population]
 
-  def evalFitnesses[G: Fitness](population: Population[G]): Population[(G, Double)] =
+  def rate[G: Fitness](population: Population[G]): Population[Rated[G]] =
     populationFunctor.map(population)(g => g -> Fitness(g))
 }
