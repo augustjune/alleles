@@ -11,7 +11,7 @@ class BestTrackingEvolution(inner: EvolutionEngine) {
                                                operators: OperatorSet): Source[PopulationWithBest[G], NotUsed] =
     Source.repeat(()).scan((initial, (initial.head, Double.MaxValue))) {
       case ((prev, prevBest), _) =>
-        val withFitnesses = inner.evalFitnesses(prev)
-        (inner.evolutionStep(withFitnesses, operators), (prevBest +: withFitnesses).minBy(_._2))
+        val ratedPopulation = inner.rate(prev)
+        (inner.evolutionStep(ratedPopulation, operators), (prevBest +: ratedPopulation).minBy(_._2))
     }
 }
