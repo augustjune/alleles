@@ -2,24 +2,23 @@ package benchmarking
 
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.Sink
-import examples.qap.PermutationOps
+import benchmarking.Measuring.Measured
+import examples.qap.{Permutation, PermutationOps}
+import genetic._
 import genetic.engines.{EvolutionEngine, EvolutionOptions, GeneticAlgorithm}
-import genetic.genotype.{Fitness, Join, Modification, Scheme}
+import genetic.genotype.Scheme
 import genetic.genotype.syntax._
 import genetic.operators.crossover.ParentsOrOffspring
 import genetic.operators.mutation.RepetitiveMutation
 import genetic.operators.selection.Tournament
-import genetic._
 
-import scala.concurrent.duration.{Duration, FiniteDuration}
-import scala.concurrent.{Await, ExecutionContextExecutor}
+import scala.concurrent.duration._
+import scala.language.postfixOps
 
-object Compare extends App with Measuring {
+object Compare extends App {
 
-  def printMeasure[G: Fitness](label: String, time: Long, pop: Population[G]): Unit = {
-    println(f"$label%-30s : Time: $time with size: ${pop.size} and best candidate: ${pop.best.fitness}")
-  }
+  implicit val system = ActorSystem()
+  implicit val mat = ActorMaterializer()
 
   val implicits = new PermutationOps("http://anjos.mgi.polymtl.ca/qaplib/data.d/had20.dat")
 
@@ -32,48 +31,29 @@ object Compare extends App with Measuring {
     ParentsOrOffspring(0.25),
     RepetitiveMutation(0.8, 0.5))
 
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
-  implicit val ex: ExecutionContextExecutor = system.dispatcher
-
   val options = EvolutionOptions(initialPop, operators)
-  val iterations = 20
+  val iterations = 10
 
-  case class BenchmarkPreferences[G](options: EvolutionOptions[G], iterations: Int)
+  val comparison = new LongRunningComparison[Permutation, Unit] {
+    def candidates: List[(String, EvolutionEngine)] = List(
+      "Basic sync" -> GeneticAlgorithm,
+      "Fully parallel" -> GeneticAlgorithm.par,
+      "Parallel fitness" -> GeneticAlgorithm.parFitness
+    )
 
-  def measureEngines[G: Fitness : Join : Modification](labeledEngines: List[(String, EvolutionEngine)],
-                                                       preferences: BenchmarkPreferences[G],
-                                                       restTime: FiniteDuration = Duration.Zero,
-                                                       seed: Long = 0L): List[(String, Measured[Population[G]])] = {
-    labeledEngines.map { case (label, engine) =>
-      RRandom.setSeed(seed)
-      val measuredPop = measure(Await.result(
-        engine.evolve(preferences.options).take(preferences.iterations).runWith(Sink.last),
-        Duration.Inf))
-      Thread.sleep(restTime.toMillis)
-      (label, measuredPop)
-    }
-  }
+    val evolutionPreferences: EvolutionPreferences[Permutation] = EvolutionPreferences(options, 20)
 
-  def measureN(list: List[(String, EvolutionEngine)]): Unit = {
-    for ((label, engine) <- list) {
-      RRandom.setSeed(0L)
-      println("Measuring: " + label)
-      measure(Await.result(engine.evolve(options).take(iterations).runWith(Sink.last), Duration.Inf)).run match {
-        case (time, res) => printMeasure(label, time, res)
+    val resultMapper: (String, Measured[Population[Permutation]]) => Unit = {
+      case (label, measured) => measured.run match {
+        case (time, pop) =>
+          println(f"$label%-30s : Time: $time with size: ${pop.size} and best candidate: ${pop.best.fitness}")
       }
-
-      Thread.sleep(3000)
     }
+
+    override val restTime: FiniteDuration = 3 seconds
   }
 
-  measureN(List(
-    "Basic sync" -> GeneticAlgorithm,
-    "Fully parallel" -> GeneticAlgorithm.par,
-    "Parallel fitness" -> GeneticAlgorithm.parFitness
-  ))
-
-  println("End")
+  comparison.run
 
   system.terminate()
 }
