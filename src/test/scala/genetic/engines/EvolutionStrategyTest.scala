@@ -1,6 +1,7 @@
 package genetic.engines
 
 import genetic.engines.parallel.ParallelEvolutionStrategy
+import genetic.engines.parallel.configurable.ConfigurableParEvolutionStrategy
 import genetic.engines.sequential.SeqEvolutionStrategy
 import genetic.genotype.Fitness
 import genetic.operators._
@@ -13,10 +14,15 @@ import org.scalacheck.Gen._
 import org.scalacheck.Prop._
 import org.scalacheck.{Gen, Properties}
 
+import scala.collection.parallel.{ForkJoinTaskSupport, TaskSupport}
+
 object EvolutionStrategyTest extends Properties("Evolution strategy props") {
   val derivative: Gen[EvolutionStrategy] = Gen.oneOf(
     new SeqEvolutionStrategy {},
-    new ParallelEvolutionStrategy {}
+    new ParallelEvolutionStrategy {},
+    new ConfigurableParEvolutionStrategy {
+      protected val configuration: TaskSupport = new ForkJoinTaskSupport
+    }
   )
 
   type G = Int
