@@ -18,11 +18,9 @@ import scala.collection.parallel.{ForkJoinTaskSupport, TaskSupport}
 
 object EvolutionStrategyTest extends Properties("Evolution strategy props") {
   val derivative: Gen[EvolutionStrategy] = Gen.oneOf(
-    new SeqEvolutionStrategy {},
-    new ParallelEvolutionStrategy {},
-    new ConfigurableParEvolutionStrategy {
-      protected val configuration: TaskSupport = new ForkJoinTaskSupport
-    }
+    SeqEvolutionStrategy,
+    ParallelEvolutionStrategy,
+    new ConfigurableParEvolutionStrategy(new ForkJoinTaskSupport)
   )
 
   type G = Int

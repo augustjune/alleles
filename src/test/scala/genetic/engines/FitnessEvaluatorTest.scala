@@ -15,11 +15,9 @@ import scala.collection.parallel.{ForkJoinTaskSupport, TaskSupport}
 
 object FitnessEvaluatorTest extends Properties("Fitness evaluator test") {
   val derivative: Gen[FitnessEvaluator] = Gen.oneOf(
-    new SeqFitnessEvaluator {},
-    new ParallelFitnessEvaluator {},
-    new ConfigurableParFitnessEvaluator {
-      protected val configuration: TaskSupport = new ForkJoinTaskSupport
-    }
+    SeqFitnessEvaluator,
+    ParallelFitnessEvaluator,
+    new ConfigurableParFitnessEvaluator(new ForkJoinTaskSupport)
   )
 
   type G = Int

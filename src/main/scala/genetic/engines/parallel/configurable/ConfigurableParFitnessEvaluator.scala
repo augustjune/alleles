@@ -6,9 +6,7 @@ import genetic.engines.FitnessEvaluator
 
 import scala.collection.parallel.TaskSupport
 
-trait ConfigurableParFitnessEvaluator extends FitnessEvaluator {
-  protected val configuration: TaskSupport
-
+class ConfigurableParFitnessEvaluator(configuration: TaskSupport) extends FitnessEvaluator {
   /**
     * Functor upon which Fitness value is going to be evaluated for each population,
     * with standard scala implementation by default
