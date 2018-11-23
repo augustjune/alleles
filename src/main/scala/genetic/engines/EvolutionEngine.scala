@@ -10,13 +10,13 @@ import genetic.{OperatorSet, Population}
 
 import scala.concurrent.ExecutionContext
 
-trait EvolutionEngine extends FitnessEvaluator with EvolutionStrategy {
+class EvolutionEngine(fitnessEvaluator: FitnessEvaluator, strategy: EvolutionStrategy) {
   def evolve[G: Fitness : Join : Modification](options: EvolutionOptions[G]): Source[Population[G], NotUsed] =
     Source.repeat(()).scan(options.initialPopulation) {
-      case (prev, _) => evolutionStep(rate(prev), options.operators)
+      case (prev, _) => strategy.evolutionStep(fitnessEvaluator.rate(prev), options.operators)
     }
 
-  def bestTracking: BestTrackingEvolution = new BestTrackingEvolution(this)
+  def bestTracking: BestTrackingEvolution = new BestTrackingEvolution(fitnessEvaluator, strategy)
 
-  def async(implicit executionContext: ExecutionContext): AsyncFitnessEvolution = new AsyncFitnessEvolution(this)
+  def async(implicit executionContext: ExecutionContext): AsyncFitnessEvolution = new AsyncFitnessEvolution(strategy)
 }

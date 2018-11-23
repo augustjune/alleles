@@ -7,8 +7,7 @@ import genetic.{OperatorSet, Population}
 import scala.collection.parallel.TaskSupport
 import scala.collection.parallel.immutable.ParVector
 
-trait ConfigurableParEvolutionStrategy extends EvolutionStrategy {
-  protected val configuration: TaskSupport
+class ConfigurableParEvolutionStrategy(configuration: TaskSupport) extends EvolutionStrategy {
 
   def evolutionStep[G: Join : Modification](ratedPop: Population[Rated[G]],
                                             operators: genetic.OperatorSet): Population[G] = operators match {

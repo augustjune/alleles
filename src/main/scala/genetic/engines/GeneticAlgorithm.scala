@@ -6,14 +6,14 @@ import genetic.engines.sequential.{SeqEvolutionStrategy, SeqFitnessEvaluator}
 
 import scala.collection.parallel.TaskSupport
 
-object GeneticAlgorithm extends EvolutionEngine with SeqFitnessEvaluator with SeqEvolutionStrategy {
-  def par: EvolutionEngine = new EvolutionEngine with ParallelFitnessEvaluator with ParallelEvolutionStrategy
+object GeneticAlgorithm extends EvolutionEngine(SeqFitnessEvaluator, SeqEvolutionStrategy) {
+  def par: EvolutionEngine = new EvolutionEngine(ParallelFitnessEvaluator, ParallelEvolutionStrategy)
 
   def par(taskSupport: TaskSupport): EvolutionEngine =
-    new EvolutionEngine with ConfigurableParFitnessEvaluator with ConfigurableParEvolutionStrategy {
-      protected val configuration: TaskSupport = taskSupport
-    }
+    new EvolutionEngine(
+      new ConfigurableParFitnessEvaluator(taskSupport),
+      new ConfigurableParEvolutionStrategy(taskSupport))
 
-  def parFitness: EvolutionEngine = new EvolutionEngine with ParallelFitnessEvaluator with SeqEvolutionStrategy
+  def parFitness: EvolutionEngine = new EvolutionEngine(ParallelFitnessEvaluator, SeqEvolutionStrategy)
 }
 
