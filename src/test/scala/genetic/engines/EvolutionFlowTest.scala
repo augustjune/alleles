@@ -1,8 +1,8 @@
 package genetic.engines
 
-import genetic.engines.parallel.ParallelEvolutionStrategy
-import genetic.engines.parallel.configurable.ConfigurableParEvolutionStrategy
-import genetic.engines.sequential.SeqEvolutionStrategy
+import genetic.engines.parallel.ParallelEvolutionFlow
+import genetic.engines.parallel.configurable.ConfigurableParEvolutionFlow
+import genetic.engines.sequential.SeqEvolutionFlow
 import genetic.genotype.Fitness
 import genetic.operators._
 import genetic.operators.crossover.ParentsOrOffspring
@@ -16,11 +16,11 @@ import org.scalacheck.{Gen, Properties}
 
 import scala.collection.parallel.{ForkJoinTaskSupport, TaskSupport}
 
-object EvolutionStrategyTest extends Properties("Evolution strategy props") {
-  val derivative: Gen[EvolutionStrategy] = Gen.oneOf(
-    SeqEvolutionStrategy,
-    ParallelEvolutionStrategy,
-    new ConfigurableParEvolutionStrategy(new ForkJoinTaskSupport)
+object EvolutionFlowTest extends Properties("Evolution strategy props") {
+  val derivative: Gen[EvolutionFlow] = Gen.oneOf(
+    SeqEvolutionFlow,
+    ParallelEvolutionFlow,
+    new ConfigurableParEvolutionFlow(new ForkJoinTaskSupport)
   )
 
   type G = Int
@@ -44,7 +44,7 @@ object EvolutionStrategyTest extends Properties("Evolution strategy props") {
     forAll(derivative, populationGen, operatorsGen) {
       (strategy, population, operators) =>
         val originalSize = population.size
-        val newSize = strategy.evolutionStep(population.map(x => x -> Fitness(x)), operators).size
+        val newSize = strategy.nextGeneration(population.map(x => x -> Fitness(x)), operators).size
         if (originalSize % 2 == 0) newSize == originalSize
         else newSize == originalSize || newSize == originalSize - 1
     }

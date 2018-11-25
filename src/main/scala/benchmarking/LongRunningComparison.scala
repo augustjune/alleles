@@ -3,7 +3,7 @@ package benchmarking
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
 import benchmarking.Measuring.Measured
-import genetic.engines.EvolutionEngine
+import genetic.engines.CompositeDriver
 import genetic.genotype.{Fitness, Join, Modification}
 import genetic.{Population, RRandom}
 
@@ -12,7 +12,7 @@ import scala.concurrent.duration._
 
 trait LongRunningComparison[A, B] extends Measuring {
 
-  def candidates: List[(String, EvolutionEngine)]
+  def candidates: List[(String, CompositeDriver)]
 
   val evolutionPreferences: EvolutionPreferences[A]
 

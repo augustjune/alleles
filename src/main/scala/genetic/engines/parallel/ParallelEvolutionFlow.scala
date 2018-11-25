@@ -1,14 +1,14 @@
 package genetic.engines.parallel
 
-import genetic.engines.{EvolutionStrategy, Rated}
+import genetic.engines.{EvolutionFlow, Rated}
 import genetic.genotype.{Join, Modification}
 import genetic.{OperatorSet, Population}
 
 import scala.collection.parallel.immutable.ParVector
 
-object ParallelEvolutionStrategy extends EvolutionStrategy {
-  def evolutionStep[G: Join : Modification](ratedPop: Population[Rated[G]],
-                                            operators: OperatorSet): Population[G] = operators match {
+object ParallelEvolutionFlow extends EvolutionFlow {
+  def nextGeneration[G: Join : Modification](ratedPop: Population[Rated[G]],
+                                             operators: OperatorSet): Population[G] = operators match {
     case OperatorSet(selection, crossover, mutation) =>
       ParVector.fill(ratedPop.size / 2)(())
         .map(_ => selection.single(ratedPop))

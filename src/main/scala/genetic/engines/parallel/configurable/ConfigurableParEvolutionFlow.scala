@@ -1,16 +1,16 @@
 package genetic.engines.parallel.configurable
 
-import genetic.engines.{EvolutionStrategy, Rated}
+import genetic.engines.{EvolutionFlow, Rated}
 import genetic.genotype.{Join, Modification}
 import genetic.{OperatorSet, Population}
 
 import scala.collection.parallel.TaskSupport
 import scala.collection.parallel.immutable.ParVector
 
-class ConfigurableParEvolutionStrategy(configuration: TaskSupport) extends EvolutionStrategy {
+class ConfigurableParEvolutionFlow(configuration: TaskSupport) extends EvolutionFlow {
 
-  def evolutionStep[G: Join : Modification](ratedPop: Population[Rated[G]],
-                                            operators: genetic.OperatorSet): Population[G] = operators match {
+  def nextGeneration[G: Join : Modification](ratedPop: Population[Rated[G]],
+                                             operators: genetic.OperatorSet): Population[G] = operators match {
     case OperatorSet(selection, crossover, mutation) =>
       val base = ParVector.fill(ratedPop.size / 2)(())
       base.tasksupport = configuration
