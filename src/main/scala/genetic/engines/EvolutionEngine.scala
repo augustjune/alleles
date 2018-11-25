@@ -10,7 +10,7 @@ import genetic.{OperatorSet, Population}
 
 import scala.concurrent.ExecutionContext
 
-class EvolutionEngine(fitnessEvaluator: FitnessEvaluator, strategy: EvolutionStrategy) {
+class EvolutionEngine(fitnessEvaluator: FitnessEvaluator, strategy: EvolutionStrategy) extends EvolutionEnvironment {
   def evolve[G: Fitness : Join : Modification](options: EvolutionOptions[G]): Source[Population[G], NotUsed] =
     Source.repeat(()).scan(options.initialPopulation) {
       case (prev, _) => strategy.evolutionStep(fitnessEvaluator.rate(prev), options.operators)
