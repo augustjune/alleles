@@ -5,7 +5,7 @@ import akka.stream.ActorMaterializer
 import benchmarking.Measuring.Measured
 import examples.qap.{Permutation, PermutationOps}
 import genetic._
-import genetic.engines.{EvolutionEngine, EvolutionOptions, GeneticAlgorithm}
+import genetic.engines.{CompositeDriver, EvolutionOptions, GeneticAlgorithm}
 import genetic.genotype.Scheme
 import genetic.genotype.syntax._
 import genetic.operators.crossover.ParentsOrOffspring
@@ -35,7 +35,7 @@ object Compare extends App {
   val iterations = 10
 
   val comparison = new LongRunningComparison[Permutation, Unit] {
-    def candidates: List[(String, EvolutionEngine)] = List(
+    def candidates: List[(String, CompositeDriver)] = List(
       "Basic sync" -> GeneticAlgorithm,
       "Fully parallel" -> GeneticAlgorithm.par,
       "Parallel fitness" -> GeneticAlgorithm.parFitness
