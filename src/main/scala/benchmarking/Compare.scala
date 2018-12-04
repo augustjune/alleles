@@ -24,7 +24,7 @@ object Compare extends App {
 
   import implicits._
 
-  val initialPopSize = 50000
+  val initialPopSize = 5000
   val initialPop = Scheme.make(initialPopSize)
   val operators = OperatorSet(
     Tournament(20),

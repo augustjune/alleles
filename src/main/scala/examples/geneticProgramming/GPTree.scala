@@ -18,13 +18,13 @@ sealed trait GPTree {
   def cross(other: GPTree): (GPTree, GPTree)
 }
 
-sealed abstract class Const extends GPTree {
+sealed abstract class Leaf extends GPTree {
   def insert(other: GPTree): (GPTree, GPTree) = (other, this)
 
   def cross(other: GPTree): (GPTree, GPTree) = other.insert(this).reverse
 }
 
-sealed abstract class UnaryOp(op: GPTree => GPTree) extends GPTree {
+sealed abstract class UnaryNode(op: GPTree => GPTree) extends GPTree {
   def a: GPTree
 
   def insert(other: GPTree): (GPTree, GPTree) = (other, this) >|| (op(other), a) >|| a.insert(other).mapFirst(op)
@@ -32,7 +32,7 @@ sealed abstract class UnaryOp(op: GPTree => GPTree) extends GPTree {
   def cross(other: GPTree): (GPTree, GPTree) = other.insert(this).reverse >|| other.insert(a).mapSecond(op).reverse
 }
 
-sealed abstract class BinaryOp(op: ((GPTree, GPTree) => GPTree)) extends GPTree {
+sealed abstract class BinaryNode(op: ((GPTree, GPTree) => GPTree)) extends GPTree {
   def a: GPTree
 
   def b: GPTree
@@ -44,13 +44,13 @@ sealed abstract class BinaryOp(op: ((GPTree, GPTree) => GPTree)) extends GPTree 
     other.cross(a).mapSecond(op(_, b)).reverse >|| other.cross(b).mapSecond(op(a, _)).reverse
 }
 
-final case class Variable(name: String) extends Const
-final case class Value(v: Double) extends Const
+final case class Variable(name: String) extends Leaf
+final case class Value(v: Double) extends Leaf
 
-final case class Sin(a: GPTree) extends UnaryOp(Sin)
-final case class Cos(a: GPTree) extends UnaryOp(Cos)
+final case class Sin(a: GPTree) extends UnaryNode(Sin)
+final case class Cos(a: GPTree) extends UnaryNode(Cos)
 
-final case class Plus(a: GPTree, b: GPTree) extends BinaryOp(Plus)
-final case class Minus(a: GPTree, b: GPTree) extends BinaryOp(Minus)
-final case class Multiply(a: GPTree, b: GPTree) extends BinaryOp(Multiply)
-final case class Divide(a: GPTree, b: GPTree) extends BinaryOp(Divide)
+final case class Plus(a: GPTree, b: GPTree) extends BinaryNode(Plus)
+final case class Minus(a: GPTree, b: GPTree) extends BinaryNode(Minus)
+final case class Multiply(a: GPTree, b: GPTree) extends BinaryNode(Multiply)
+final case class Divide(a: GPTree, b: GPTree) extends BinaryNode(Divide)

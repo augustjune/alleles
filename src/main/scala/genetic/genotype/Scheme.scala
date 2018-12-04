@@ -6,7 +6,7 @@ import genetic.Population
   * Construction, which allows to create instances of type `G`
   */
 trait Scheme[+G] {
-  def create: G
+  def create(): G
 
   /**
     * Infinite stream of instances of type `G` created on demand
@@ -20,10 +20,6 @@ trait Scheme[+G] {
 }
 
 object Scheme {
-  def pure[G](f: () => G): Scheme[G] = new Scheme[G] {
-    def create: G = f()
-  }
-
   /**
     * Return scheme which creates elements from cycled iterator
     */
@@ -34,7 +30,7 @@ object Scheme {
       else i
     }.flatten
 
-    def create: G = iterator.next()
+    def create(): G = iterator.next()
   }
 
   /**
@@ -47,8 +43,6 @@ object Scheme {
   /**
     * Instance of Scheme[G] which repeatedly creates same value `a`
     */
-  def fromOne[G](a: G): Scheme[G] = new Scheme[G] {
-    def create: G = a
-  }
+  def fromOne[G](a: G): Scheme[G] = () => a
 }
 

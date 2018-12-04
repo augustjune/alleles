@@ -41,6 +41,8 @@ class ReusableRandom(private var s: Long) extends util.Random(s) {
     }
   }
 
+  def inRange(range: Double): Double = (nextDouble() - 0.5) * 2 * range
+
   /**
     * Returns a random boolean with custom probability
     *

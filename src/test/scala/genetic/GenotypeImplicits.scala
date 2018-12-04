@@ -26,7 +26,7 @@ object GenotypeImplicits {
     val fitness: Fitness[Int] = x => math.abs(x.toDouble)
     val join: Join[Int] = Join.commutative { case (x, y) => (x + y) / 2 }
     val modification: Modification[Int] = _ + 1
-    val scheme: Scheme[Int] = Scheme.pure(() => arbitrary[Int].sample.get)
+    val scheme: Scheme[Int] = () => arbitrary[Int].sample.get
   }
 
   /**
@@ -43,6 +43,6 @@ object GenotypeImplicits {
       else x.updated(Random.nextInt(x.length), randomChar)
     }
 
-    val scheme: Scheme[String] = Scheme.pure(() => arbitrary[String].sample.get)
+    val scheme: Scheme[String] = () => arbitrary[String].sample.get
   }
 }

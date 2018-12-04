@@ -16,7 +16,13 @@ class PermutationOps(matrixSource: String) {
     def relationPrices(currentLocation: Int, currentNum: Int): Int =
       locationMap.foldLeft(0) { case (left, (loc, num)) => left + range(currentLocation, loc) * flow(currentNum, num) }
 
+    spin(5)
     locationMap.foldLeft(0) { case (left, (loc, num)) => left + relationPrices(loc, num) }
+  }
+
+  def spin(mils: Int): Unit = {
+    val start = System.currentTimeMillis()
+    while (System.currentTimeMillis() - start < mils) {}
   }
 
   /**
@@ -55,5 +61,5 @@ class PermutationOps(matrixSource: String) {
   /**
     * Randomly created permutation, which fits to the flow and range matrices
     */
-  implicit val scheme: Scheme[Permutation] = Scheme.pure(() => RRandom.shuffle((0 until flow.size).toVector))
+  implicit val scheme: Scheme[Permutation] = () => RRandom.shuffle((0 until flow.size).toVector)
 }
