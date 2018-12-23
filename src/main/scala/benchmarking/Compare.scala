@@ -24,7 +24,7 @@ object Compare extends App {
 
   import implicits._
 
-  val initialPopSize = 5000
+  val initialPopSize = 50
   val initialPop = Scheme.make(initialPopSize)
   val operators = OperatorSet(
     Tournament(20),
@@ -41,7 +41,7 @@ object Compare extends App {
       "Parallel fitness" -> GeneticAlgorithm.parFitness
     )
 
-    val evolutionPreferences: EvolutionPreferences[Permutation] = EvolutionPreferences(options, 20)
+    val evolutionPreferences: EvolutionPreferences[Permutation] = EvolutionPreferences(options, iterations)
 
     val resultMapper: (String, Measured[Population[Permutation]]) => Unit = {
       case (label, measured) => measured.run match {
@@ -53,7 +53,17 @@ object Compare extends App {
     override val restTime: FiniteDuration = 3 seconds
   }
 
-  comparison.run
+  //  comparison.run
+  val vec = Vector.fill(1000)(RRandom.nextInt)
+  val m = new Measuring {}
+   val mapF: Int => Int = x => {
+    val start = System.currentTimeMillis()
+    while(start + 5 > System.currentTimeMillis()) {}
+    x
+  }
 
+  println(s"Mapping function: ${m.measure(mapF(0)).written}")
+  println(s"Sequential approach ${m.measure(vec.map(mapF)).written}")
+  println(s"Parallel approach ${m.measure(vec.par.map(mapF).seq).written}")
   system.terminate()
 }

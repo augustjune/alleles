@@ -1,5 +1,7 @@
 package examples
 
+import genetic.genotype.{Modification, Scheme}
+
 package object geneticProgramming {
 
   implicit class MapTuple[T1, T2](private val tuple: (T1, T2)) extends AnyVal {
@@ -11,10 +13,20 @@ package object geneticProgramming {
       case (x, y) => (x, f(y))
     }
 
+    def mapBoth[V1, V2](f1: T1 => V1, f2: T2 => V2): (V1, V2) = tuple match {
+      case (t1, t2) => (f1(t1), f2(t2))
+    }
+
     def reverse: (T2, T1) = tuple match {
       case (x, y) => (y, x)
     }
+  }
 
-    def map[V](f: (T1, T2) => V): V = f(tuple._1, tuple._2)
+  class TreeModification(generator: TreeGen) extends Modification[GPTree] {
+    def modify(g: GPTree): GPTree = g.insert(generator.randomTree())._1
+  }
+
+  class TreeScheme(generator: TreeGen) extends Scheme[GPTree] {
+    def create(): GPTree = generator.randomTree()
   }
 }
