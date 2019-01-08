@@ -10,7 +10,7 @@ import genetic.genotype.{Fitness, Join, Modification}
 import scala.concurrent.ExecutionContext
 
 class CompositeDriver(fitnessEvaluator: FitnessEvaluator, flow: Evolution) extends EvolutionEnvironment {
-  def evolve[G: Fitness : Join : Modification](options: EvolutionOptions[G]): Source[Population[G], NotUsed] =
+  def evolve[G: Fitness : Join : Modification](options: EvolutionOptions[G]): EvolutionFlow[Population[G]] =
     Source.repeat(()).scan(options.initialPopulation) {
       case (prev, _) => flow.nextGeneration(fitnessEvaluator.rate(prev), options.operators)
     }

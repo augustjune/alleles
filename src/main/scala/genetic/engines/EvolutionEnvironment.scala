@@ -7,5 +7,5 @@ import genetic.genotype.{Fitness, Join, Modification}
 
 
 trait EvolutionEnvironment {
-  def evolve[G: Fitness : Join : Modification](options: EvolutionOptions[G]): Source[Population[G], NotUsed]
+  def evolve[G: Fitness : Join : Modification](options: EvolutionOptions[G]): EvolutionFlow[Population[G]]
 }

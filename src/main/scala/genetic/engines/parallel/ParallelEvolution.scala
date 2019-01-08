@@ -6,7 +6,7 @@ import genetic.{OperatorSet, Population}
 
 import scala.collection.parallel.immutable.ParVector
 
-object ParallelEvolution$ extends Evolution {
+object ParallelEvolution extends Evolution {
   def nextGeneration[G: Join : Modification](ratedPop: Population[Rated[G]],
                                              operators: OperatorSet): Population[G] = operators match {
     case OperatorSet(selection, crossover, mutation) =>
