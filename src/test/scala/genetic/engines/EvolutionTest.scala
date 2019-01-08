@@ -1,8 +1,8 @@
 package genetic.engines
 
-import genetic.engines.parallel.ParallelEvolutionFlow
-import genetic.engines.parallel.configurable.ConfigurableParEvolutionFlow
-import genetic.engines.sequential.SeqEvolutionFlow
+import genetic.engines.parallel.ParallelEvolution$
+import genetic.engines.parallel.configurable.ConfigurableParEvolution
+import genetic.engines.sequential.SeqEvolution$
 import genetic.genotype.Fitness
 import genetic.operators._
 import genetic.operators.crossover.ParentsOrOffspring
@@ -16,11 +16,11 @@ import org.scalacheck.{Gen, Properties}
 
 import scala.collection.parallel.{ForkJoinTaskSupport, TaskSupport}
 
-object EvolutionFlowTest extends Properties("Evolution strategy props") {
-  val derivative: Gen[EvolutionFlow] = Gen.oneOf(
-    SeqEvolutionFlow,
-    ParallelEvolutionFlow,
-    new ConfigurableParEvolutionFlow(new ForkJoinTaskSupport)
+object EvolutiongTest extends Properties("Evolution strategy props") {
+  val derivative: Gen[Evolution] = Gen.oneOf(
+    SeqEvolution$,
+    ParallelEvolution$,
+    new ConfigurableParEvolution(new ForkJoinTaskSupport)
   )
 
   type G = Int

@@ -1,12 +1,12 @@
 package genetic.engines.parallel
 
-import genetic.engines.{EvolutionFlow, Rated}
+import genetic.engines.{Evolution, Rated}
 import genetic.genotype.{Join, Modification}
 import genetic.{OperatorSet, Population}
 
 import scala.collection.parallel.immutable.ParVector
 
-object ParallelEvolutionFlow extends EvolutionFlow {
+object ParallelEvolution$ extends Evolution {
   def nextGeneration[G: Join : Modification](ratedPop: Population[Rated[G]],
                                              operators: OperatorSet): Population[G] = operators match {
     case OperatorSet(selection, crossover, mutation) =>
