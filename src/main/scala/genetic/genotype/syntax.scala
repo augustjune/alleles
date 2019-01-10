@@ -1,7 +1,7 @@
 package genetic.genotype
 
 import genetic.Population
-import genetic.collections.IterablePair
+import genetic.toolset.IterablePair
 
 /**
   * Set of implicit value classes, which enable neat type classes' function extensions

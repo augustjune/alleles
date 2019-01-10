@@ -1,7 +1,7 @@
 package genetic.genotype
 
-import genetic.RRandom
 import genetic.genotype.syntax._
+import genetic.toolset.RRandom
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Prop._
 import org.scalacheck.{Gen, Properties}

@@ -1,8 +1,8 @@
 package examples.qap
 
 import examples.qap.source._
-import genetic.RRandom
 import genetic.genotype.{Fitness, Join, Modification, Scheme}
+import genetic.toolset.RRandom
 
 class PermutationOps(matrixSource: String) {
   val (flow, range): (FlowMatrix, RangeMatrix) = new MatrixSource(matrixSource).toMatrices

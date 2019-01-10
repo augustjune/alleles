@@ -8,6 +8,7 @@ import genetic._
 import genetic.engines.{CompositeDriver, EvolutionOptions, GeneticAlgorithm}
 import genetic.genotype.Scheme
 import genetic.genotype.syntax._
+import genetic.toolset.RRandom
 import genetic.operators.crossover.ParentsOrOffspring
 import genetic.operators.mutation.RepetitiveMutation
 import genetic.operators.selection.Tournament

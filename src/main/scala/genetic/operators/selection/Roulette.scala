@@ -2,7 +2,8 @@ package genetic.operators.selection
 
 import genetic.genotype.Fitness
 import genetic.operators.Selection
-import genetic.{Population, RRandom}
+import genetic.Population
+import genetic.toolset.RRandom
 
 /**
   * Fitness proportionate selection of selection size equal to previous population size,

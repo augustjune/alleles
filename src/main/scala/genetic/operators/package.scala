@@ -1,6 +1,6 @@
 package genetic
 
-import genetic.collections.IterablePair
+import genetic.toolset.IterablePair
 import genetic.genotype.{Fitness, Join, Modification}
 
 package object operators {

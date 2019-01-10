@@ -1,7 +1,7 @@
 package genetic.operators.mutation
 
-import genetic.RRandom
 import genetic.genotype.Modification
+import genetic.toolset.RRandom
 import genetic.operators.Mutation
 
 /**

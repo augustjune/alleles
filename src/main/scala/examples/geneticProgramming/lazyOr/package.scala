@@ -1,6 +1,6 @@
 package examples.geneticProgramming
 
-import genetic.RRandom
+import genetic.toolset.RRandom
 
 import scala.language.implicitConversions
 

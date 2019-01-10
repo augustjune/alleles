@@ -1,7 +1,7 @@
 package genetic.operators.crossover
 
 import genetic.GenotypeImplicits
-import genetic.collections.IterablePair
+import genetic.toolset.IterablePair
 import genetic.genotype.Join
 import genetic.genotype.syntax._
 import genetic.operators.CrossoverProperties

@@ -1,7 +1,6 @@
 package genetic.operators.crossover
 
-import genetic.RRandom
-import genetic.collections.IterablePair
+import genetic.toolset.{IterablePair, RRandom}
 import genetic.genotype.Join
 import genetic.genotype.syntax.JoinObj
 import genetic.operators.Crossover

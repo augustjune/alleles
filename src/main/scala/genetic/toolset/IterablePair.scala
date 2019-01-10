@@ -1,4 +1,4 @@
-package genetic.collections
+package genetic.toolset
 
 import scala.collection.immutable.Iterable
 

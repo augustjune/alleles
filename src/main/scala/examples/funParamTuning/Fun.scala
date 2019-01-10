@@ -1,7 +1,7 @@
 package examples.funParamTuning
 
-import genetic.RRandom
 import genetic.genotype.{Fitness, Join, Modification, Scheme}
+import genetic.toolset.RRandom
 
 case class Fun(arguments: Vector[Double]) extends (Double => Double) {
   def apply(x: Double): Double =

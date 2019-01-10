@@ -2,7 +2,8 @@ package genetic.operators.selection
 
 import genetic.genotype.Fitness
 import genetic.operators.Selection
-import genetic.{Population, RRandom}
+import genetic.Population
+import genetic.toolset.RRandom
 
 /**
   * Selecting an individual from a randomly taken sample of population sorted by fitness values and

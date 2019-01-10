@@ -1,5 +1,6 @@
 package genetic
 
+import genetic.toolset.RRandom
 import org.scalacheck.Properties
 import org.scalacheck.Prop._
 import org.scalacheck.Gen._

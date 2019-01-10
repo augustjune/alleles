@@ -1,4 +1,4 @@
-package genetic
+package genetic.toolset
 
 import scala.collection.BitSet
 import scala.collection.generic.CanBuildFrom

@@ -5,7 +5,8 @@ import akka.stream.scaladsl.Sink
 import benchmarking.Measuring.Measured
 import genetic.engines.CompositeDriver
 import genetic.genotype.{Fitness, Join, Modification}
-import genetic.{Population, RRandom}
+import genetic.Population
+import genetic.toolset.RRandom
 
 import scala.concurrent.Await
 import scala.concurrent.duration._

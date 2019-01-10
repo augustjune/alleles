@@ -1,6 +1,5 @@
 package genetic.engines
 
-import akka.NotUsed
 import akka.stream.scaladsl.Source
 import genetic.Population
 import genetic.engines.async.AsyncFitnessDriver

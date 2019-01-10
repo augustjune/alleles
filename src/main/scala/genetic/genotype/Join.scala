@@ -1,7 +1,7 @@
 package genetic.genotype
 
 import cats.kernel.Semigroup
-import genetic.collections.IterablePair
+import genetic.toolset.IterablePair
 
 /**
   * Construction, which allows to cross mix information about pair of values into new instances stored in IterablePair

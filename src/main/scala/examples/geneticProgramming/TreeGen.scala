@@ -1,7 +1,7 @@
 package examples.geneticProgramming
 
+import genetic.toolset.RRandom
 import lazyOr._
-import genetic.RRandom
 
 class TreeGen(variables: List[String]) {
   def randomLeaf(): GPTree =
