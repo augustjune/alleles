@@ -16,7 +16,7 @@ class PermutationOps(matrixSource: String) {
     def relationPrices(currentLocation: Int, currentNum: Int): Int =
       locationMap.foldLeft(0) { case (left, (loc, num)) => left + range(currentLocation, loc) * flow(currentNum, num) }
 
-    spin(5)
+//    spin(1)
     locationMap.foldLeft(0) { case (left, (loc, num)) => left + relationPrices(loc, num) }
   }
 
