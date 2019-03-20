@@ -8,7 +8,7 @@ import org.scalacheck.{Gen, Properties}
 
 abstract class MutationProperties(name: String) extends Properties(name + " with Mutation props") {
   type Ind
-  implicit def modification: Variation[Ind]
+  implicit def variation: Variation[Ind]
   def gGen: Gen[Ind]
 
   def implGen: Gen[Mutation]

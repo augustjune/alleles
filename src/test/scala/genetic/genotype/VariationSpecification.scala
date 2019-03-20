@@ -18,10 +18,10 @@ import org.scalacheck.{Gen, Properties}
   * def modify5(g: G) = modify(modify(modify(modify(modify(g)))))
   * modify5(g) != modify5(g)
   */
-object ModificationSpecification extends Properties("Modification laws") {
+object VariationSpecification extends Properties("Variation laws") {
 
-  def specifyFor[Ind](modification: Variation[Ind], gen: Gen[Ind]) = {
-    implicit val m = modification
+  def specifyFor[Ind](variation: Variation[Ind], gen: Gen[Ind]) = {
+    implicit val v = variation
 
     property("Modified instance does not equals to original one") = forAll(gen) { g: Ind =>
       g.modified != g
@@ -36,13 +36,13 @@ object ModificationSpecification extends Properties("Modification laws") {
 
   }
 
-  object StringModification {
+  object StringVariation {
     private val buffer = "The quick brown fox jumps over the lazy dog"
     val gen = Gen.nonEmptyListOf[Char](arbChar.arbitrary).map(_.mkString)
-    val modification: Variation[String] =
+    val variation: Variation[String] =
       (g: String) => g.updated(RRandom.nextInt(g.length), buffer(RRandom.nextInt(buffer.length)))
   }
 
-  specifyFor(StringModification.modification, StringModification.gen)
+  specifyFor(StringVariation.variation, StringVariation.gen)
 
 }
