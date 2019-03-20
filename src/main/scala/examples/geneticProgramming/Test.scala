@@ -3,13 +3,12 @@ package examples.geneticProgramming
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
-import examples.geneticProgramming.Test.generator
 import genetic.engines.{EvolutionOptions, GeneticAlgorithm}
-import genetic.genotype.{Fitness, Join, Variation, Scheme}
-import genetic.toolset.RRandom
+import genetic.genotype.{Fitness, Join, Scheme, Variation}
 import genetic.operators.crossover.ParentsOrOffspring
 import genetic.operators.mutation.RepetitiveMutation
 import genetic.operators.selection.Tournament
+import genetic.toolset.RRandom
 import genetic.{OperatorSet, Population}
 
 import scala.concurrent.Await
@@ -37,7 +36,7 @@ object Test extends App {
   class GPTreeOps(generator: TreeGen, goal: GPTree) {
     implicit val join: Join[GPTree] = Join.pair(_.cross(_))
 
-    implicit val modification: Variation[GPTree] = new TreeModification(generator)
+    implicit val variation: Variation[GPTree] = new TreeVariation(generator)
 
     implicit val scheme: Scheme[GPTree] = new TreeScheme(generator)
   }

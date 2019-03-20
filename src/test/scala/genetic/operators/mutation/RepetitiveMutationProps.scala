@@ -19,7 +19,7 @@ object RepetitiveMutationProps extends MutationProperties("RepetitiveMutation pr
   def implGen: Gen[RepetitiveMutation] =
     repetitiveMutationGenTemplate(choose(0.0, 1.0), choose(0.0, 1.0))
 
-  implicit def modification: Variation[Int] = _ + 1
+  implicit def variation: Variation[Int] = _ + 1
 
   def mutationsOccurred(before: Ind, after: Ind): Int = after - before
 
