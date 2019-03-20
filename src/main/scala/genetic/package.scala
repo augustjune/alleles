@@ -18,7 +18,7 @@ package object genetic {
   /**
     * Set of genetic operators which defines generation cycle
     */
-  case class OperatorSet(selection: Selection, crossover: Crossover, mutation: Mutation) {
+  class OperatorSet(val selection: Selection, val crossover: Crossover, val mutation: Mutation) {
     def generationCycle[A: Fitness : Join : Variation](population: Population[A]): Population[A] =
       mutation.generation(crossover.generation(selection.generation(population.withFitnesses)))
   }

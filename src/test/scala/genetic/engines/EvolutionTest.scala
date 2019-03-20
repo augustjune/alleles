@@ -28,14 +28,14 @@ object EvolutiongTest extends Properties("Evolution strategy props") {
   val populationGen: Gen[Population[Ind]] = nonEmptyListOf(arbInt.arbitrary).map(_.toVector)
 
   val selectionGen: Gen[Selection] = Gen.const(Tournament(10))
-  val crossoverGen: Gen[Crossover] = Gen.const(ParentsOrOffspring(0.25))
-  val mutationGen: Gen[Mutation] = Gen.const(RepetitiveMutation(0.5, 0.5))
+  val crossoverGen: Gen[Crossover] = Gen.const(new ParentsOrOffspring(0.25))
+  val mutationGen: Gen[Mutation] = Gen.const(new RepetitiveMutation(0.5, 0.5))
 
   val operatorsGen: Gen[OperatorSet] = for {
     sel <- selectionGen
     cross <- crossoverGen
     mut <- mutationGen
-  } yield OperatorSet(sel, cross, mut)
+  } yield new OperatorSet(sel, cross, mut)
 
   val implicits = GenotypeImplicits[Ind]
   import implicits._

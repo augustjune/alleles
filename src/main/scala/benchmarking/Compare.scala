@@ -30,10 +30,10 @@ object Compare extends App {
 
   val initialPopSize = 10000
   val initialPop = Scheme.make(initialPopSize)
-  val operators = OperatorSet(
+  val operators = new OperatorSet(
     Tournament(10),
-    ParentsOrOffspring(0.25),
-    RepetitiveMutation(0.8, 0.5))
+    new ParentsOrOffspring(0.25),
+    new RepetitiveMutation(0.8, 0.5))
 
   val options = EvolutionOptions(initialPop, operators)
   val iterations = 5

@@ -9,12 +9,10 @@ import scala.collection.parallel.immutable.ParVector
 
 object ParallelEvolution extends Evolution {
   def nextGeneration[A: Join : Variation](ratedPop: Population[Rated[A]],
-                                          operators: OperatorSet): Population[A] = operators match {
-    case OperatorSet(selection, crossover, mutation) =>
-      ParVector.fill(ratedPop.size / 2)(())
-        .map(_ => selection.single(ratedPop))
-        .flatMap(crossover.single(_))
-        .map(mutation.single(_))
-        .seq
-  }
+                                          operators: OperatorSet): Population[A] =
+    ParVector.fill(ratedPop.size / 2)(())
+      .map(_ => operators.selection.single(ratedPop))
+      .flatMap(operators.crossover.single(_))
+      .map(operators.mutation.single(_))
+      .seq
 }

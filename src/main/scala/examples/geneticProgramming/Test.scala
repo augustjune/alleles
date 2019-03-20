@@ -66,7 +66,7 @@ object Test extends App {
   implicit val system = ActorSystem()
   implicit val mat = ActorMaterializer()
 
-  val operators = OperatorSet(Tournament(20), ParentsOrOffspring(0.5), RepetitiveMutation(0.4, 0.2))
+  val operators = new OperatorSet(Tournament(20), new ParentsOrOffspring(0.5), new RepetitiveMutation(0.4, 0.2))
 
   val lastPop: Population[GPTree] = Await.result(
     GeneticAlgorithm.par.evolve(EvolutionOptions(100, operators)).take(1000).runWith(Sink.last),
