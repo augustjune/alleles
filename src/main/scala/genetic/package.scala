@@ -1,4 +1,4 @@
-import genetic.genotype.{Fitness, Join, Modification}
+import genetic.genotype.{Fitness, Join, Variation}
 import genetic.operators._
 
 package object genetic {
@@ -19,7 +19,7 @@ package object genetic {
     * Set of genetic operators which defines generation cycle
     */
   case class OperatorSet(selection: Selection, crossover: Crossover, mutation: Mutation) {
-    def generationCycle[G: Fitness : Join : Modification](population: Population[G]): Population[G] =
+    def generationCycle[A: Fitness : Join : Variation](population: Population[A]): Population[A] =
       mutation.generation(crossover.generation(selection.generation(population.withFitnesses)))
   }
 }

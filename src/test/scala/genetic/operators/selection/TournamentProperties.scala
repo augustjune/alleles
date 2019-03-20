@@ -10,14 +10,14 @@ import org.scalacheck.Gen._
 import org.scalacheck.Prop._
 
 object TournamentProperties extends SelectionProperties("Tournament props") {
-  type G = Int
+  type Ind = Int
   val implGen: Gen[Tournament] = posNum[Int].map(Tournament(_))
-  val populationGen: Gen[Population[(G, Double)]] = for {
+  val populationGen: Gen[Population[(Ind, Double)]] = for {
     n <- posNum[Int]
     pop <- listOfN(n, arbitrary[Int])
   } yield pop.toVector.withFitnesses
 
-  implicit val fitness: Fitness[G] = identity[G]
+  implicit val fitness: Fitness[Ind] = identity[Ind]
 
   property("Selected individuals are best out of the round") = forAll(populationGen, posNum[Int]) {
     (pop, roundSize) =>

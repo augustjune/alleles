@@ -36,17 +36,17 @@ object Tournament {
 }
 
 class Tournament(roundSize: Int, fittestChance: Double) extends Selection {
-  def single[G](pop: Population[WithFitness[G]]): (G, G) = (choose(pop), choose(pop))
+  def single[A](pop: Population[WithFitness[A]]): (A, A) = (choose(pop), choose(pop))
 
-  private def choose[G](pop: Population[WithFitness[G]]) =
+  private def choose[A](pop: Population[WithFitness[A]]) =
     RRandom.chooseByChances(assignChances(RRandom.take(roundSize, pop)))
 
-  private def assignChances[G](sample: Population[WithFitness[G]]): Population[(G, Double)] =
+  private def assignChances[A](sample: Population[WithFitness[A]]): Population[(A, Double)] =
     sample.sortBy(_._2).zipWithIndex.map {
       case ((x, _), i) => x -> fittestChance * math.pow(1 - fittestChance, i)
     }
 
-  def generation[G](pop: Population[WithFitness[G]]): Population[(G, G)] =
+  def generation[A](pop: Population[WithFitness[A]]): Population[(A, A)] =
     for (_ <- (1 to pop.size / 2).toVector) yield single(pop)
 
   override def toString: String = s"Tournament(roundSize: $roundSize, fittestChance: $fittestChance)"

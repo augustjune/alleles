@@ -2,10 +2,10 @@ package genetic.engines.async
 
 import scala.concurrent.Future
 
-trait AsyncFitness[G] {
-  def value(g: G): Future[Double]
+trait AsyncFitness[A] {
+  def value(a: A): Future[Double]
 }
 
 object AsyncFitness {
-  def apply[G](g: G)(implicit f: AsyncFitness[G]): Future[Double] = f.value(g)
+  def apply[A](a: A)(implicit f: AsyncFitness[A]): Future[Double] = f.value(a)
 }

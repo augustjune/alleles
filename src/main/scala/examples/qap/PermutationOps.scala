@@ -1,7 +1,7 @@
 package examples.qap
 
 import examples.qap.source._
-import genetic.genotype.{Fitness, Join, Modification, Scheme}
+import genetic.genotype.{Fitness, Join, Variation, Scheme}
 import genetic.toolset.RRandom
 
 class PermutationOps(matrixSource: String) {
@@ -49,7 +49,7 @@ class PermutationOps(matrixSource: String) {
   /**
     * Switching two facilities' positions
     */
-  implicit val mutator: Modification[Permutation] = (perm: Permutation) => {
+  implicit val mutator: Variation[Permutation] = (perm: Permutation) => {
     def switchPair(n1: Int, n2: Int): Permutation = {
       val val1 = perm(n1)
       perm.updated(n1, perm(n2)).updated(n2, val1)

@@ -1,6 +1,6 @@
 package examples
 
-import genetic.genotype.{Modification, Scheme}
+import genetic.genotype.{Variation, Scheme}
 
 package object geneticProgramming {
 
@@ -22,7 +22,7 @@ package object geneticProgramming {
     }
   }
 
-  class TreeModification(generator: TreeGen) extends Modification[GPTree] {
+  class TreeModification(generator: TreeGen) extends Variation[GPTree] {
     def modify(g: GPTree): GPTree = g.insert(generator.randomTree())._1
   }
 

@@ -21,7 +21,7 @@ class ReusableRandom(private var s: Long) extends util.Random(s) {
     * Replaces combination of `shuffle` and `take` functions,
     * which doesn't perform redundant shuffling
     */
-  def take[G, Col[T] <: IndexedSeq[T]](n: Int, from: Col[G])(implicit cbf: CanBuildFrom[Col[G], G, Col[G]]): Col[G] = {
+  def take[A, Col[T] <: IndexedSeq[T]](n: Int, from: Col[A])(implicit cbf: CanBuildFrom[Col[A], A, Col[A]]): Col[A] = {
     val originalSize = from.size
     if (n >= originalSize) RRandom.shuffle(from)
     else {

@@ -1,15 +1,14 @@
 package genetic.operators
 
 import genetic.Population
-import genetic.genotype.Fitness
-import org.scalacheck.{Gen, Prop, Properties}
 import org.scalacheck.Prop._
+import org.scalacheck.{Gen, Prop, Properties}
 
 
 abstract class SelectionProperties(name: String) extends Properties(name + " with Selection props") {
-  type G
+  type Ind
 
-  def populationGen: Gen[Population[(G, Double)]]
+  def populationGen: Gen[Population[(Ind, Double)]]
 
   def implGen: Gen[Selection]
 

@@ -1,14 +1,14 @@
 package genetic.genotype
 
 /**
-  * Fitness function for instances of type `G`, which computes
+  * Fitness function for instances of type `A`, which computes
   * how close a given design solution is to achieving the set aims
   * Note: The smaller - the better
   */
-trait Fitness[G] {
-  def value(g: G): Double
+trait Fitness[A] {
+  def value(a: A): Double
 
-  def cached: CachedFitness[G] = new CachedFitness[G](this)
+  def cached: CachedFitness[A] = new CachedFitness[A](this)
 }
 
 object Fitness {
@@ -16,5 +16,5 @@ object Fitness {
     * Applies trait function from the implicit scope;
     * allows to use trait as context bounds
     */
-  def apply[G](g: G)(implicit f: Fitness[G]): Double = f.value(g)
+  def apply[A](a: A)(implicit f: Fitness[A]): Double = f.value(a)
 }

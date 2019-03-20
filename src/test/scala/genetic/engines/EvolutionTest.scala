@@ -23,9 +23,9 @@ object EvolutiongTest extends Properties("Evolution strategy props") {
     new ConfigurableParEvolution(new ForkJoinTaskSupport)
   )
 
-  type G = Int
+  type Ind = Int
 
-  val populationGen: Gen[Population[G]] = nonEmptyListOf(arbInt.arbitrary).map(_.toVector)
+  val populationGen: Gen[Population[Ind]] = nonEmptyListOf(arbInt.arbitrary).map(_.toVector)
 
   val selectionGen: Gen[Selection] = Gen.const(Tournament(10))
   val crossoverGen: Gen[Crossover] = Gen.const(ParentsOrOffspring(0.25))
@@ -37,7 +37,7 @@ object EvolutiongTest extends Properties("Evolution strategy props") {
     mut <- mutationGen
   } yield OperatorSet(sel, cross, mut)
 
-  val implicits = GenotypeImplicits[G]
+  val implicits = GenotypeImplicits[Ind]
   import implicits._
 
   property("Evolution step shrinks population size to the closest even number") =
