@@ -1,6 +1,7 @@
 package genetic.engines.sequential
 
-import genetic.engines.{Evolution, Rated}
+import genetic.engines.Evolution
+import genetic.genotype.Fitness.Rated
 import genetic.genotype.{Join, Variation}
 import genetic.{OperatorSet, Population}
 

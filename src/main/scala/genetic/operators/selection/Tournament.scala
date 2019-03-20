@@ -1,8 +1,8 @@
 package genetic.operators.selection
 
-import genetic.genotype.Fitness
-import genetic.operators.Selection
 import genetic.Population
+import genetic.genotype.Fitness.Rated
+import genetic.operators.Selection
 import genetic.toolset.RRandom
 
 /**
@@ -36,17 +36,17 @@ object Tournament {
 }
 
 class Tournament(roundSize: Int, fittestChance: Double) extends Selection {
-  def single[A](pop: Population[WithFitness[A]]): (A, A) = (choose(pop), choose(pop))
+  def single[A](pop: Population[Rated[A]]): (A, A) = (choose(pop), choose(pop))
 
-  private def choose[A](pop: Population[WithFitness[A]]) =
+  private def choose[A](pop: Population[Rated[A]]) =
     RRandom.chooseByChances(assignChances(RRandom.take(roundSize, pop)))
 
-  private def assignChances[A](sample: Population[WithFitness[A]]): Population[(A, Double)] =
+  private def assignChances[A](sample: Population[Rated[A]]): Population[(A, Double)] =
     sample.sortBy(_._2).zipWithIndex.map {
       case ((x, _), i) => x -> fittestChance * math.pow(1 - fittestChance, i)
     }
 
-  def generation[A](pop: Population[WithFitness[A]]): Population[(A, A)] =
+  def generation[A](pop: Population[Rated[A]]): Population[(A, A)] =
     for (_ <- (1 to pop.size / 2).toVector) yield single(pop)
 
   override def toString: String = s"Tournament(roundSize: $roundSize, fittestChance: $fittestChance)"

@@ -12,6 +12,8 @@ trait Fitness[A] {
 }
 
 object Fitness {
+  type Rated[A] = (A, Double)
+
   /**
     * Applies trait function from the implicit scope;
     * allows to use trait as context bounds
