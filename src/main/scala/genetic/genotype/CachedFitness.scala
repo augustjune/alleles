@@ -5,16 +5,16 @@ import scala.collection.concurrent.TrieMap
 /**
   * Concurrent thread-safe non-blocking cached version of Fitness
   */
-class CachedFitness[G] private[genotype](inner: Fitness[G]) extends Fitness[G] {
-  private var cache: TrieMap[G, Double] = TrieMap.empty
+class CachedFitness[A] private[genotype](inner: Fitness[A]) extends Fitness[A] {
+  private var cache: TrieMap[A, Double] = TrieMap.empty
 
-  def value(g: G): Double = cache.get(g) match {
+  def value(a: A): Double = cache.get(a) match {
     case Some(fitness) => fitness
     case None =>
-      val fitness = inner.value(g)
-      cache += g -> fitness
+      val fitness = inner.value(a)
+      cache += a -> fitness
       fitness
   }
 
-  override def cached: CachedFitness[G] = this
+  override def cached: CachedFitness[A] = this
 }

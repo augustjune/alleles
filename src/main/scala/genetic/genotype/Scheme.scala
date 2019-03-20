@@ -3,46 +3,46 @@ package genetic.genotype
 import genetic.Population
 
 /**
-  * Construction, which allows to create instances of type `G`
+  * Construction, which allows to create instances of type `A`
   */
-trait Scheme[+G] {
-  def create(): G
+trait Scheme[+A] {
+  def create(): A
 
   /**
-    * Infinite stream of instances of type `G` created on demand
+    * Infinite stream of instances of type `A` created on demand
     */
-  def samples: Stream[G] = create #:: samples
+  def samples: Stream[A] = create #:: samples
 
   /**
-    * Returns n-size sequence of instances `G`
+    * Returns n-size sequence of instances `A`
     */
-  def make(n: Int): Population[G] = samples.take(n).toVector
+  def make(n: Int): Population[A] = samples.take(n).toVector
 }
 
 object Scheme {
   /**
     * Return scheme which creates elements from cycled iterator
     */
-  def fromIterator[G](iterF: () => Iterator[G]): Scheme[G] = new Scheme[G] {
-    private val iterator: Iterator[G] = Iterator.continually {
+  def fromIterator[A](iterF: () => Iterator[A]): Scheme[A] = new Scheme[A] {
+    private val iterator: Iterator[A] = Iterator.continually {
       val i = iterF()
       if (i.isEmpty) throw new RuntimeException("Passed iterator is empty")
       else i
     }.flatten
 
-    def create(): G = iterator.next()
+    def create(): A = iterator.next()
   }
 
   /**
     * Return scheme which creates elements from cycled iterable
     */
-  def fromIterable[G](iterable: Iterable[G]): Scheme[G] = fromIterator(() => iterable.iterator)
+  def fromIterable[A](iterable: Iterable[A]): Scheme[A] = fromIterator(() => iterable.iterator)
 
-  def make[G](n: Int)(implicit source: Scheme[G]): Population[G] = source.make(n)
+  def make[A](n: Int)(implicit source: Scheme[A]): Population[A] = source.make(n)
 
   /**
-    * Instance of Scheme[G] which repeatedly creates same value `a`
+    * Instance of Scheme[A] which repeatedly creates same value `a`
     */
-  def fromOne[G](a: G): Scheme[G] = () => a
+  def fromOne[A](a: A): Scheme[A] = () => a
 }
 

@@ -4,7 +4,7 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
 import benchmarking.Measuring.Measured
 import genetic.engines.CompositeDriver
-import genetic.genotype.{Fitness, Join, Modification}
+import genetic.genotype.{Fitness, Join, Variation}
 import genetic.Population
 import genetic.toolset.RRandom
 
@@ -23,7 +23,7 @@ trait LongRunningComparison[A, B] extends Measuring {
 
   val resultMapper: ((String, Measured[Population[A]]) => B)
 
-  def run(implicit mat: ActorMaterializer, f: Fitness[A], j: Join[A], m: Modification[A]): List[B] = {
+  def run(implicit mat: ActorMaterializer, f: Fitness[A], j: Join[A], m: Variation[A]): List[B] = {
     candidates.map { case (label, engine) =>
       RRandom.setSeed(seed)
       println("Measuring: " + label)

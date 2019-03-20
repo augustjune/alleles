@@ -1,7 +1,7 @@
 package genetic
 
 import genetic.toolset.IterablePair
-import genetic.genotype.{Fitness, Join, Modification}
+import genetic.genotype.{Fitness, Join, Variation}
 
 package object operators {
   /**
@@ -11,9 +11,9 @@ package object operators {
   trait Selection extends {
     type WithFitness[A] = (A, Double)
 
-    def single[G](population: Population[WithFitness[G]]): (G, G)
+    def single[A](population: Population[WithFitness[A]]): (A, A)
 
-    def generation[G](population: Population[WithFitness[G]]): Population[(G, G)]
+    def generation[A](population: Population[WithFitness[A]]): Population[(A, A)]
   }
 
   /**
@@ -21,9 +21,9 @@ package object operators {
     * information of two parents to generate new offspring.
     */
   trait Crossover {
-    def single[G: Join](parents: (G, G)): IterablePair[G]
+    def single[A: Join](parents: (A, A)): IterablePair[A]
 
-    def generation[G: Join](population: Population[(G, G)]): Population[G] = population.flatMap(single(_))
+    def generation[A: Join](population: Population[(A, A)]): Population[A] = population.flatMap(single(_))
   }
 
   /**
@@ -31,8 +31,8 @@ package object operators {
     * generation of a population of genetic algorithm chromosomes to the next.
     */
   trait Mutation {
-    def single[G: Modification](individual: G): G
+    def single[A: Variation](individual: A): A
 
-    def generation[G: Modification](population: Population[G]): Population[G] = population.map(single(_))
+    def generation[A: Variation](population: Population[A]): Population[A] = population.map(single(_))
   }
 }

@@ -1,6 +1,6 @@
 package genetic.operators.mutation
 
-import genetic.genotype.Modification
+import genetic.genotype.Variation
 import genetic.operators.MutationProperties
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen
@@ -9,7 +9,7 @@ import org.scalacheck.Prop._
 
 
 object RepetitiveMutationProps extends MutationProperties("RepetitiveMutation props") {
-  type G = Int
+  type Ind = Int
 
   def gGen: Gen[Int] = arbitrary[Int]
 
@@ -19,9 +19,9 @@ object RepetitiveMutationProps extends MutationProperties("RepetitiveMutation pr
   def implGen: Gen[RepetitiveMutation] =
     repetitiveMutationGenTemplate(choose(0.0, 1.0), choose(0.0, 1.0))
 
-  implicit def modification: Modification[Int] = _ + 1
+  implicit def modification: Variation[Int] = _ + 1
 
-  def mutationsOccurred(before: G, after: G): Int = after - before
+  def mutationsOccurred(before: Ind, after: Ind): Int = after - before
 
   def notApplicableGen: Gen[RepetitiveMutation] =
     repetitiveMutationGenTemplate(sized(n => choose(-n, 0.0)), choose(0.0, 1.0))

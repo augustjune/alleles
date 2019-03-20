@@ -5,7 +5,7 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
 import genetic.engines.{EvolutionOptions, GeneticAlgorithm}
 import genetic.genotype.syntax._
-import genetic.genotype.{Fitness, Join, Modification, Scheme}
+import genetic.genotype.{Fitness, Join, Variation, Scheme}
 import genetic.toolset.RRandom
 import genetic.operators.crossover.ParentsOrOffspring
 import genetic.operators.mutation.RepetitiveMutation
@@ -29,7 +29,7 @@ object FunTuningRun extends App {
       (x * prec).toInt / prec
     }
 
-    implicit val modification: Modification[Fun] = {
+    implicit val modification: Variation[Fun] = {
       case Fun(args) =>
         val idx = RRandom.nextInt(args.size)
         Fun(args.updated(idx, if (RRandom.nextBoolean) args(idx) + round(RRandom.nextGaussian(), 2) else round(args(idx), 2)))

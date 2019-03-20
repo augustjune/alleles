@@ -20,18 +20,18 @@ import org.scalacheck.{Gen, Properties}
   */
 object ModificationSpecification extends Properties("Modification laws") {
 
-  def specifyFor[G](modification: Modification[G], gen: Gen[G]) = {
+  def specifyFor[Ind](modification: Variation[Ind], gen: Gen[Ind]) = {
     implicit val m = modification
 
-    property("Modified instance does not equals to original one") = forAll(gen) { g: G =>
+    property("Modified instance does not equals to original one") = forAll(gen) { g: Ind =>
       g.modified != g
     }
 
     property("After a certain number of modification the same input produces different outputs") =
-      forAll(gen) { g: G =>
-        def modify5(g: G) = g.modified.modified.modified.modified.modified
+      forAll(gen) { i: Ind =>
+        def modify5(g: Ind) = g.modified.modified.modified.modified.modified
 
-        modify5(g) != modify5(g)
+        modify5(i) != modify5(i)
       }
 
   }
@@ -39,7 +39,7 @@ object ModificationSpecification extends Properties("Modification laws") {
   object StringModification {
     private val buffer = "The quick brown fox jumps over the lazy dog"
     val gen = Gen.nonEmptyListOf[Char](arbChar.arbitrary).map(_.mkString)
-    val modification: Modification[String] =
+    val modification: Variation[String] =
       (g: String) => g.updated(RRandom.nextInt(g.length), buffer(RRandom.nextInt(buffer.length)))
   }
 

@@ -3,23 +3,23 @@ package genetic.engines
 import genetic.{OperatorSet, Population}
 import genetic.genotype.Scheme
 
-trait EvolutionOptions[G] {
-  def initialPopulation: Population[G]
+trait EvolutionOptions[A] {
+  def initialPopulation: Population[A]
 
   def operators: OperatorSet
 }
 
 object EvolutionOptions {
-  def apply[G](initialPopulation: Population[G], operators: OperatorSet): EvolutionOptions[G] =
+  def apply[A](initialPopulation: Population[A], operators: OperatorSet): EvolutionOptions[A] =
     new ConcreteEO(initialPopulation, operators)
 
-  def apply[G: Scheme](populationSize: Int, operators: OperatorSet): EvolutionOptions[G] =
+  def apply[A: Scheme](populationSize: Int, operators: OperatorSet): EvolutionOptions[A] =
     new LazyEO(populationSize, operators)
 }
 
-private final class ConcreteEO[G](val initialPopulation: Population[G],
-                                  val operators: OperatorSet) extends EvolutionOptions[G]
+private final class ConcreteEO[A](val initialPopulation: Population[A],
+                                  val operators: OperatorSet) extends EvolutionOptions[A]
 
-private final class LazyEO[G: Scheme](populationSize: Int, val operators: OperatorSet) extends EvolutionOptions[G] {
-  def initialPopulation: Population[G] = Scheme.make(populationSize)
+private final class LazyEO[A: Scheme](populationSize: Int, val operators: OperatorSet) extends EvolutionOptions[A] {
+  def initialPopulation: Population[A] = Scheme.make(populationSize)
 }

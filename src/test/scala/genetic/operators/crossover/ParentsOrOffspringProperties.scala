@@ -12,11 +12,11 @@ import org.scalacheck._
 
 
 object ParentsOrOffspringProperties extends CrossoverProperties("ParentsOrOffspring props") {
-  type G = String
+  type Ind = String
   val implGen: Gen[ParentsOrOffspring] = choose[Double](0.0, 1.0).map(ParentsOrOffspring(_))
-  val gPairGen: Gen[(G, G)] = arbTuple2[String, String].arbitrary
+  val gPairGen: Gen[(Ind, Ind)] = arbTuple2[String, String].arbitrary
 
-  implicit val join: Join[G] = GenotypeImplicits[String].join
+  implicit val join: Join[Ind] = GenotypeImplicits[String].join
 
   property("Either parents or offspring") = forAll(gPairGen, implGen) { case ((p1, p2), crossover) =>
     val parents = IterablePair(p1, p2)

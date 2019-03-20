@@ -20,9 +20,9 @@ object FitnessEvaluatorTest extends Properties("Fitness evaluator test") {
     new ConfigurableParFitnessEvaluator(new ForkJoinTaskSupport)
   )
 
-  type G = Int
-  implicit val fitness = GenotypeImplicits[G].fitness
-  val populationGen: Gen[Population[G]] = nonEmptyListOf(arbitrary[G]).map(_.toVector)
+  type Ind = Int
+  implicit val fitness = GenotypeImplicits[Ind].fitness
+  val populationGen: Gen[Population[Ind]] = nonEmptyListOf(arbitrary[Ind]).map(_.toVector)
 
   property("Rating population keeps all individuals") = forAll(derivative, populationGen) {
     (evaluator, population) =>

@@ -1,19 +1,19 @@
 package genetic.operators
 
 import genetic.Population
-import genetic.genotype.Modification
-import org.scalacheck.{Gen, Properties}
-import org.scalacheck.Prop._
+import genetic.genotype.Variation
 import org.scalacheck.Gen._
+import org.scalacheck.Prop._
+import org.scalacheck.{Gen, Properties}
 
 abstract class MutationProperties(name: String) extends Properties(name + " with Mutation props") {
-  type G
-  implicit def modification: Modification[G]
-  def gGen: Gen[G]
+  type Ind
+  implicit def modification: Variation[Ind]
+  def gGen: Gen[Ind]
 
   def implGen: Gen[Mutation]
 
-  def populationGen: Gen[Population[G]] = for {
+  def populationGen: Gen[Population[Ind]] = for {
     n <- posNum[Int]
     pop <- listOfN(n, gGen)
   } yield pop.toVector

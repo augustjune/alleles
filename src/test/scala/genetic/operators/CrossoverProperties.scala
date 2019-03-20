@@ -8,13 +8,13 @@ import org.scalacheck.Gen._
 
 
 abstract class CrossoverProperties(name: String) extends Properties(name + " with Crossover props") {
-  type G
+  type Ind
   def implGen: Gen[Crossover]
-  def gPairGen: Gen[(G, G)]
+  def gPairGen: Gen[(Ind, Ind)]
 
-  implicit def join: Join[G]
+  implicit def join: Join[Ind]
 
-  def popOfPairsGen: Gen[Population[(G, G)]] = for {
+  def popOfPairsGen: Gen[Population[(Ind, Ind)]] = for {
     n <- posNum[Int]
     pop <- listOfN(n, gPairGen)
   } yield pop.toVector

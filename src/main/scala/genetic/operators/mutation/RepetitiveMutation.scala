@@ -1,6 +1,6 @@
 package genetic.operators.mutation
 
-import genetic.genotype.Modification
+import genetic.genotype.Variation
 import genetic.toolset.RRandom
 import genetic.operators.Mutation
 
@@ -17,15 +17,15 @@ import genetic.operators.Mutation
 case class RepetitiveMutation(individualChance: Double, repetitiveChance: Double) extends Mutation {
   require(repetitiveChance < 1)
 
-  def single[G: Modification](g: G): G =
-    if (RRandom.shot(individualChance)) modifyGenotype(g)
-    else g
+  def single[A: Variation](a: A): A =
+    if (RRandom.shot(individualChance)) modifyGenotype(a)
+    else a
 
-  protected def modifyGenotype[G: Modification](g: G): G = {
-    def mutateNext(genotype: G): G =
+  protected def modifyGenotype[A: Variation](a: A): A = {
+    def mutateNext(genotype: A): A =
       if (RRandom.shot(repetitiveChance)) mutateNext(genotype)
       else genotype
 
-    mutateNext(Modification(g))
+    mutateNext(Variation(a))
   }
 }
