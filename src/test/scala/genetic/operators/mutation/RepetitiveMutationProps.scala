@@ -14,7 +14,7 @@ object RepetitiveMutationProps extends MutationProperties("RepetitiveMutation pr
   def gGen: Gen[Int] = arbitrary[Int]
 
   def repetitiveMutationGenTemplate(iChanceGen: Gen[Double], repChanceGen: Gen[Double]): Gen[RepetitiveMutation] =
-    for (iChance <- iChanceGen; repChance <- repChanceGen) yield RepetitiveMutation(iChance, repChance)
+    for (iChance <- iChanceGen; repChance <- repChanceGen) yield new RepetitiveMutation(iChance, repChance)
 
   def implGen: Gen[RepetitiveMutation] =
     repetitiveMutationGenTemplate(choose(0.0, 1.0), choose(0.0, 1.0))
@@ -37,8 +37,8 @@ object RepetitiveMutationProps extends MutationProperties("RepetitiveMutation pr
     (g, mutation) => mutationsOccurred(g, mutation.single(g)) >= 1
   }
 
-  property("If repetitive chance must be less than 100%") = forAll(arbitrary[Double], sized(n => choose(1.0, math.max(1.0, n)))) {
-    (indChance, repChance) => throws(classOf[IllegalArgumentException]) (RepetitiveMutation(indChance, repChance))
+  property("Repetitive chance must be less than 100%") = forAll(arbitrary[Double], sized(n => choose(1.0, math.max(1.0, n)))) {
+    (indChance, repChance) => throws(classOf[IllegalArgumentException]) (new RepetitiveMutation(indChance, repChance))
   }
 
 }

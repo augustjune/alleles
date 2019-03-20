@@ -54,7 +54,7 @@ object FunTuningRun extends App {
 
   val inputValues = createValues(secretFun, 1000)
   implicit val fitness = calcFitness(inputValues)
-  val operators = OperatorSet(Tournament(10), ParentsOrOffspring(0.25), RepetitiveMutation(0.7, 0.4))
+  val operators = new OperatorSet(Tournament(10), new ParentsOrOffspring(0.25), new RepetitiveMutation(0.7, 0.4))
 
   val population: Population[Fun] = Await.result(
     GeneticAlgorithm.evolve(EvolutionOptions(100, operators)).takeWithin(10 seconds).runWith(Sink.last[Population[Fun]]),

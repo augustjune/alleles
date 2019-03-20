@@ -14,7 +14,7 @@ import genetic.operators.Mutation
   * @param repetitiveChance Probability of each next modification
   */
 
-case class RepetitiveMutation(individualChance: Double, repetitiveChance: Double) extends Mutation {
+class RepetitiveMutation(individualChance: Double, repetitiveChance: Double) extends Mutation {
   require(repetitiveChance < 1)
 
   def single[A: Variation](a: A): A =

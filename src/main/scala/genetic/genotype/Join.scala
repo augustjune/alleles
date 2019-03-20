@@ -14,30 +14,30 @@ object Join {
   /**
     * Join which uses identical function for combining both elements of output pair
     */
-  def symmetric[A](combine: (A, A) => A): Join[A] = (a: A, b: A) => IterablePair(combine(a, b), combine(b, a))
+  def symmetric[A](combine: (A, A) => A): Join[A] = (a: A, b: A) => new IterablePair(combine(a, b), combine(b, a))
 
   /**
     * Commutative version of Join, which allows to avoid overhead while computing both combinations of input pair
     */
   def commutative[A](combine: (A, A) => A): Join[A] = (a: A, b: A) => {
     val res = combine(a, b)
-    IterablePair(res, res)
+    new IterablePair(res, res)
   }
 
   def pair[A](cross: (A, A) => (A, A)): Join[A] = (a: A, b: A) => cross(a, b) match {
-    case (as, bs) => IterablePair(as, bs)
+    case (as, bs) => new IterablePair(as, bs)
   }
 
   def singlePoint[A](split: A => (A, A))(combineParts: (A, A) => A): Join[A] = (x: A, y: A) => {
     val (x1, x2) = split(x)
     val (y1, y2) = split(y)
-    IterablePair(combineParts(x1, y2), combineParts(y1, x2))
+    new IterablePair(combineParts(x1, y2), combineParts(y1, x2))
   }
 
   def samePoint[A, P](p: (A, A) => P, splitWith: A => P => (A, A))(combineParts: (A, A) => A): Join[A] = (x: A, y: A) => {
     val point = p(x, y)
     val (x1, x2) = splitWith(x)(point)
     val (y1, y2) = splitWith(y)(point)
-    IterablePair(combineParts(x1, y2), combineParts(y1, x2))
+    new IterablePair(combineParts(x1, y2), combineParts(y1, x2))
   }
 }
