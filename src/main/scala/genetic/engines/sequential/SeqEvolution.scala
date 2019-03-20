@@ -5,7 +5,7 @@ import genetic.genotype.Fitness.Rated
 import genetic.genotype.{Join, Variation}
 import genetic.{OperatorSet, Population}
 
-object SeqEvolution$ extends Evolution {
+object SeqEvolution extends Evolution {
   def nextGeneration[A: Join : Variation](ratedPop: Population[Rated[A]],
                                           operators: OperatorSet): Population[A] =
     operators.mutation.generation(
