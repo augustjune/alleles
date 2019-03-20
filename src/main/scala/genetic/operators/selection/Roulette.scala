@@ -1,8 +1,8 @@
 package genetic.operators.selection
 
-import genetic.genotype.Fitness
-import genetic.operators.Selection
 import genetic.Population
+import genetic.genotype.Fitness.Rated
+import genetic.operators.Selection
 import genetic.toolset.RRandom
 
 /**
@@ -28,18 +28,18 @@ import genetic.toolset.RRandom
   * Note: chromosomes with the largest fitness value will never enter the next pop
   */
 object Roulette extends Selection {
-  def single[A](population: Population[WithFitness[A]]): (A, A) = {
+  def single[A](population: Population[Rated[A]]): (A, A) = {
     val sectors = prioritize(population)
     (chooseByPriorities(sectors), chooseByPriorities(sectors))
   }
 
 
-  def generation[A](population: Population[WithFitness[A]]): Population[(A, A)] = {
+  def generation[A](population: Population[Rated[A]]): Population[(A, A)] = {
     val sectors = prioritize(population)
     for (_ <- (1 to population.size / 2).toVector) yield (chooseByPriorities(sectors), chooseByPriorities(sectors))
   }
 
-  private def prioritize[A](population: Population[WithFitness[A]]): Population[(A, Double)] = {
+  private def prioritize[A](population: Population[Rated[A]]): Population[(A, Double)] = {
     val largestFitness = population.map(_._2).max
     population.map { case (g, f) => g -> (largestFitness - f) }
   }

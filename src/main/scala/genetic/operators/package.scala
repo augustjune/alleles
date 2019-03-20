@@ -1,7 +1,8 @@
 package genetic
 
+import genetic.genotype.Fitness.Rated
+import genetic.genotype.{Join, Variation}
 import genetic.toolset.IterablePair
-import genetic.genotype.{Fitness, Join, Variation}
 
 package object operators {
   /**
@@ -9,11 +10,9 @@ package object operators {
     * genomes from a population for later breeding
     */
   trait Selection extends {
-    type WithFitness[A] = (A, Double)
+    def single[A](population: Population[Rated[A]]): (A, A)
 
-    def single[A](population: Population[WithFitness[A]]): (A, A)
-
-    def generation[A](population: Population[WithFitness[A]]): Population[(A, A)]
+    def generation[A](population: Population[Rated[A]]): Population[(A, A)]
   }
 
   /**
