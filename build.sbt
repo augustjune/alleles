@@ -1,33 +1,24 @@
-name := "alleles"
 
-version := "0.1"
-
-scalaVersion := "2.12.6"
-
-scalacOptions += "-Ypartial-unification"
-libraryDependencies += "org.typelevel" %% "cats-core" % "1.3.1"
-libraryDependencies += "org.typelevel" %% "cats-laws" % "1.3.1"
-
-libraryDependencies ++= Seq (
-  "org.scalactic" %% "scalactic" % "3.0.5",
-  "org.scalatest" %% "scalatest" % "3.0.5" % "test"
-)
-
-libraryDependencies ++= Seq(
-  "com.typesafe.akka" %% "akka-stream" % "2.5.16",
-  "com.typesafe.akka" %% "akka-stream-testkit" % "2.5.16" % Test
-)
-
-libraryDependencies += "org.scalacheck" %% "scalacheck" % "1.14.0" % "test"
-
-lazy val compilerOptions = Seq(
+lazy val scalaOptions = Seq(
   scalacOptions ++= Seq(
     "-Ypartial-unification"
   )
 )
 
+lazy val commonSettings = scalaOptions ++ Seq(
+  version := "0.1",
+  organization := "org.augustjune",
+  scalaVersion := "2.12.6",
+  libraryDependencies += "com.typesafe.akka" %% "akka-stream" % "2.5.16"
+)
+
+lazy val alleles = project.in(file("."))
+  .settings(commonSettings)
+  .dependsOn(core, benchmarks, examples)
+  .aggregate(core, benchmarks, examples)
+
 lazy val core = project.in(file("modules/core"))
-  .settings(compilerOptions)
+  .settings(commonSettings)
   .settings(
     name := "alleles-core",
     libraryDependencies ++= Seq(
@@ -42,18 +33,19 @@ lazy val core = project.in(file("modules/core"))
   )
 
 lazy val benchmarks = project.in(file("modules/benchmarks"))
-  .dependsOn(core)
-  .settings(compilerOptions)
+  .dependsOn(core, examples)
+  .settings(commonSettings)
   .settings(
-    libraryDependencies ++= Seq(
-      
-    )
+    name := "alleles-benchmarks"
   )
 
 lazy val examples = project.in(file("modules/examples"))
   .dependsOn(core)
-  .settings(compilerOptions)
+  .settings(commonSettings)
   .settings(
+    name := "alleles-examples",
+
     libraryDependencies ++= Seq(
+      "org.scalatest" %% "scalatest" % "3.0.5",
     )
   )
