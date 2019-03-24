@@ -46,6 +46,6 @@ lazy val examples = project.in(file("modules/examples"))
     name := "alleles-examples",
 
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % "3.0.5",
+      "org.scalatest" %% "scalatest" % "3.0.5"
     )
   )
