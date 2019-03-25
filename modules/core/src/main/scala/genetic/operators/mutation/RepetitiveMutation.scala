@@ -3,6 +3,7 @@ package genetic.operators.mutation
 import genetic.genotype.Variation
 import genetic.toolset.RRandom
 import genetic.operators.Mutation
+import genetic.genotype.syntax._
 
 /**
   * Technique of mutation, which affects individual genotype with probability `individualChance` and
@@ -18,14 +19,14 @@ class RepetitiveMutation(individualChance: Double, repetitiveChance: Double) ext
   require(repetitiveChance < 1)
 
   def single[A: Variation](a: A): A =
-    if (RRandom.shot(individualChance)) modifyGenotype(a)
+    if (RRandom.shot(individualChance)) modifyIndividual(a)
     else a
 
-  protected def modifyGenotype[A: Variation](a: A): A = {
-    def mutateNext(genotype: A): A =
-      if (RRandom.shot(repetitiveChance)) mutateNext(genotype)
-      else genotype
+  private def modifyIndividual[A: Variation](a: A): A = {
+    def mutateNext(individual: A): A =
+      if (RRandom.shot(repetitiveChance)) mutateNext(individual.modified)
+      else individual
 
-    mutateNext(Variation(a))
+    mutateNext(a.modified)
   }
 }
