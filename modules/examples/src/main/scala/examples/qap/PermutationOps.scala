@@ -42,7 +42,7 @@ class PermutationOps(matrixSource: String) {
       replaceDuplicates(locations.toList, missing.toList).toVector
     }
 
-    (a: Permutation, b: Permutation) => Joins.singlePoint[Int, Vector[Int]].cross(a, b).map(fix _)
+    Joins.singlePoint[Int, Vector[Int]].recover(fix)
   }
 
   /**
