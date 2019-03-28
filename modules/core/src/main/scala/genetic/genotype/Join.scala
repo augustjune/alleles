@@ -8,8 +8,7 @@ import genetic.toolset.IterablePair
 trait Join[A] { self =>
   def cross(a: A, b: A): IterablePair[A]
 
-  def recover(fix: A => A): Join[A] =
-    (a: A, b: A) => self.cross(a, b).map(fix)
+  def recover(fix: A => A): Join[A] = alter(identity, fix)
 
   def alter[B](into: B => A, back: A => B): Join[B] =
     (a: B, b: B) => self.cross(into(a), into(b)).map(back)
