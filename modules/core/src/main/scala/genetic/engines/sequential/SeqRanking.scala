@@ -2,10 +2,10 @@ package genetic.engines.sequential
 
 import cats.Functor
 import genetic.Population
-import genetic.engines.FitnessEvaluator
+import genetic.engines.Ranking
 
-object SeqFitnessEvaluator extends {
+object SeqRanking extends {
   private val populationFunctor = new Functor[Population] {
     def map[A, B](fa: Population[A])(f: A => B): Population[B] = fa.map(f)
   }
-} with FitnessEvaluator(populationFunctor)
+} with Ranking(populationFunctor)

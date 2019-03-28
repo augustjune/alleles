@@ -3,14 +3,14 @@ package examples.funParamTuning
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
-import genetic.engines.{EvolutionOptions, GeneticAlgorithm}
+import genetic.engines.{Epic, GeneticAlgorithm}
 import genetic.genotype.syntax._
 import genetic.genotype.{Fitness, Join, Scheme, Variation}
 import genetic.operators.crossover.ParentsOrOffspring
 import genetic.operators.mutation.RepetitiveMutation
 import genetic.operators.selection.Tournament
 import genetic.toolset.RRandom
-import genetic.{OperatorSet, Population, PopulationExtension}
+import genetic.{Epoch, Population, PopulationExtension}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -54,10 +54,10 @@ object FunTuningRun extends App {
 
   val inputValues = createValues(secretFun, 1000)
   implicit val fitness = calcFitness(inputValues)
-  val operators = new OperatorSet(Tournament(10), new ParentsOrOffspring(0.25), new RepetitiveMutation(0.7, 0.4))
+  val operators = new Epoch(Tournament(10), new ParentsOrOffspring(0.25), new RepetitiveMutation(0.7, 0.4))
 
   val population: Population[Fun] = Await.result(
-    GeneticAlgorithm.evolve(EvolutionOptions(100, operators)).takeWithin(10 seconds).runWith(Sink.last[Population[Fun]]),
+    GeneticAlgorithm.evolve(Epic(100, operators)).takeWithin(10 seconds).runWith(Sink.last[Population[Fun]]),
     Duration.Inf)
 
   val best: Fun = population.best

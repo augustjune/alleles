@@ -7,7 +7,7 @@ import akka.stream.ActorMaterializer
 import benchmarking.Measuring.Measured
 import examples.qap.{Permutation, PermutationOps}
 import genetic._
-import genetic.engines.{CompositeDriver, EvolutionOptions, GeneticAlgorithm}
+import genetic.engines.{Setting, Epic, GeneticAlgorithm}
 import genetic.genotype.Scheme
 import genetic.genotype.syntax._
 import genetic.operators.crossover.ParentsOrOffspring
@@ -30,16 +30,16 @@ object Compare extends App {
 
   val initialPopSize = 10000
   val initialPop = Scheme.make(initialPopSize)
-  val operators = new OperatorSet(
+  val operators = new Epoch(
     Tournament(10),
     new ParentsOrOffspring(0.25),
     new RepetitiveMutation(0.8, 0.5))
 
-  val options = EvolutionOptions(initialPop, operators)
+  val options = Epic(initialPop, operators)
   val iterations = 5
 
   val comparison = new LongRunningComparison[Permutation, Unit] {
-    def candidates: List[(String, CompositeDriver)] = List(
+    def candidates: List[(String, Setting)] = List(
       "Basic sync" -> GeneticAlgorithm,
       "Fully parallel" -> GeneticAlgorithm.par,
       "Parallel #2" -> GeneticAlgorithm.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(2)))),

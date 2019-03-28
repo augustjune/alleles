@@ -1,13 +1,13 @@
 package genetic.engines.sequential
 
-import genetic.engines.Evolution
+import genetic.engines.Progress
 import genetic.genotype.Fitness.Rated
 import genetic.genotype.{Join, Variation}
-import genetic.{OperatorSet, Population}
+import genetic.{Epoch, Population}
 
-object SeqEvolution extends Evolution {
+object SeqProgress extends Progress {
   def nextGeneration[A: Join : Variation](ratedPop: Population[Rated[A]],
-                                          operators: OperatorSet): Population[A] =
+                                          operators: Epoch): Population[A] =
     operators.mutation.generation(
       operators.crossover.generation(
         operators.selection.generation(ratedPop)

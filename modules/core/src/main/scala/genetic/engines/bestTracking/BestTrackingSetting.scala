@@ -1,13 +1,13 @@
 package genetic.engines.bestTracking
 
 import akka.stream.scaladsl.Source
-import genetic.engines.{Evolution, EvolutionFlow, FitnessEvaluator}
+import genetic.engines.{Progress, EvolutionFlow, Ranking}
 import genetic.genotype.{Fitness, Join, Variation}
-import genetic.{OperatorSet, Population}
+import genetic.{Epoch, Population}
 
-class BestTrackingDriver(fitnessEvaluator: FitnessEvaluator, flow: Evolution) {
+class BestTrackingSetting(fitnessEvaluator: Ranking, flow: Progress) {
   def evolve[A: Fitness : Join : Variation](initial: Population[A],
-                                            operators: OperatorSet): EvolutionFlow[PopulationWithBest[A]] =
+                                            operators: Epoch): EvolutionFlow[PopulationWithBest[A]] =
     Source.repeat(()).scan((initial, (initial.head, Double.MaxValue))) {
       case ((prev, prevBest), _) =>
         val ratedPopulation = fitnessEvaluator.rate(prev)
