@@ -33,11 +33,4 @@ object Join {
     val (y1, y2) = split(y)
     new IterablePair(combineParts(x1, y2), combineParts(y1, x2))
   }
-
-  def samePoint[A, P](p: (A, A) => P, splitWith: A => P => (A, A))(combineParts: (A, A) => A): Join[A] = (x: A, y: A) => {
-    val point = p(x, y)
-    val (x1, x2) = splitWith(x)(point)
-    val (y1, y2) = splitWith(y)(point)
-    new IterablePair(combineParts(x1, y2), combineParts(y1, x2))
-  }
 }
