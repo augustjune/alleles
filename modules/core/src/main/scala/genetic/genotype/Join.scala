@@ -27,10 +27,4 @@ object Join {
   def pair[A](cross: (A, A) => (A, A)): Join[A] = (a: A, b: A) => cross(a, b) match {
     case (as, bs) => new IterablePair(as, bs)
   }
-
-  def singlePoint[A](split: A => (A, A))(combineParts: (A, A) => A): Join[A] = (x: A, y: A) => {
-    val (x1, x2) = split(x)
-    val (y1, y2) = split(y)
-    new IterablePair(combineParts(x1, y2), combineParts(y1, x2))
-  }
 }

@@ -1,8 +1,10 @@
 package genetic
 
 import genetic.genotype._
+import genetic.genotype.standard.seq.Joins
 import org.scalacheck.Arbitrary.arbitrary
 
+import scala.collection.immutable.WrappedString
 import scala.util.Random
 
 trait GenotypeImplicits[Ind] {
@@ -33,7 +35,9 @@ object GenotypeImplicits {
     */
   implicit val stringImplicits: GenotypeImplicits[String] = new GenotypeImplicits[String] {
     val fitness: Fitness[String] = _.length
-    val join: Join[String] = Join.singlePoint[String](x => x.splitAt(x.length / 2)) { case (x, y) => x + y }
+    val join: Join[String] = (a: String, b: String) => {
+      Joins.singlePoint[Char, WrappedString].cross(a, b).map(_.self)
+    }
 
     private val buffer = "The quick brown fox jumps over the lazy dog".replaceAll(" ", "")
     val variation: Variation[String] = { x =>
