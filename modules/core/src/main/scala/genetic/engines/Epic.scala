@@ -11,15 +11,15 @@ trait Epic[A] {
 
 object Epic {
   def apply[A](initialPopulation: Population[A], operators: Epoch): Epic[A] =
-    new ConcreteEO(initialPopulation, operators)
+    new Strict(initialPopulation, operators)
 
   def apply[A: Scheme](populationSize: Int, operators: Epoch): Epic[A] =
-    new LazyEO(populationSize, operators)
+    new Lazy(populationSize, operators)
 }
 
-private final class ConcreteEO[A](val initialPopulation: Population[A],
-                                  val operators: Epoch) extends Epic[A]
+private final class Strict[A](val initialPopulation: Population[A],
+                              val operators: Epoch) extends Epic[A]
 
-private final class LazyEO[A: Scheme](populationSize: Int, val operators: Epoch) extends Epic[A] {
+private final class Lazy[A: Scheme](populationSize: Int, val operators: Epoch) extends Epic[A] {
   def initialPopulation: Population[A] = Scheme.make(populationSize)
 }

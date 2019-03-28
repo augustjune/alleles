@@ -7,10 +7,8 @@ import genetic.{Epoch, Population}
 
 object SeqProgress extends Progress {
   def nextGeneration[A: Join : Variation](ratedPop: Population[Rated[A]],
-                                          operators: Epoch): Population[A] =
-    operators.mutation.generation(
-      operators.crossover.generation(
-        operators.selection.generation(ratedPop)
-      )
-    )
+                                          epoch: Epoch): Population[A] = epoch match {
+    case Epoch(selection, crossover, mutation) =>
+      mutation.generation(crossover.generation(selection.generation(ratedPop)))
+  }
 }

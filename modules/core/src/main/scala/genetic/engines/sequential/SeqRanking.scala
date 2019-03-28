@@ -5,7 +5,7 @@ import genetic.Population
 import genetic.engines.Ranking
 
 object SeqRanking extends {
-  private val populationFunctor = new Functor[Population] {
+  private val sequentialFunctor = new Functor[Population] {
     def map[A, B](fa: Population[A])(f: A => B): Population[B] = fa.map(f)
   }
-} with Ranking(populationFunctor)
+} with Ranking(sequentialFunctor)

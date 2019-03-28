@@ -5,5 +5,5 @@ import genetic.genotype.{Fitness, Join, Variation}
 
 
 trait Ambience {
-  def evolve[A: Fitness : Join : Variation](options: Epic[A]): EvolutionFlow[Population[A]]
+  def evolve[A: Fitness : Join : Variation](epic: Epic[A]): EvolutionFlow[Population[A]]
 }

@@ -9,9 +9,9 @@ import genetic.genotype.{Fitness, Join, Variation}
 import scala.concurrent.ExecutionContext
 
 class Setting(ranking: Ranking, flow: Progress) extends Ambience {
-  def evolve[A: Fitness : Join : Variation](options: Epic[A]): EvolutionFlow[Population[A]] =
-    Source.repeat(()).scan(options.initialPopulation) {
-      case (prev, _) => flow.nextGeneration(ranking.rate(prev), options.operators)
+  def evolve[A: Fitness : Join : Variation](epic: Epic[A]): EvolutionFlow[Population[A]] =
+    Source.repeat(()).scan(epic.initialPopulation) {
+      case (prev, _) => flow.nextGeneration(ranking.rate(prev), epic.operators)
     }
 
   def bestTracking: BestTrackingSetting = new BestTrackingSetting(ranking, flow)
