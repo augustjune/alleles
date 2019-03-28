@@ -1,5 +1,5 @@
-import genetic.engines.EvolutionOptions
+import genetic.engines.Epic
 
 package object benchmarking {
-  case class EvolutionPreferences[A](options: EvolutionOptions[A], iterations: Int)
+  case class EvolutionPreferences[A](options: Epic[A], iterations: Int)
 }

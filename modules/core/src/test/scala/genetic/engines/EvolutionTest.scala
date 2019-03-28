@@ -1,14 +1,14 @@
 package genetic.engines
 
-import genetic.engines.parallel.ParallelEvolution
-import genetic.engines.parallel.configurable.ConfigurableParEvolution
-import genetic.engines.sequential.SeqEvolution
+import genetic.engines.parallel.ParallelProgress
+import genetic.engines.parallel.configurable.ConfigurableParProgress
+import genetic.engines.sequential.SeqProgress
 import genetic.genotype.Fitness
 import genetic.operators._
 import genetic.operators.crossover.ParentsOrOffspring
 import genetic.operators.mutation.RepetitiveMutation
 import genetic.operators.selection.Tournament
-import genetic.{GenotypeImplicits, OperatorSet, Population}
+import genetic.{GenotypeImplicits, Epoch, Population}
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.Prop._
@@ -17,10 +17,10 @@ import org.scalacheck.{Gen, Properties}
 import scala.collection.parallel.{ForkJoinTaskSupport, TaskSupport}
 
 object EvolutiongTest extends Properties("Evolution strategy props") {
-  val derivative: Gen[Evolution] = Gen.oneOf(
-    SeqEvolution,
-    ParallelEvolution,
-    new ConfigurableParEvolution(new ForkJoinTaskSupport)
+  val derivative: Gen[Progress] = Gen.oneOf(
+    SeqProgress,
+    ParallelProgress,
+    new ConfigurableParProgress(new ForkJoinTaskSupport)
   )
 
   type Ind = Int
@@ -31,11 +31,11 @@ object EvolutiongTest extends Properties("Evolution strategy props") {
   val crossoverGen: Gen[Crossover] = Gen.const(new ParentsOrOffspring(0.25))
   val mutationGen: Gen[Mutation] = Gen.const(new RepetitiveMutation(0.5, 0.5))
 
-  val operatorsGen: Gen[OperatorSet] = for {
+  val operatorsGen: Gen[Epoch] = for {
     sel <- selectionGen
     cross <- crossoverGen
     mut <- mutationGen
-  } yield new OperatorSet(sel, cross, mut)
+  } yield new Epoch(sel, cross, mut)
 
   val implicits = GenotypeImplicits[Ind]
   import implicits._

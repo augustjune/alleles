@@ -1,15 +1,15 @@
 package genetic.engines.async
 
 import akka.stream.scaladsl.Source
-import genetic.engines.{Evolution, EvolutionFlow}
+import genetic.engines.{Progress, EvolutionFlow}
 import genetic.genotype.{Join, Variation}
-import genetic.{OperatorSet, Population}
+import genetic.{Epoch, Population}
 
 import scala.concurrent.{ExecutionContext, Future}
 
-class AsyncFitnessDriver(flow: Evolution)(implicit executionContext: ExecutionContext) {
+class AsyncSetting(flow: Progress)(implicit executionContext: ExecutionContext) {
   def evolve[A: AsyncFitness : Join : Variation](initial: Population[A],
-                                                 operators: OperatorSet): EvolutionFlow[Population[A]] = {
+                                                 operators: Epoch): EvolutionFlow[Population[A]] = {
     Source.repeat(()).scanAsync(initial) {
       case (prev, _) => Future.traverse(prev) { g =>
         for {

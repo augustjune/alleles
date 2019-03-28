@@ -1,19 +1,19 @@
 package genetic.engines
 
-import genetic.engines.parallel.{ParallelEvolution, ParallelFitnessEvaluator}
-import genetic.engines.parallel.configurable.{ConfigurableParEvolution, ConfigurableParFitnessEvaluator}
-import genetic.engines.sequential.{SeqEvolution, SeqFitnessEvaluator}
+import genetic.engines.parallel.{ParallelProgress, ParallelRanking}
+import genetic.engines.parallel.configurable.{ConfigurableParProgress, ConfigurableParRanking}
+import genetic.engines.sequential.{SeqProgress, SeqRanking}
 
 import scala.collection.parallel.TaskSupport
 
-object GeneticAlgorithm extends CompositeDriver(SeqFitnessEvaluator, SeqEvolution) {
-  def par: CompositeDriver = new CompositeDriver(ParallelFitnessEvaluator, ParallelEvolution)
+object GeneticAlgorithm extends Setting(SeqRanking, SeqProgress) {
+  def par: Setting = new Setting(ParallelRanking, ParallelProgress)
 
-  def par(taskSupport: TaskSupport): CompositeDriver =
-    new CompositeDriver(
-      new ConfigurableParFitnessEvaluator(taskSupport),
-      new ConfigurableParEvolution(taskSupport))
+  def par(taskSupport: TaskSupport): Setting =
+    new Setting(
+      new ConfigurableParRanking(taskSupport),
+      new ConfigurableParProgress(taskSupport))
 
-  def parFitness: CompositeDriver = new CompositeDriver(ParallelFitnessEvaluator, SeqEvolution)
+  def parFitness: Setting = new Setting(ParallelRanking, SeqProgress)
 }
 

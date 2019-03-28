@@ -1,15 +1,15 @@
 package genetic.engines.parallel
 
-import genetic.engines.Evolution
+import genetic.engines.Progress
 import genetic.genotype.Fitness.Rated
 import genetic.genotype.{Join, Variation}
-import genetic.{OperatorSet, Population}
+import genetic.{Epoch, Population}
 
 import scala.collection.parallel.immutable.ParVector
 
-object ParallelEvolution extends Evolution {
+object ParallelProgress extends Progress {
   def nextGeneration[A: Join : Variation](ratedPop: Population[Rated[A]],
-                                          operators: OperatorSet): Population[A] =
+                                          operators: Epoch): Population[A] =
     ParVector.fill(ratedPop.size / 2)(())
       .map(_ => operators.selection.single(ratedPop))
       .flatMap(operators.crossover.single(_))

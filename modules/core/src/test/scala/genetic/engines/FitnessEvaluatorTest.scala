@@ -1,8 +1,8 @@
 package genetic.engines
 
-import genetic.engines.parallel.ParallelFitnessEvaluator
-import genetic.engines.parallel.configurable.ConfigurableParFitnessEvaluator
-import genetic.engines.sequential.SeqFitnessEvaluator
+import genetic.engines.parallel.ParallelRanking
+import genetic.engines.parallel.configurable.ConfigurableParRanking
+import genetic.engines.sequential.SeqRanking
 import genetic.genotype.syntax.FitnessObj
 import genetic.{GenotypeImplicits, Population}
 import org.scalacheck.Arbitrary._
@@ -14,10 +14,10 @@ import scala.collection.parallel.{ForkJoinTaskSupport, TaskSupport}
 
 
 object FitnessEvaluatorTest extends Properties("Fitness evaluator test") {
-  val derivative: Gen[FitnessEvaluator] = Gen.oneOf(
-    SeqFitnessEvaluator,
-    ParallelFitnessEvaluator,
-    new ConfigurableParFitnessEvaluator(new ForkJoinTaskSupport)
+  val derivative: Gen[Ranking] = Gen.oneOf(
+    SeqRanking,
+    ParallelRanking,
+    new ConfigurableParRanking(new ForkJoinTaskSupport)
   )
 
   type Ind = Int

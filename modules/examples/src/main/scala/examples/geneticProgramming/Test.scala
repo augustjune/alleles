@@ -3,13 +3,13 @@ package examples.geneticProgramming
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
-import genetic.engines.{EvolutionOptions, GeneticAlgorithm}
+import genetic.engines.{Epic, GeneticAlgorithm}
 import genetic.genotype.{Fitness, Join, Scheme, Variation}
 import genetic.operators.crossover.ParentsOrOffspring
 import genetic.operators.mutation.RepetitiveMutation
 import genetic.operators.selection.Tournament
 import genetic.toolset.RRandom
-import genetic.{OperatorSet, Population}
+import genetic.{Epoch, Population}
 
 import scala.concurrent.Await
 import scala.concurrent.duration._
@@ -66,10 +66,10 @@ object Test extends App {
   implicit val system = ActorSystem()
   implicit val mat = ActorMaterializer()
 
-  val operators = new OperatorSet(Tournament(20), new ParentsOrOffspring(0.5), new RepetitiveMutation(0.4, 0.2))
+  val operators = new Epoch(Tournament(20), new ParentsOrOffspring(0.5), new RepetitiveMutation(0.4, 0.2))
 
   val lastPop: Population[GPTree] = Await.result(
-    GeneticAlgorithm.par.evolve(EvolutionOptions(100, operators)).take(1000).runWith(Sink.last),
+    GeneticAlgorithm.par.evolve(Epic(100, operators)).take(1000).runWith(Sink.last),
     Duration.Inf)
 
   import genetic.PopulationExtension

@@ -18,8 +18,8 @@ package object genetic {
   /**
     * Set of genetic operators which defines generation cycle
     */
-  class OperatorSet(val selection: Selection, val crossover: Crossover, val mutation: Mutation) {
-    def generationCycle[A: Fitness : Join : Variation](population: Population[A]): Population[A] =
+  class Epoch(val selection: Selection, val crossover: Crossover, val mutation: Mutation) {
+    def cycle[A: Fitness : Join : Variation](population: Population[A]): Population[A] =
       mutation.generation(crossover.generation(selection.generation(population.withFitnesses)))
   }
 }
