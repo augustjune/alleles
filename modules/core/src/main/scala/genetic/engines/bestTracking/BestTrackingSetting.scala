@@ -5,12 +5,12 @@ import genetic.engines.{Progress, EvolutionFlow, Ranking}
 import genetic.genotype.{Fitness, Join, Variation}
 import genetic.{Epoch, Population}
 
-class BestTrackingSetting(fitnessEvaluator: Ranking, flow: Progress) {
+class BestTrackingSetting(ranking: Ranking, flow: Progress) {
   def evolve[A: Fitness : Join : Variation](initial: Population[A],
                                             operators: Epoch): EvolutionFlow[PopulationWithBest[A]] =
     Source.repeat(()).scan((initial, (initial.head, Double.MaxValue))) {
       case ((prev, prevBest), _) =>
-        val ratedPopulation = fitnessEvaluator.rate(prev)
+        val ratedPopulation = ranking.rate(prev)
         (flow.nextGeneration(ratedPopulation, operators), (prevBest +: ratedPopulation).minBy(_._2))
     }
 }
