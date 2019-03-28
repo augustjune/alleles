@@ -1,7 +1,8 @@
 package examples.qap
 
 import examples.qap.source._
-import genetic.genotype.{Fitness, Join, Variation, Scheme}
+import genetic.genotype.standard.seq.Joins
+import genetic.genotype.{Fitness, Join, Scheme, Variation}
 import genetic.toolset.RRandom
 
 class PermutationOps(matrixSource: String) {
@@ -16,7 +17,6 @@ class PermutationOps(matrixSource: String) {
     def relationPrices(currentLocation: Int, currentNum: Int): Int =
       locationMap.foldLeft(0) { case (left, (loc, num)) => left + range(currentLocation, loc) * flow(currentNum, num) }
 
-//    spin(1)
     locationMap.foldLeft(0) { case (left, (loc, num)) => left + relationPrices(loc, num) }
   }
 
@@ -29,22 +29,21 @@ class PermutationOps(matrixSource: String) {
     * Single-point crossover with fixing violating permutations
     */
 
-  implicit val combinator: Join[Permutation] =
-    Join.samePoint[Permutation, Int]((p1, _) => RRandom.nextInt(p1.length), p => p.splitAt(_)) { case (x, y) =>
-      def fix(locations: Vector[Int]): Vector[Int] = {
-        def replaceDuplicates(loc: List[Int], pool: List[Int]): List[Int] = loc match {
-          case h :: t =>
-            if (t.contains(h)) pool.head :: replaceDuplicates(t, pool.tail)
-            else h :: replaceDuplicates(t, pool)
-          case Nil => Nil
-        }
-
-        val missing = locations.indices filterNot locations.contains
-        replaceDuplicates(locations.toList, missing.toList).toVector
+  implicit val combinator: Join[Permutation] = {
+    def fix(locations: Vector[Int]): Vector[Int] = {
+      def replaceDuplicates(loc: List[Int], pool: List[Int]): List[Int] = loc match {
+        case h :: t =>
+          if (t.contains(h)) pool.head :: replaceDuplicates(t, pool.tail)
+          else h :: replaceDuplicates(t, pool)
+        case Nil => Nil
       }
 
-      fix(x ++ y)
+      val missing = locations.indices filterNot locations.contains
+      replaceDuplicates(locations.toList, missing.toList).toVector
     }
+
+    (a: Permutation, b: Permutation) => Joins.singlePoint[Vector, Int].cross(a, b).map(fix _)
+  }
 
   /**
     * Switching two facilities' positions
