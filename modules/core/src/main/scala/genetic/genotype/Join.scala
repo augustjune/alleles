@@ -17,14 +17,9 @@ trait Join[A] { self =>
 
 object Join {
   /**
-    * Join which uses identical function for combining both elements of output pair
+    * Symmetric version of Join, which allows to avoid overhead while computing both combinations of input pair
     */
-  def symmetric[A](combine: (A, A) => A): Join[A] = (a: A, b: A) => new IterablePair(combine(a, b), combine(b, a))
-
-  /**
-    * Commutative version of Join, which allows to avoid overhead while computing both combinations of input pair
-    */
-  def commutative[A](combine: (A, A) => A): Join[A] = (a: A, b: A) => {
+  def symmetric[A](combine: (A, A) => A): Join[A] = (a: A, b: A) => {
     val res = combine(a, b)
     new IterablePair(res, res)
   }

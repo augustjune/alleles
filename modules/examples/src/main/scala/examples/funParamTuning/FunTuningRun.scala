@@ -18,7 +18,7 @@ import scala.concurrent.duration._
 object FunTuningRun extends App {
 
   object Genotype {
-    implicit val join: Join[Fun] = Join.commutative {
+    implicit val join: Join[Fun] = Join.symmetric {
       case (Fun(args1), Fun(args2)) => Fun(args1.zipAll(args2, 0.0, 0.0).map { case (a, b) => (a + b) / 2 })
     }
 

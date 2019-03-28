@@ -25,7 +25,7 @@ object GenotypeImplicits {
     */
   implicit val intImplicits: GenotypeImplicits[Int] = new GenotypeImplicits[Int] {
     val fitness: Fitness[Int] = x => math.abs(x.toDouble)
-    val join: Join[Int] = Join.commutative { case (x, y) => (x + y) / 2 }
+    val join: Join[Int] = Join.symmetric { case (x, y) => (x + y) / 2 }
     val variation: Variation[Int] = _ + 1
     val scheme: Scheme[Int] = () => arbitrary[Int].sample.get
   }
