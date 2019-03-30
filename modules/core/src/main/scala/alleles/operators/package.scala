@@ -15,13 +15,4 @@ package object operators {
     def generation[A](population: Population[Rated[A]]): Population[(A, A)]
   }
 
-  /**
-    * Genetic operator used ot maintain genetic diversity from one
-    * generation of a population of genetic algorithm chromosomes to the next.
-    */
-  trait Mutation[A] {
-    def single(individual: A): A
-
-    def generation(population: Population[A]): Population[A] = population.map(single)
-  }
 }
