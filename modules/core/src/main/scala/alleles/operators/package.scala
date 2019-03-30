@@ -10,7 +10,7 @@ package object operators {
     * genomes from a population for later breeding
     */
   trait Selection extends {
-    def single[A](population: Population[Rated[A]]): (A, A)
+    def pair[A](population: Population[Rated[A]]): (A, A)
 
     def generation[A](population: Population[Rated[A]]): Population[(A, A)]
   }
@@ -19,10 +19,10 @@ package object operators {
     * Genetic operator used to combine the genetic
     * information of two parents to generate new offspring.
     */
-  trait Crossover {
-    def single[A: Join](parents: (A, A)): IterablePair[A]
+  trait Crossover[A] {
+    def pair(parents: (A, A)): IterablePair[A]
 
-    def generation[A: Join](population: Population[(A, A)]): Population[A] = population.flatMap(single(_))
+    def generation(population: Population[(A, A)]): Population[A] = population.flatMap(pair)
   }
 
   /**

@@ -7,7 +7,7 @@ import alleles.{Epoch, Population}
 
 object SeqProgress extends Progress {
   def nextGeneration[A: Join : Variation](ratedPop: Population[Rated[A]],
-                                          epoch: Epoch): Population[A] = epoch match {
+                                          epoch: Epoch[A]): Population[A] = epoch match {
     case Epoch(selection, crossover, mutation) =>
       mutation.generation(crossover.generation(selection.generation(ratedPop)))
   }

@@ -22,14 +22,14 @@ object TournamentProperties extends SelectionProperties("Tournament props") {
   property("Selected individuals are best out of the round") = forAll(populationGen, posNum[Int]) {
     (pop, roundSize) =>
       val tournament = Tournament(roundSize)
-      val (g1, g2) = tournament.single(pop)
+      val (g1, g2) = tournament.pair(pop)
       val bestOfRound = pop.map(_._2).sorted.takeRight(roundSize).head
       g1.fitness <= bestOfRound && g2.fitness <= bestOfRound
   }
 
   property("If round transcends population, selected individuals are the same") = forAll(populationGen) { pop =>
     val tournament = Tournament(pop.size + 1)
-    val (g1, g2) = tournament.single(pop)
+    val (g1, g2) = tournament.pair(pop)
     g1 == g2
   }
 }
