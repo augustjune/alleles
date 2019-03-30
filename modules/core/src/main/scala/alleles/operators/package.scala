@@ -16,16 +16,6 @@ package object operators {
   }
 
   /**
-    * Genetic operator used to combine the genetic
-    * information of two parents to generate new offspring.
-    */
-  trait Crossover[A] {
-    def pair(p1: A, p2: A): IterablePair[A]
-
-    def generation(population: Population[(A, A)]): Population[A] = population.flatMap((pair _).tupled)
-  }
-
-  /**
     * Genetic operator used ot maintain genetic diversity from one
     * generation of a population of genetic algorithm chromosomes to the next.
     */
