@@ -16,7 +16,7 @@ class ConfigurableParProgress(configuration: TaskSupport) extends Progress {
       val base = ParVector.fill(ratedPop.size / 2)(())
       base.tasksupport = configuration
       base.map(_ => selection.pair(ratedPop))
-        .flatMap(crossover.pair)
+        .flatMap((crossover.pair _).tupled)
         .map(mutation.single)
         .seq
   }

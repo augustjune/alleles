@@ -13,7 +13,7 @@ object ParallelProgress extends Progress {
     case Epoch(selection, crossover, mutation) =>
       ParVector.fill(ratedPop.size / 2)(())
         .map(_ => selection.pair(ratedPop))
-        .flatMap(crossover.pair)
+        .flatMap((crossover.pair _).tupled)
         .map(mutation.single)
         .seq
   }
