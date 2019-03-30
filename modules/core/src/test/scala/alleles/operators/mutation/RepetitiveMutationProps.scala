@@ -13,24 +13,24 @@ object RepetitiveMutationProps extends MutationProperties("RepetitiveMutation pr
 
   def gGen: Gen[Int] = arbitrary[Int]
 
-  def repetitiveMutationGenTemplate(iChanceGen: Gen[Double], repChanceGen: Gen[Double]): Gen[RepetitiveMutation] =
+  def repetitiveMutationGenTemplate(iChanceGen: Gen[Double], repChanceGen: Gen[Double]): Gen[RepetitiveMutation[Ind]] =
     for (iChance <- iChanceGen; repChance <- repChanceGen) yield new RepetitiveMutation(iChance, repChance)
 
-  def implGen: Gen[RepetitiveMutation] =
+  def implGen: Gen[RepetitiveMutation[Ind]] =
     repetitiveMutationGenTemplate(choose(0.0, 1.0), choose(0.0, 1.0))
 
   implicit def variation: Variation[Int] = _ + 1
 
   def mutationsOccurred(before: Ind, after: Ind): Int = after - before
 
-  def notApplicableGen: Gen[RepetitiveMutation] =
+  def notApplicableGen: Gen[RepetitiveMutation[Ind]] =
     repetitiveMutationGenTemplate(sized(n => choose(-n, 0.0)), choose(0.0, 1.0))
 
   property("If individual chance is 0% individual stays the same") = forAll(gGen :| "G", notApplicableGen) {
     (original, mutation) => mutation.single(original) ?= original
   }
 
-  def alwaysApplicableGen: Gen[RepetitiveMutation] =
+  def alwaysApplicableGen: Gen[RepetitiveMutation[Ind]] =
     repetitiveMutationGenTemplate(sized(n => choose(1.0, math.max(n, 1.0))), choose(0.0, 1.0))
 
   property("If individual chance is 100% individual gets mutated at least once") = forAll(gGen :| "G", alwaysApplicableGen) {

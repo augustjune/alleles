@@ -14,7 +14,7 @@ object ParallelProgress extends Progress {
       ParVector.fill(ratedPop.size / 2)(())
         .map(_ => selection.pair(ratedPop))
         .flatMap(crossover.pair)
-        .map(mutation.single(_))
+        .map(mutation.single)
         .seq
   }
 

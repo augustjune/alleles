@@ -29,9 +29,9 @@ package object operators {
     * Genetic operator used ot maintain genetic diversity from one
     * generation of a population of genetic algorithm chromosomes to the next.
     */
-  trait Mutation {
-    def single[A: Variation](individual: A): A
+  trait Mutation[A] {
+    def single(individual: A): A
 
-    def generation[A: Variation](population: Population[A]): Population[A] = population.map(single(_))
+    def generation(population: Population[A]): Population[A] = population.map(single)
   }
 }

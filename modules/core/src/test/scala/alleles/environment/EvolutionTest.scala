@@ -32,7 +32,7 @@ object EvolutionTest extends Properties("Evolution strategy props") {
 
   val selectionGen: Gen[Selection] = Gen.const(Tournament(10))
   val crossoverGen: Gen[Crossover[Ind]] = Gen.const(new ParentsOrOffspring(0.25))
-  val mutationGen: Gen[Mutation] = Gen.const(new RepetitiveMutation(0.5, 0.5))
+  val mutationGen: Gen[Mutation[Ind]] = Gen.const(new RepetitiveMutation(0.5, 0.5))
 
   val operatorsGen: Gen[Epoch[Ind]] = for {
     sel <- selectionGen
