@@ -9,7 +9,7 @@ import scala.concurrent.{ExecutionContext, Future}
 
 class AsyncSetting(flow: Progress)(implicit executionContext: ExecutionContext) {
   def evolve[A: AsyncFitness : Join : Variation](initial: Population[A],
-                                                 operators: Epoch): EvolutionFlow[Population[A]] = {
+                                                 operators: Epoch[A]): EvolutionFlow[Population[A]] = {
     Source.repeat(()).scanAsync(initial) {
       case (prev, _) => Future.traverse(prev) { g =>
         for {

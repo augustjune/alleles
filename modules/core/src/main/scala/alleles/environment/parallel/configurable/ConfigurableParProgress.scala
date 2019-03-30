@@ -11,12 +11,12 @@ import scala.collection.parallel.immutable.ParVector
 class ConfigurableParProgress(configuration: TaskSupport) extends Progress {
 
   def nextGeneration[A: Join : Variation](ratedPop: Population[Rated[A]],
-                                          epoch: Epoch): Population[A] = epoch match {
+                                          epoch: Epoch[A]): Population[A] = epoch match {
     case Epoch(selection, crossover, mutation) =>
       val base = ParVector.fill(ratedPop.size / 2)(())
       base.tasksupport = configuration
-      base.map(_ => selection.single(ratedPop))
-        .flatMap(crossover.single(_))
+      base.map(_ => selection.pair(ratedPop))
+        .flatMap(crossover.pair)
         .map(mutation.single(_))
         .seq
   }

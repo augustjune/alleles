@@ -9,7 +9,7 @@ import org.scalacheck.Gen._
 
 abstract class CrossoverProperties(name: String) extends Properties(name + " with Crossover props") {
   type Ind
-  def implGen: Gen[Crossover]
+  def implGen: Gen[Crossover[Ind]]
   def gPairGen: Gen[(Ind, Ind)]
 
   implicit def join: Join[Ind]

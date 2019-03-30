@@ -6,5 +6,5 @@ import alleles.{Epoch, Population}
 
 trait Progress {
   def nextGeneration[A: Join : Variation](ratedPop: Population[Rated[A]],
-                                          operators: Epoch): Population[A]
+                                          operators: Epoch[A]): Population[A]
 }

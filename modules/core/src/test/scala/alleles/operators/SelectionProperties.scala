@@ -14,7 +14,7 @@ abstract class SelectionProperties(name: String) extends Properties(name + " wit
 
   property("Individuals are selected from the population") = forAll(implGen, populationGen) {
     (implementation, pop) =>
-      val (i1, i2) = implementation.single(pop)
+      val (i1, i2) = implementation.pair(pop)
       val individuals  = pop.map(_._1)
       individuals.contains(i1) && individuals.contains(i2)
   }

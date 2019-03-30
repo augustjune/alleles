@@ -36,7 +36,7 @@ object Tournament {
 }
 
 class Tournament(roundSize: Int, fittestChance: Double) extends Selection {
-  def single[A](pop: Population[Rated[A]]): (A, A) = (choose(pop), choose(pop))
+  def pair[A](pop: Population[Rated[A]]): (A, A) = (choose(pop), choose(pop))
 
   private def choose[A](pop: Population[Rated[A]]) =
     RRandom.chooseByChances(assignChances(RRandom.take(roundSize, pop)))
@@ -47,7 +47,7 @@ class Tournament(roundSize: Int, fittestChance: Double) extends Selection {
     }
 
   def generation[A](pop: Population[Rated[A]]): Population[(A, A)] =
-    for (_ <- (1 to pop.size / 2).toVector) yield single(pop)
+    for (_ <- (1 to pop.size / 2).toVector) yield pair(pop)
 
   override def toString: String = s"Tournament(roundSize: $roundSize, fittestChance: $fittestChance)"
 }

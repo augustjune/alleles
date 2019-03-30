@@ -25,20 +25,20 @@ object EvolutionTest extends Properties("Evolution strategy props") {
 
   type Ind = Int
 
+  val implicits = GenotypeImplicits[Ind]
+  import implicits._
+
   val populationGen: Gen[Population[Ind]] = nonEmptyListOf(arbInt.arbitrary).map(_.toVector)
 
   val selectionGen: Gen[Selection] = Gen.const(Tournament(10))
-  val crossoverGen: Gen[Crossover] = Gen.const(new ParentsOrOffspring(0.25))
+  val crossoverGen: Gen[Crossover[Ind]] = Gen.const(new ParentsOrOffspring(0.25))
   val mutationGen: Gen[Mutation] = Gen.const(new RepetitiveMutation(0.5, 0.5))
 
-  val operatorsGen: Gen[Epoch] = for {
+  val operatorsGen: Gen[Epoch[Ind]] = for {
     sel <- selectionGen
     cross <- crossoverGen
     mut <- mutationGen
   } yield Epoch(sel, cross, mut)
-
-  val implicits = GenotypeImplicits[Ind]
-  import implicits._
 
   property("Evolution step shrinks population size to the closest even number") =
     forAll(derivative, populationGen, operatorsGen) {

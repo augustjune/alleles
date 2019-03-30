@@ -7,7 +7,7 @@ import alleles.{Epoch, Population}
 
 class BestTrackingSetting(ranking: Ranking, flow: Progress) {
   def evolve[A: Fitness : Join : Variation](initial: Population[A],
-                                            operators: Epoch): EvolutionFlow[PopulationWithBest[A]] =
+                                            operators: Epoch[A]): EvolutionFlow[PopulationWithBest[A]] =
     Source.repeat(()).scan((initial, (initial.head, Double.MaxValue))) {
       case ((prev, prevBest), _) =>
         val ratedPopulation = ranking.rate(prev)

@@ -28,7 +28,7 @@ import alleles.toolset.RRandom
   * Note: chromosomes with the largest fitness value will never enter the next pop
   */
 object Roulette extends Selection {
-  def single[A](population: Population[Rated[A]]): (A, A) = {
+  def pair[A](population: Population[Rated[A]]): (A, A) = {
     val sectors = prioritize(population)
     (chooseByPriorities(sectors), chooseByPriorities(sectors))
   }

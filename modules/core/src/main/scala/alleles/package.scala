@@ -18,5 +18,5 @@ package object alleles {
   /**
     * Set of genetic operators which defines generation cycle
     */
-  case class Epoch(selection: Selection, crossover: Crossover, mutation: Mutation)
+  case class Epoch[A](selection: Selection, crossover: Crossover[A], mutation: Mutation)
 }

@@ -11,8 +11,8 @@ import alleles.operators.Crossover
   *
   * @param parentChance Probability of original genotypes to be chosen to the next population
   */
-class ParentsOrOffspring(parentChance: Double) extends Crossover {
-  def single[A: Join](parents: (A, A)): IterablePair[A] = parents match {
+class ParentsOrOffspring[A: Join](parentChance: Double) extends Crossover[A] {
+  def pair(parents: (A, A)): IterablePair[A] = parents match {
     case (p1, p2) =>
       if (RRandom.shot(parentChance)) new IterablePair(p1, p2)
       else p1 >< p2
