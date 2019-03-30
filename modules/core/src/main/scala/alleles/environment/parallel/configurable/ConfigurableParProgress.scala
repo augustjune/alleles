@@ -17,7 +17,7 @@ class ConfigurableParProgress(configuration: TaskSupport) extends Progress {
       base.tasksupport = configuration
       base.map(_ => selection.pair(ratedPop))
         .flatMap(crossover.pair)
-        .map(mutation.single(_))
+        .map(mutation.single)
         .seq
   }
 }
