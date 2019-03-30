@@ -20,9 +20,9 @@ package object operators {
     * information of two parents to generate new offspring.
     */
   trait Crossover[A] {
-    def pair(parents: (A, A)): IterablePair[A]
+    def pair(p1: A, p2: A): IterablePair[A]
 
-    def generation(population: Population[(A, A)]): Population[A] = population.flatMap(pair)
+    def generation(population: Population[(A, A)]): Population[A] = population.flatMap((pair _).tupled)
   }
 
   /**
