@@ -25,17 +25,7 @@ import alleles.toolset.RRandom
   *
   * Repeat rounds until new population is not filled
   */
-object Tournament {
-  def apply(roundSize: Int, fittestChance: Double): Tournament = new Tournament(roundSize, fittestChance)
-
-  /*
-    OptimizationPoint: create separate class for Tournament with chance
-                      1 with overridden apply which takes only min value
- */
-  def apply(roundSize: Int): Tournament = new Tournament(roundSize, 1)
-}
-
-class Tournament(roundSize: Int, fittestChance: Double) extends Selection {
+private[stages] class Tournament(roundSize: Int, fittestChance: Double) extends Selection {
   def pair[A](pop: Population[Rated[A]]): (A, A) = (choose(pop), choose(pop))
 
   private def choose[A](pop: Population[Rated[A]]) =

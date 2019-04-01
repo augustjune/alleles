@@ -5,14 +5,13 @@ import alleles.environment.parallel.configurable.ConfigurableParProgress
 import alleles.environment.sequential.SeqProgress
 import alleles.genotype.Fitness
 import alleles.stages._
-import alleles.stages.selection.Tournament
-import alleles.{GenotypeImplicits, Epoch, Population}
+import alleles.{Epoch, GenotypeImplicits, Population}
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.Prop._
 import org.scalacheck.{Gen, Properties}
 
-import scala.collection.parallel.{ForkJoinTaskSupport, TaskSupport}
+import scala.collection.parallel.ForkJoinTaskSupport
 
 object EvolutionTest extends Properties("Evolution strategy props") {
   val derivative: Gen[Progress] = Gen.oneOf(
@@ -28,7 +27,7 @@ object EvolutionTest extends Properties("Evolution strategy props") {
 
   val populationGen: Gen[Population[Ind]] = nonEmptyListOf(arbInt.arbitrary).map(_.toVector)
 
-  val selectionGen: Gen[Selection] = Gen.const(Tournament(10))
+  val selectionGen: Gen[Selection] = Gen.const(Selection.tournament(10))
   val crossoverGen: Gen[CrossoverStrategy[Ind]] = Gen.const(CrossoverStrategy.parentsOrOffspring(0.25))
   val mutationGen: Gen[MutationStrategy[Ind]] = Gen.const(MutationStrategy.repetitiveMutation(0.5, 0.5))
 

@@ -6,8 +6,7 @@ import akka.stream.scaladsl.Sink
 import alleles.environment.{Epic, GeneticAlgorithm}
 import alleles.genotype.syntax._
 import alleles.genotype.{Fitness, Join, Scheme, Variation}
-import alleles.stages.{CrossoverStrategy, MutationStrategy}
-import alleles.stages.selection.Tournament
+import alleles.stages.{CrossoverStrategy, MutationStrategy, Selection}
 import alleles.toolset.RRandom
 import alleles.{Epoch, Population, PopulationExtension}
 
@@ -53,7 +52,7 @@ object FunTuningRun extends App {
 
   val inputValues = createValues(secretFun, 1000)
   implicit val fitness = calcFitness(inputValues)
-  val operators = Epoch(Tournament(10), CrossoverStrategy.parentsOrOffspring(0.25), MutationStrategy.repetitiveMutation(0.7, 0.4))
+  val operators = Epoch(Selection.tournament(10), CrossoverStrategy.parentsOrOffspring(0.25), MutationStrategy.repetitiveMutation(0.7, 0.4))
 
   val population: Population[Fun] = Await.result(
     GeneticAlgorithm.evolve(Epic(100, operators)).takeWithin(10 seconds).runWith(Sink.last[Population[Fun]]),

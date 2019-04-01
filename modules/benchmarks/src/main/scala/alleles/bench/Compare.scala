@@ -10,8 +10,7 @@ import alleles.environment.{Epic, GeneticAlgorithm, Setting}
 import alleles.examples.qap.{Permutation, PermutationOps}
 import alleles.genotype.Scheme
 import alleles.genotype.syntax._
-import alleles.stages.{CrossoverStrategy, MutationStrategy}
-import alleles.stages.selection.Tournament
+import alleles.stages.{CrossoverStrategy, MutationStrategy, Selection}
 
 import scala.collection.parallel.ExecutionContextTaskSupport
 import scala.concurrent.ExecutionContext
@@ -30,7 +29,7 @@ object Compare extends App {
   val initialPopSize = 10000
   val initialPop = Scheme.make(initialPopSize)
   val operators = Epoch(
-    Tournament(10),
+    Selection.tournament(10),
     CrossoverStrategy.parentsOrOffspring(0.25),
     MutationStrategy.repetitiveMutation(0.8, 0.5))
 
