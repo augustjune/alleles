@@ -1,4 +1,4 @@
-package alleles.operators
+package alleles.stages
 
 import alleles.Population
 import alleles.genotype.Fitness.Rated

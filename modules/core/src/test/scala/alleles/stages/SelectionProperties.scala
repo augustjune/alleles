@@ -1,4 +1,4 @@
-package alleles.operators
+package alleles.stages
 
 import alleles.Population
 import org.scalacheck.Prop._

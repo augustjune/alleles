@@ -1,4 +1,4 @@
-package alleles.operators
+package alleles.stages
 
 import alleles.Population
 import alleles.genotype.Join
@@ -9,7 +9,7 @@ import org.scalacheck.Gen._
 
 abstract class CrossoverProperties(name: String) extends Properties(name + " with Crossover props") {
   type Ind
-  def implGen: Gen[Crossover[Ind]]
+  def implGen: Gen[CrossoverStrategy[Ind]]
   def gPairGen: Gen[(Ind, Ind)]
 
   implicit def join: Join[Ind]

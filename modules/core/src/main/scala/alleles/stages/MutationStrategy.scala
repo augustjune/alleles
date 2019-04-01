@@ -1,4 +1,4 @@
-package alleles.operators
+package alleles.stages
 
 import alleles.Population
 import alleles.genotype.Variation
@@ -10,15 +10,15 @@ import alleles.genotype.syntax._
   * Genetic operator used ot maintain genetic diversity from one
   * generation of a population of genetic algorithm chromosomes to the next.
   */
-trait Mutation[A] {
+trait MutationStrategy[A] {
   def single(individual: A): A
 
   def generation(population: Population[A]): Population[A] = population.map(single)
 }
 
-object Mutation {
+object MutationStrategy {
 
-  def singleMutation[A: Variation](chance: Double): Mutation[A] =
+  def singleMutation[A: Variation](chance: Double): MutationStrategy[A] =
     (individual: A) =>
       if (RRandom.shot(chance)) individual.modified
       else individual
@@ -32,7 +32,7 @@ object Mutation {
     * @param individualChance Probability of first modification
     * @param repetitiveChance Probability of each next modification
     */
-  def repetitiveMutation[A: Variation](individualChance: Double, repetitiveChance: Double): Mutation[A] = new Mutation[A] {
+  def repetitiveMutation[A: Variation](individualChance: Double, repetitiveChance: Double): MutationStrategy[A] = new MutationStrategy[A] {
     def single(a: A): A =
       if (RRandom.shot(individualChance)) modifyIndividual(a)
       else a
