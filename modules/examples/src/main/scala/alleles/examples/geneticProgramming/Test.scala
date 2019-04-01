@@ -5,8 +5,7 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
 import alleles.environment.{Epic, GeneticAlgorithm}
 import alleles.genotype.{Fitness, Join, Scheme, Variation}
-import alleles.stages.{CrossoverStrategy, MutationStrategy}
-import alleles.stages.selection.Tournament
+import alleles.stages.{CrossoverStrategy, MutationStrategy, Selection}
 import alleles.toolset.RRandom
 import alleles.{Epoch, Population}
 
@@ -66,7 +65,7 @@ object Test extends App {
   implicit val mat = ActorMaterializer()
 
   val operators = Epoch(
-    Tournament(20),
+    Selection.tournament(20),
     CrossoverStrategy.parentsOrOffspring(0.5),
     MutationStrategy.repetitiveMutation(0.4, 0.2))
 
