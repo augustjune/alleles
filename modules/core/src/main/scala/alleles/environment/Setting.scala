@@ -7,7 +7,7 @@ import alleles.environment.bestTracking.BestTrackingSetting
 import alleles.genotype.{Fitness, Join, Variation}
 
 import scala.concurrent.ExecutionContext
-
+// ToDo - add documentation
 class Setting(ranking: Ranking, flow: Progress) extends Ambience {
   def evolve[A: Fitness : Join : Variation](epic: Epic[A]): EvolutionFlow[Population[A]] =
     Source.repeat(()).scan(epic.initialPopulation) {

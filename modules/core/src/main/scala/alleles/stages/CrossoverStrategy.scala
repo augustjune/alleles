@@ -2,9 +2,8 @@ package alleles.stages
 
 import alleles.Population
 import alleles.genotype.Join
-import alleles.toolset.{IterablePair, RRandom}
 import alleles.genotype.syntax.JoinObj
-
+import alleles.toolset.{IterablePair, RRandom}
 
 /**
   * Genetic operator used to combine the genetic

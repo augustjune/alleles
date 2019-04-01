@@ -1,7 +1,7 @@
 package alleles.environment.async
 
 import scala.concurrent.Future
-
+// ToDo - add documentation
 trait AsyncFitness[A] {
   def value(a: A): Future[Double]
 }

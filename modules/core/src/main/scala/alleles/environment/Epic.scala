@@ -1,8 +1,8 @@
 package alleles.environment
 
-import alleles.{Epoch, Population}
 import alleles.genotype.Scheme
-
+import alleles.{Epoch, Population}
+// ToDo - add documentation
 trait Epic[A] {
   def initialPopulation: Population[A]
 

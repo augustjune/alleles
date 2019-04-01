@@ -4,7 +4,7 @@ import alleles.genotype.Join
 import alleles.toolset.{IterablePair, RRandom}
 
 import scala.collection.generic.CanBuildFrom
-
+// ToDo - add documentation
 object Joins {
 
   def singlePoint[A](implicit cbf: CanBuildFrom[Array[_], A, Array[A]]): Join[Array[A]] =

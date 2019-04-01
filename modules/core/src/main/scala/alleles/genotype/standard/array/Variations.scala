@@ -6,6 +6,8 @@ import alleles.toolset.RRandom
 
 import scala.collection.generic.CanBuildFrom
 
+// ToDo - add documentation
+
 object Variations {
 
   // ToDo - think about modifying the arrays

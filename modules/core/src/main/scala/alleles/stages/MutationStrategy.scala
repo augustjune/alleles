@@ -2,9 +2,8 @@ package alleles.stages
 
 import alleles.Population
 import alleles.genotype.Variation
-import alleles.toolset.RRandom
 import alleles.genotype.syntax._
-
+import alleles.toolset.RRandom
 
 /**
   * Genetic operator used ot maintain genetic diversity from one

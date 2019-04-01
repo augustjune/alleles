@@ -1,13 +1,13 @@
 package alleles.environment.parallel.configurable
 
-import alleles.{Epoch, Population}
 import alleles.environment.Progress
 import alleles.genotype.Fitness.Rated
 import alleles.genotype.{Join, Variation}
+import alleles.{Epoch, Population}
 
 import scala.collection.parallel.TaskSupport
 import scala.collection.parallel.immutable.ParVector
-
+// ToDo - add documentation
 class ConfigurableParProgress(configuration: TaskSupport) extends Progress {
 
   def nextGeneration[A: Join : Variation](ratedPop: Population[Rated[A]],

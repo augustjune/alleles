@@ -6,7 +6,7 @@ import alleles.toolset.RRandom
 
 import scala.collection.SeqLike
 import scala.collection.generic.CanBuildFrom
-
+// ToDo - add documentation
 object Variations {
 
   /**
