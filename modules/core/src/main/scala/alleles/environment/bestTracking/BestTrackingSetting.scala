@@ -1,10 +1,10 @@
 package alleles.environment.bestTracking
 
 import akka.stream.scaladsl.Source
-import alleles.environment.{Progress, EvolutionFlow, Ranking}
+import alleles.environment.{EvolutionFlow, Progress, Ranking}
 import alleles.genotype.{Fitness, Join, Variation}
 import alleles.{Epoch, Population}
-
+// ToDo - add documentation
 class BestTrackingSetting(ranking: Ranking, flow: Progress) {
   def evolve[A: Fitness : Join : Variation](initial: Population[A],
                                             operators: Epoch[A]): EvolutionFlow[PopulationWithBest[A]] =

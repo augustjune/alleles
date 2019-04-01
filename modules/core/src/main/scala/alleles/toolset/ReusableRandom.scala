@@ -5,7 +5,7 @@ import scala.collection.generic.CanBuildFrom
 import scala.language.higherKinds
 
 /**
-  * Implementation of scala.util.Random with available seed lookup for further reusage
+  * Implementation of scala.util.Random with available seed lookup for further reuse
   */
 class ReusableRandom(private var s: Long) extends util.Random(s) {
   def seed: Long = s

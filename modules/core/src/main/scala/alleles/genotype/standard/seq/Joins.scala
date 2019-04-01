@@ -5,7 +5,7 @@ import alleles.toolset.{IterablePair, RRandom}
 
 import scala.collection.SeqLike
 import scala.collection.generic.CanBuildFrom
-
+// ToDo - add documentation
 object Joins {
 
   def singlePoint[A, Coll <: SeqLike[A, Coll]]
