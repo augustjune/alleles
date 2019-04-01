@@ -1,9 +1,9 @@
-package alleles.operators.selection
+package alleles.stages.selection
 
 import alleles.{Population, PopulationExtension}
 import alleles.genotype.Fitness
 import alleles.genotype.syntax._
-import alleles.operators.SelectionProperties
+import alleles.stages.SelectionProperties
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen
 import org.scalacheck.Gen._

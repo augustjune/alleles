@@ -1,5 +1,5 @@
 import alleles.genotype.{Fitness, Join, Variation}
-import alleles.operators._
+import alleles.stages._
 
 package object alleles {
   /**
@@ -18,5 +18,5 @@ package object alleles {
   /**
     * Set of genetic operators which defines generation cycle
     */
-  case class Epoch[A](selection: Selection, crossover: Crossover[A], mutation: Mutation[A])
+  case class Epoch[A](selection: Selection, crossover: CrossoverStrategy[A], mutation: MutationStrategy[A])
 }

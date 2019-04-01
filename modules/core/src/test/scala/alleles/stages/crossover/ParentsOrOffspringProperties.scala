@@ -1,10 +1,10 @@
-package alleles.operators.crossover
+package alleles.stages.crossover
 
 import alleles.GenotypeImplicits
 import alleles.toolset.IterablePair
 import alleles.genotype.Join
 import alleles.genotype.syntax._
-import alleles.operators.CrossoverProperties
+import alleles.stages.{CrossoverProperties, CrossoverStrategy}
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Prop._
 import org.scalacheck.Gen._
@@ -13,7 +13,7 @@ import org.scalacheck._
 
 object ParentsOrOffspringProperties extends CrossoverProperties("ParentsOrOffspring props") {
   type Ind = String
-  val implGen: Gen[ParentsOrOffspring[Ind]] = choose[Double](0.0, 1.0).map(new ParentsOrOffspring(_))
+  val implGen: Gen[CrossoverStrategy[Ind]] = choose[Double](0.0, 1.0).map(CrossoverStrategy.parentsOrOffspring(_))
   val gPairGen: Gen[(Ind, Ind)] = arbTuple2[String, String].arbitrary
 
   implicit val join: Join[Ind] = GenotypeImplicits[String].join
@@ -28,7 +28,7 @@ object ParentsOrOffspringProperties extends CrossoverProperties("ParentsOrOffspr
   /**
     * Generator with parents chance 1.00 or more
     */
-  val parentsBiasedGen: Gen[ParentsOrOffspring[Ind]] = sized(n => choose(1.0, math.max(n, 1.0))).map(new ParentsOrOffspring(_))
+  val parentsBiasedGen: Gen[CrossoverStrategy[Ind]] = sized(n => choose(1.0, math.max(n, 1.0))).map(CrossoverStrategy.parentsOrOffspring(_))
 
   property("100% parents") = forAll(gPairGen, parentsBiasedGen) {
     case ((p1, p2), crossover) =>
@@ -39,7 +39,7 @@ object ParentsOrOffspringProperties extends CrossoverProperties("ParentsOrOffspr
   /**
     * Generator with parents chance 0.00 or less
     */
-  val offspringBiasedGen: Gen[ParentsOrOffspring[Ind]] = sized(n => choose(-n, 0.0)).map(new ParentsOrOffspring(_))
+  val offspringBiasedGen: Gen[CrossoverStrategy[Ind]] = sized(n => choose(-n, 0.0)).map(CrossoverStrategy.parentsOrOffspring(_))
 
   property("0% parents") = forAll(gPairGen, offspringBiasedGen) {
     case ((p1, p2), crossover) =>

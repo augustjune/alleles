@@ -1,4 +1,4 @@
-package alleles.operators
+package alleles.stages
 
 import alleles.Population
 import alleles.genotype.Variation
@@ -11,7 +11,7 @@ abstract class MutationProperties(name: String) extends Properties(name + " with
   implicit def variation: Variation[Ind]
   def gGen: Gen[Ind]
 
-  def implGen: Gen[Mutation[Ind]]
+  def implGen: Gen[MutationStrategy[Ind]]
 
   def populationGen: Gen[Population[Ind]] = for {
     n <- posNum[Int]

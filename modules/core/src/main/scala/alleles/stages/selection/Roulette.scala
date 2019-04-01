@@ -1,8 +1,8 @@
-package alleles.operators.selection
+package alleles.stages.selection
 
 import alleles.Population
 import alleles.genotype.Fitness.Rated
-import alleles.operators.Selection
+import alleles.stages.Selection
 import alleles.toolset.RRandom
 
 /**

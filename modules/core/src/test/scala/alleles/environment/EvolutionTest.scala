@@ -4,10 +4,8 @@ import alleles.environment.parallel.ParallelProgress
 import alleles.environment.parallel.configurable.ConfigurableParProgress
 import alleles.environment.sequential.SeqProgress
 import alleles.genotype.Fitness
-import alleles.operators._
-import alleles.operators.crossover.ParentsOrOffspring
-import alleles.operators.mutation.RepetitiveMutation
-import alleles.operators.selection.Tournament
+import alleles.stages._
+import alleles.stages.selection.Tournament
 import alleles.{GenotypeImplicits, Epoch, Population}
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
@@ -31,8 +29,8 @@ object EvolutionTest extends Properties("Evolution strategy props") {
   val populationGen: Gen[Population[Ind]] = nonEmptyListOf(arbInt.arbitrary).map(_.toVector)
 
   val selectionGen: Gen[Selection] = Gen.const(Tournament(10))
-  val crossoverGen: Gen[Crossover[Ind]] = Gen.const(new ParentsOrOffspring(0.25))
-  val mutationGen: Gen[Mutation[Ind]] = Gen.const(new RepetitiveMutation(0.5, 0.5))
+  val crossoverGen: Gen[CrossoverStrategy[Ind]] = Gen.const(CrossoverStrategy.parentsOrOffspring(0.25))
+  val mutationGen: Gen[MutationStrategy[Ind]] = Gen.const(MutationStrategy.repetitiveMutation(0.5, 0.5))
 
   val operatorsGen: Gen[Epoch[Ind]] = for {
     sel <- selectionGen

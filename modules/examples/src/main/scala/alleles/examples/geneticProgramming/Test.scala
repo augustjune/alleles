@@ -5,9 +5,8 @@ import akka.stream.ActorMaterializer
 import akka.stream.scaladsl.Sink
 import alleles.environment.{Epic, GeneticAlgorithm}
 import alleles.genotype.{Fitness, Join, Scheme, Variation}
-import alleles.operators.crossover.ParentsOrOffspring
-import alleles.operators.mutation.RepetitiveMutation
-import alleles.operators.selection.Tournament
+import alleles.stages.{CrossoverStrategy, MutationStrategy}
+import alleles.stages.selection.Tournament
 import alleles.toolset.RRandom
 import alleles.{Epoch, Population}
 
@@ -66,7 +65,10 @@ object Test extends App {
   implicit val system = ActorSystem()
   implicit val mat = ActorMaterializer()
 
-  val operators = Epoch(Tournament(20), new ParentsOrOffspring(0.5), new RepetitiveMutation(0.4, 0.2))
+  val operators = Epoch(
+    Tournament(20),
+    CrossoverStrategy.parentsOrOffspring(0.5),
+    MutationStrategy.repetitiveMutation(0.4, 0.2))
 
   val lastPop: Population[GPTree] = Await.result(
     GeneticAlgorithm.par.evolve(Epic(100, operators)).take(1000).runWith(Sink.last),
