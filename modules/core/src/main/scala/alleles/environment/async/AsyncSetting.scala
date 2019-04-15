@@ -6,16 +6,20 @@ import alleles.genotype.{Join, Variation}
 import alleles.{Epoch, Population}
 
 import scala.concurrent.{ExecutionContext, Future}
-// ToDo - add documentation
+
+/**
+  * Implementation of genetic algorithm with asynchronous fitness value computation and
+  * parametrized of applying genetic operators to populations
+  */
 class AsyncSetting(flow: Progress)(implicit executionContext: ExecutionContext) {
   def evolve[A: AsyncFitness : Join : Variation](initial: Population[A],
                                                  operators: Epoch[A]): EvolutionFlow[Population[A]] = {
     Source.repeat(()).scanAsync(initial) {
       case (prev, _) => Future.traverse(prev) { g =>
         for {
-          a <- Future.successful(g)
-          b <- AsyncFitness(g)
-        } yield (a, b)
+          individual <- Future.successful(g)
+          fitness <- AsyncFitness(g)
+        } yield (individual, fitness)
       }.map(flow.nextGeneration(_, operators))
     }
   }
