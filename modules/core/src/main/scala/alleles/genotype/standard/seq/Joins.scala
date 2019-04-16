@@ -5,7 +5,10 @@ import alleles.toolset.{IterablePair, RRandom}
 
 import scala.collection.SeqLike
 import scala.collection.generic.CanBuildFrom
-// ToDo - add documentation
+
+/**
+  * Set of standard Variation implementation for any SeqLike derivative
+  */
 object Joins {
 
   def singlePoint[A, Coll <: SeqLike[A, Coll]]

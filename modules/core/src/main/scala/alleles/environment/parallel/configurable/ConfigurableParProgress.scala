@@ -7,7 +7,11 @@ import alleles.{Epoch, Population}
 
 import scala.collection.parallel.TaskSupport
 import scala.collection.parallel.immutable.ParVector
-// ToDo - add documentation
+
+/**
+  * Parallel implementation of evolution progress,
+  * with configurable way of performing parallel computation
+  */
 class ConfigurableParProgress(configuration: TaskSupport) extends Progress {
 
   def nextGeneration[A: Join : Variation](ratedPop: Population[Rated[A]],

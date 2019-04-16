@@ -6,7 +6,9 @@ import alleles.toolset.RRandom
 
 import scala.collection.generic.CanBuildFrom
 
-// ToDo - add documentation
+/**
+  * Set of standard Variation implementation for Array type
+  */
 
 object Variations {
 

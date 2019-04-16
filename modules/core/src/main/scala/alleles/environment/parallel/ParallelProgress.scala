@@ -6,7 +6,12 @@ import alleles.genotype.{Join, Variation}
 import alleles.{Epoch, Population}
 
 import scala.collection.parallel.immutable.ParVector
-// ToDo - add documentation
+
+/**
+  * Implementation of evolution progress,
+  * which applies genetic operators to each individual in parallel
+  * using scala parallel collections
+  */
 object ParallelProgress extends Progress {
   def nextGeneration[A: Join : Variation](ratedPop: Population[Rated[A]],
                                           epoch: Epoch[A]): Population[A] = epoch match {
