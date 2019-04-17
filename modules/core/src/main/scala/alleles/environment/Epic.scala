@@ -2,7 +2,10 @@ package alleles.environment
 
 import alleles.genotype.Scheme
 import alleles.{Epoch, Population}
-// ToDo - add documentation
+
+/**
+  * Entity, which provides information needed to perform evolution process
+  */
 trait Epic[A] {
   def initialPopulation: Population[A]
 
