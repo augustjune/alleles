@@ -12,9 +12,9 @@ import scala.collection.parallel.immutable.ParVector
   * Parallel implementation of evolution progress,
   * with configurable way of performing parallel computation
   */
-class ConfigurableParProgress(configuration: TaskSupport) extends Progress {
+class ConfigurableParProgress[A: Join : Variation](configuration: TaskSupport) extends Progress[A] {
 
-  def nextGeneration[A: Join : Variation](ratedPop: Population[Rated[A]],
+  def nextGeneration(ratedPop: Population[Rated[A]],
                                           epoch: Epoch[A]): Population[A] = epoch match {
     case Epoch(selection, crossover, mutation) =>
       val base = ParVector.fill(ratedPop.size / 2)(())

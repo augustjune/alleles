@@ -10,8 +10,7 @@ import alleles.{Epoch, Population}
   * and applying genetic operators to it, capable of keeping track of the best individual
   * through whole evolution with no computation overhead
   */
-class BestTrackingSetting[A: Fitness : Join : Variation](ranking: Ranking[A],
-                                                         flow: Progress) {
+class BestTrackingSetting[A: Fitness : Join : Variation](ranking: Ranking[A], flow: Progress[A]) {
   def evolve(initial: Population[A], operators: Epoch[A]): EvolutionFlow[PopulationWithBest[A]] =
     Source.repeat(()).scan((initial, (initial.head, Double.MaxValue))) {
       case ((prev, prevBest), _) =>
