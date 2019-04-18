@@ -12,7 +12,7 @@ import scala.concurrent.ExecutionContext
   * Implementation of evolution environment, which represents genetic algorithm,
   * with parametrized way of rating the population and applying genetic operators to it
   */
-class Setting[A: Fitness : Join : Variation](ranking: Ranking, flow: Progress) extends Ambience[A] {
+class Setting[A: Fitness : Join : Variation](ranking: Ranking[A], flow: Progress) extends Ambience[A] {
   def evolve(epic: Epic[A]): EvolutionFlow[Population[A]] =
     Source.repeat(()).scan(epic.initialPopulation) {
       case (prev, _) => flow.nextGeneration(ranking.rate(prev), epic.operators)
@@ -22,7 +22,7 @@ class Setting[A: Fitness : Join : Variation](ranking: Ranking, flow: Progress) e
     * Decorates itself with the ability to track the best individual
     * among the whole evolution process
     */
-  def bestTracking: BestTrackingSetting = new BestTrackingSetting(ranking, flow)
+  def bestTracking: BestTrackingSetting[A] = new BestTrackingSetting[A](ranking, flow)
 
   /**
     * Decorates itself with the ability to calculate fitness value
