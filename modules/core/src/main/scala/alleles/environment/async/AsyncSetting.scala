@@ -11,7 +11,7 @@ import scala.concurrent.{ExecutionContext, Future}
   * Implementation of genetic algorithm with asynchronous fitness value computation and
   * parametrized of applying genetic operators to populations
   */
-class AsyncSetting[A](flow: Progress)(implicit executionContext: ExecutionContext,
+class AsyncSetting[A](flow: Progress[A])(implicit executionContext: ExecutionContext,
                                       F: AsyncFitness[A],
                                       J: Join[A],
                                       V: Variation[A]) extends Ambience[A] {

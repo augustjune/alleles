@@ -14,16 +14,16 @@ import org.scalacheck.{Gen, Properties}
 import scala.collection.parallel.ForkJoinTaskSupport
 
 object EvolutionTest extends Properties("Evolution strategy props") {
-  val derivative: Gen[Progress] = Gen.oneOf(
-    SeqProgress,
-    ParallelProgress,
+  type Ind = Int
+  val implicits: GenotypeImplicits[Ind] = GenotypeImplicits[Ind]
+
+  import implicits._
+
+  val derivative: Gen[Progress[Ind]] = Gen.oneOf(
+    new SeqProgress,
+    new ParallelProgress,
     new ConfigurableParProgress(new ForkJoinTaskSupport)
   )
-
-  type Ind = Int
-
-  val implicits = GenotypeImplicits[Ind]
-  import implicits._
 
   val populationGen: Gen[Population[Ind]] = nonEmptyListOf(arbInt.arbitrary).map(_.toVector)
 
