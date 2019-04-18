@@ -12,8 +12,8 @@ import scala.concurrent.ExecutionContext
   * Implementation of evolution environment, which represents genetic algorithm,
   * with parametrized way of rating the population and applying genetic operators to it
   */
-class Setting(ranking: Ranking, flow: Progress) extends Ambience {
-  def evolve[A: Fitness : Join : Variation](epic: Epic[A]): EvolutionFlow[Population[A]] =
+class Setting[A: Fitness : Join : Variation](ranking: Ranking, flow: Progress) extends Ambience[A] {
+  def evolve(epic: Epic[A]): EvolutionFlow[Population[A]] =
     Source.repeat(()).scan(epic.initialPopulation) {
       case (prev, _) => flow.nextGeneration(ranking.rate(prev), epic.operators)
     }

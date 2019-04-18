@@ -70,7 +70,7 @@ object Test extends App {
     MutationStrategy.repetitiveMutation(0.4, 0.2))
 
   val lastPop: Population[GPTree] = Await.result(
-    GeneticAlgorithm.par.evolve(Epic(100, operators)).take(1000).runWith(Sink.last),
+    GeneticAlgorithm[GPTree] .par.evolve(Epic(100, operators)).take(1000).runWith(Sink.last),
     Duration.Inf)
 
   import alleles.PopulationExtension

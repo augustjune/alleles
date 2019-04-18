@@ -13,7 +13,7 @@ import scala.concurrent.duration._
 
 trait LongRunningComparison[A, B] extends Measuring {
 
-  def candidates: List[(String, Setting)]
+  def candidates: List[(String, Setting[A])]
 
   val preferences: EvolutionPreferences[A]
 
