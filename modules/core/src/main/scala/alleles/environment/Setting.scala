@@ -2,7 +2,7 @@ package alleles.environment
 
 import akka.stream.scaladsl.Source
 import alleles.Population
-import alleles.environment.async.AsyncSetting
+import alleles.environment.async.{AsyncFitness, AsyncSetting}
 import alleles.environment.bestTracking.BestTrackingSetting
 import alleles.genotype.{Fitness, Join, Variation}
 
@@ -28,5 +28,6 @@ class Setting[A: Fitness : Join : Variation](ranking: Ranking, flow: Progress) e
     * Decorates itself with the ability to calculate fitness value
     * of individuals asynchronously
     */
-  def async(implicit executionContext: ExecutionContext): AsyncSetting = new AsyncSetting(flow)
+  def async(implicit asyncFitness: AsyncFitness[A], executionContext: ExecutionContext): Ambience[A] =
+    new AsyncSetting(flow)
 }
