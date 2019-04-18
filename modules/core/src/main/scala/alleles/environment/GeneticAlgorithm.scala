@@ -3,6 +3,7 @@ package alleles.environment
 import alleles.environment.parallel.configurable.{ConfigurableParProgress, ConfigurableParRanking}
 import alleles.environment.parallel.{ParallelProgress, ParallelRanking}
 import alleles.environment.sequential.{SeqProgress, SeqRanking}
+import alleles.genotype.{Fitness, Join, Variation}
 
 import scala.collection.parallel.TaskSupport
 
@@ -12,13 +13,17 @@ import scala.collection.parallel.TaskSupport
   *
   * May be used as default implementation of `Ambience`.
   */
-object GeneticAlgorithm extends Setting(SeqRanking, SeqProgress) {
-  def par: Setting = new Setting(ParallelRanking, ParallelProgress)
+class GeneticAlgorithm[A: Fitness : Join : Variation] extends Setting[A](SeqRanking, SeqProgress) {
+  def par: Setting[A] = new Setting(ParallelRanking, ParallelProgress)
 
-  def par(taskSupport: TaskSupport): Setting =
+  def par(taskSupport: TaskSupport): Setting[A] =
     new Setting(
       new ConfigurableParRanking(taskSupport),
       new ConfigurableParProgress(taskSupport))
 
-  def parFitness: Setting = new Setting(ParallelRanking, SeqProgress)
+  def parFitness: Setting[A] = new Setting(ParallelRanking, SeqProgress)
+}
+
+object GeneticAlgorithm {
+  def apply[A: Fitness : Join : Variation]: GeneticAlgorithm[A] = new GeneticAlgorithm[A]
 }

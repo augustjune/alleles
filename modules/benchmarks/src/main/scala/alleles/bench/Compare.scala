@@ -36,15 +36,16 @@ object Compare extends App {
   val options = Epic(initialPop, operators)
   val iterations = 5
 
+  val ga = GeneticAlgorithm[Permutation]
   val comparison = new LongRunningComparison[Permutation, Unit] {
-    def candidates: List[(String, Setting)] = List(
-      "Basic sync" -> GeneticAlgorithm,
-      "Fully parallel" -> GeneticAlgorithm.par,
-      "Parallel #2" -> GeneticAlgorithm.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(2)))),
-      "Parallel #4" -> GeneticAlgorithm.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(4)))),
-      "Parallel #8" -> GeneticAlgorithm.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(8)))),
-      "Parallel #16" -> GeneticAlgorithm.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(16)))),
-      "Parallel #32" -> GeneticAlgorithm.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(32))))
+    def candidates: List[(String, Setting[Permutation])] = List(
+      "Basic sync" -> ga,
+      "Fully parallel" -> ga.par,
+      "Parallel #2" -> ga.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(2)))),
+      "Parallel #4" -> ga.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(4)))),
+      "Parallel #8" -> ga.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(8)))),
+      "Parallel #16" -> ga.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(16)))),
+      "Parallel #32" -> ga.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(32))))
     )
 
     val preferences: EvolutionPreferences[Permutation] = EvolutionPreferences(options, iterations)

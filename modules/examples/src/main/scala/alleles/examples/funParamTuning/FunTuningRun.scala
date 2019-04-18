@@ -55,7 +55,7 @@ object FunTuningRun extends App {
   val operators = Epoch(Selection.tournament(10), CrossoverStrategy.parentsOrOffspring(0.25), MutationStrategy.repetitiveMutation(0.7, 0.4))
 
   val population: Population[Fun] = Await.result(
-    GeneticAlgorithm.evolve(Epic(100, operators)).takeWithin(10 seconds).runWith(Sink.last[Population[Fun]]),
+    GeneticAlgorithm[Fun].evolve(Epic(100, operators)).takeWithin(10 seconds).runWith(Sink.last[Population[Fun]]),
     Duration.Inf)
 
   val best: Fun = population.best
