@@ -13,15 +13,15 @@ import scala.collection.parallel.TaskSupport
   *
   * May be used as default implementation of `Ambience`.
   */
-class GeneticAlgorithm[A: Fitness : Join : Variation] extends Setting[A](SeqRanking, SeqProgress) {
-  def par: Setting[A] = new Setting(ParallelRanking, ParallelProgress)
+class GeneticAlgorithm[A: Fitness : Join : Variation] extends Setting[A](new SeqRanking[A], SeqProgress) {
+  def par: Setting[A] = new Setting(new ParallelRanking, ParallelProgress)
 
   def par(taskSupport: TaskSupport): Setting[A] =
     new Setting(
       new ConfigurableParRanking(taskSupport),
       new ConfigurableParProgress(taskSupport))
 
-  def parFitness: Setting[A] = new Setting(ParallelRanking, SeqProgress)
+  def parFitness: Setting[A] = new Setting(new ParallelRanking, SeqProgress)
 }
 
 object GeneticAlgorithm {

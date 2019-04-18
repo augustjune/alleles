@@ -1,15 +1,16 @@
 package alleles.environment.parallel
 
 import alleles.Population
-import alleles.environment.Ranking
+import alleles.environment.FitnessRanking
+import alleles.genotype.Fitness
 import cats.Functor
 
 /**
   * Parallel implementation of assigning fitness value for population individuals,
   * using parallel collections
   */
-object ParallelRanking extends {
+class ParallelRanking[A: Fitness] extends {
   private val parallelFunctor: Functor[Population] = new Functor[Population] {
-    def map[A, B](fa: Population[A])(f: A => B): Population[B] = fa.par.map(f).seq
+    def map[I, B](fa: Population[I])(f: I => B): Population[B] = fa.par.map(f).seq
   }
-} with Ranking(parallelFunctor)
+} with FitnessRanking(parallelFunctor)
