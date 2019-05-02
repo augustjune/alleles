@@ -4,7 +4,6 @@ import alleles.Population
 import org.scalacheck.Prop._
 import org.scalacheck.{Gen, Prop, Properties}
 
-
 abstract class SelectionProperties(name: String) extends Properties(name + " with Selection props") {
   type Ind
 

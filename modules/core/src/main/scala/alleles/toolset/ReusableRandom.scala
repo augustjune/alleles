@@ -52,6 +52,7 @@ class ReusableRandom(private var s: Long) extends util.Random(s) {
 
 
   def chooseOne[A](seq: Seq[A]): A = seq(nextInt(seq.length))
+
   /**
     * Returns a value from the `pool` chosen by corresponding priority
     *
@@ -69,7 +70,8 @@ class ReusableRandom(private var s: Long) extends util.Random(s) {
   def chooseByChances[A](pool: Seq[(A, Double)]): A = choose(nextDouble(), pool.toList)
 
   private def choose[A](shot: Double, pool: List[(A, Double)]): A = pool match {
-    case Nil => throw new RuntimeException("Pool chances should sum to 1")
+    case Nil => throw new RuntimeException("Pool of candidates is empty")
+    case (x, _) :: Nil => x
     case (x, chance) :: t => if (shot < chance) x else choose(shot - chance, t)
   }
 }
