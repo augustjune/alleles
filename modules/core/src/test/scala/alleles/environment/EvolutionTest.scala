@@ -3,9 +3,8 @@ package alleles.environment
 import alleles.environment.parallel.ParallelProgress
 import alleles.environment.parallel.configurable.ConfigurableParProgress
 import alleles.environment.sequential.SeqProgress
-import alleles.genotype.Fitness
 import alleles.stages._
-import alleles.{Epoch, GenotypeImplicits, Population}
+import alleles.{Epoch, GenotypeImplicits, Population, PopulationExtension}
 import org.scalacheck.Arbitrary._
 import org.scalacheck.Gen._
 import org.scalacheck.Prop._
@@ -41,7 +40,7 @@ object EvolutionTest extends Properties("Evolution strategy props") {
     forAll(derivative, populationGen, operatorsGen) {
       (strategy, population, operators) =>
         val originalSize = population.size
-        val newSize = strategy.nextGeneration(population.map(x => x -> Fitness(x)), operators).size
+        val newSize = strategy.nextGeneration(population.ranked, operators).size
         if (originalSize % 2 == 0) newSize == originalSize
         else newSize == originalSize || newSize == originalSize - 1
     }

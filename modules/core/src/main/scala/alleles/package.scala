@@ -1,4 +1,4 @@
-import alleles.genotype.{Fitness, Join, Variation}
+import alleles.genotype.Fitness
 import alleles.stages._
 
 package object alleles {
@@ -7,12 +7,11 @@ package object alleles {
     */
   type Population[+A] = Vector[A]
 
-  implicit class PopulationExtension[A](population: Population[A]) {
+  implicit class PopulationExtension[A](private val population: Population[A]) extends AnyVal {
     def best(implicit f: Fitness[A]): A = population.minBy(f.value)
 
-    def withFitnesses(implicit f: Fitness[A]): Population[(A, Double)] =
+    def ranked(implicit f: Fitness[A]): Population[(A, Double)] =
       population.map(x => x -> f.value(x))
-
   }
 
   /**
