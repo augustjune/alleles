@@ -1,10 +1,10 @@
 package alleles
 
 import alleles.toolset.RRandom
-import org.scalacheck.Properties
-import org.scalacheck.Prop._
-import org.scalacheck.Gen._
 import org.scalacheck.Arbitrary._
+import org.scalacheck.Gen._
+import org.scalacheck.Prop._
+import org.scalacheck.Properties
 
 object ReusableRandomProps extends Properties("Reusable Random properties") {
 
@@ -21,24 +21,27 @@ object ReusableRandomProps extends Properties("Reusable Random properties") {
     }
   }
 
-  property("Random chooses from seq") = forAll(nonEmptyListOf(arbInt)) { l =>
-    val chosen = RRandom.chooseOne(l)
-    l.contains(chosen)
-  }
+  property("Random chooses from seq") =
+    forAll(nonEmptyListOf(arbInt)) { list =>
+      val chosen = RRandom.chooseOne(list)
+      list.contains(chosen)
+    }
 
-  property("Random takes subset of collection") = forAll { (l1: Vector[Int], l2: Vector[Int]) =>
-    val whole = l1 ++ l2
-    val takeSize = l1.size
-    val shuffled = RRandom.take(takeSize, whole)
-    shuffled.size == takeSize && whole.includes(shuffled)
-  }
+  property("Random takes subset of collection") =
+    forAll { (l1: Vector[Int], l2: Vector[Int]) =>
+      val whole = l1 ++ l2
+      val takeSize = l1.size
+      val shuffled = RRandom.take(takeSize, whole)
+      shuffled.size == takeSize && whole.includes(shuffled)
+    }
 
-  property("Same numbers with the same seed") = forAll(choose(0, 1000)) { n: Int =>
-    val seed = RRandom.nextLong()
-    RRandom.setSeed(seed)
-    val l1 = (1 to n).toList.map(_ => RRandom.nextInt())
-    RRandom.setSeed(seed)
-    val l2 = (1 to n).toList.map(_ => RRandom.nextInt())
-    l1 == l2
-  }
+  property("Same numbers with the same seed") =
+    forAll(choose(0, 1000)) { n: Int =>
+      val seed = RRandom.nextLong()
+      RRandom.setSeed(seed)
+      val l1 = (1 to n).toList.map(_ => RRandom.nextInt())
+      RRandom.setSeed(seed)
+      val l2 = (1 to n).toList.map(_ => RRandom.nextInt())
+      l1 == l2
+    }
 }

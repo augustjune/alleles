@@ -8,7 +8,9 @@ import org.scalacheck.{Gen, Properties}
 
 abstract class MutationProperties(name: String) extends Properties(name + " with Mutation props") {
   type Ind
+
   implicit def variation: Variation[Ind]
+
   def gGen: Gen[Ind]
 
   def implGen: Gen[MutationStrategy[Ind]]
@@ -18,7 +20,9 @@ abstract class MutationProperties(name: String) extends Properties(name + " with
     pop <- listOfN(n, gGen)
   } yield pop.toVector
 
-  property("Generation of mutated individuals holds the same size") = forAll(implGen, populationGen) {
-    (implementation, pop) => implementation.generation(pop).size == pop.size
-  }
+  property("Generation of mutated individuals holds the same size") =
+    forAll(implGen, populationGen) {
+      (implementation, pop) =>
+        implementation.generation(pop).size == pop.size
+    }
 }
