@@ -35,7 +35,10 @@ lazy val benchmarks = project.in(file("modules/benchmarks"))
   .dependsOn(core, examples)
   .settings(commonSettings)
   .settings(
-    name := "alleles-benchmarks"
+    name := "alleles-benchmarks",
+    libraryDependencies ++= Seq(
+      "com.storm-enroute" %% "scalameter" % "0.17"
+    )
   )
 
 lazy val examples = project.in(file("modules/examples"))
