@@ -12,7 +12,7 @@ object Measuring {
 trait Measuring {
   import Measuring._
 
-  def measure[R](f: => R): Measured[R] = {
+  def measureMillis[R](f: => R): Measured[R] = {
     val start = System.currentTimeMillis()
     val res = f
     Writer(System.currentTimeMillis() - start, res)

@@ -5,16 +5,14 @@ import java.util.concurrent.Executors
 import akka.actor.ActorSystem
 import akka.stream.ActorMaterializer
 import alleles._
-import alleles.bench.Measuring.Measured
-import alleles.environment.{Epic, GeneticAlgorithm, Setting}
+import alleles.environment.{Epic, GeneticAlgorithm}
 import alleles.examples.qap.{Permutation, PermutationOps}
 import alleles.genotype.Scheme
-import alleles.genotype.syntax._
 import alleles.stages.{CrossoverStrategy, MutationStrategy, Selection}
 
 import scala.collection.parallel.ExecutionContextTaskSupport
-import scala.concurrent.ExecutionContext
 import scala.concurrent.duration._
+import scala.concurrent.{Await, ExecutionContext}
 import scala.language.postfixOps
 
 object Compare extends App {
@@ -34,44 +32,22 @@ object Compare extends App {
     MutationStrategy.repetitiveMutation(0.8, 0.5))
 
   val options = Epic(initialPop, operators)
-  val iterations = 5
+  val iterations = 10
 
+  val executorServicePool = new ExecutorServicePool()
+  val benchmark = new AmbienceBenchmark[Permutation]()
   val ga = GeneticAlgorithm[Permutation]
-  val comparison = new LongRunningComparison[Permutation, Unit] {
-    def candidates: List[(String, Setting[Permutation])] = List(
-      "Basic sync" -> ga,
-      "Fully parallel" -> ga.par,
-      "Parallel #2" -> ga.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(2)))),
-      "Parallel #4" -> ga.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(4)))),
-      "Parallel #8" -> ga.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(8)))),
-      "Parallel #16" -> ga.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(16)))),
-      "Parallel #32" -> ga.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(Executors.newFixedThreadPool(32))))
-    )
 
-    val preferences: EvolutionPreferences[Permutation] = EvolutionPreferences(options, iterations)
+  val measurements = List(2, 4, 8, 16, 32)
+    .map(n => s"Fixed thread pool ($n)" -> ga.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(executorServicePool.register(Executors.newFixedThreadPool(n))))))
+    .map { case (label, setting) => println(s"Running $label"); label -> benchmark.run(setting.evolve(options).take(iterations)) }
 
-    val resultMapper: (String, Measured[Population[Permutation]]) => Unit = {
-      case (label, measured) => measured.run match {
-        case (time, pop) =>
-          println(f"$label%-30s : Time: $time with size: ${pop.size} and best candidate: ${pop.best.fitness}")
-      }
-    }
-
-    override val restTime: FiniteDuration = 3 seconds
+  println()
+  measurements.foreach {
+    case (label, (time, handle)) => println(s"$label result: $time")
   }
 
-  comparison.run
-  /*val vec = Vector.fill(1000)(RRandom.nextInt)
-  val m = new Measuring {}
-   val mapF: Int => Int = x => {
-    val start = System.currentTimeMillis()
-    while(start + 5 > System.currentTimeMillis()) {}
-    x
-  }
 
-  GeneticAlgorithm.evolve()
-  println(s"Mapping function: ${m.measure(mapF(0)).written}")
-  println(s"Sequential approach ${m.measure(vec.map(mapF)).written}")
-  println(s"Parallel approach ${m.measure(vec.par.map(mapF).seq).written}")*/
-  system.terminate()
+  Await.ready(system.terminate(), Duration.Inf)
+  executorServicePool.shutdown()
 }
