@@ -45,7 +45,7 @@ object Test extends App {
   }
 
   def calcs(n: Int, varRanges: Map[String, Double]): List[Calc[GPTree]] =
-    (1 to n).map(_ => Calc.tree(varRanges.mapValues(RRandom.inRange))).toList
+    (1 to n).map(_ => Calc.tree(varRanges.view.mapValues(RRandom.inRange).toMap)).toList
 
   def treeFitness(goal: GPTree, calcs: List[Calc[GPTree]]): Fitness[GPTree] = g =>
     calcs.foldLeft(0.0) { case (sumError, c) => sumError + math.abs(c.eval(goal) - c.eval(g)) } / calcs.size

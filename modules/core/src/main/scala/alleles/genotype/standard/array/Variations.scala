@@ -4,7 +4,7 @@ import alleles.genotype.Variation
 import alleles.genotype.syntax._
 import alleles.toolset.RRandom
 
-import scala.collection.generic.CanBuildFrom
+import scala.reflect.ClassTag
 
 /**
   * Set of standard Variation implementation for Array type
@@ -17,7 +17,7 @@ object Variations {
   /**
     * Makes sense only for individuals of size greater than 1
     */
-  def swap[A](implicit cbf: CanBuildFrom[Array[_], A, Array[A]]): Variation[Array[A]] =
+  def swap[A: ClassTag]: Variation[Array[A]] =
     (ind: Array[A]) =>
       if (ind.length < 2) ind
       else {
@@ -27,8 +27,7 @@ object Variations {
         ind.updated(i1, ind(i2)).updated(i2, ind(i1))
       }
 
-  def elementVariation[A](implicit cbf: CanBuildFrom[Array[_], A, Array[A]],
-                          v: Variation[A]): Variation[Array[A]] =
+  def elementVariation[A: ClassTag: Variation]: Variation[Array[A]] =
     (ind: Array[A]) => {
       val i = RRandom.nextInt(ind.length)
       ind.updated(i, ind(i).modified)
