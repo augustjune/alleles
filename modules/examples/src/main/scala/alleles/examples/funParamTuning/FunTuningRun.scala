@@ -10,6 +10,7 @@ import alleles.stages.{CrossoverStrategy, MutationStrategy, Selection}
 import alleles.toolset.RRandom
 import alleles.{Epoch, Population, PopulationExtension}
 
+import scala.language.postfixOps
 import scala.concurrent.Await
 import scala.concurrent.duration._
 

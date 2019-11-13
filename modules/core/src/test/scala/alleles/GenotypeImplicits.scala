@@ -2,9 +2,10 @@ package alleles
 
 import alleles.genotype._
 import alleles.genotype.standard.seq.Joins
+import alleles.toolset.{IterablePair, RRandom}
 import org.scalacheck.Arbitrary.arbitrary
 
-import scala.collection.immutable.WrappedString
+import scala.collection.immutable.{AbstractSeq, IndexedSeq, WrappedString}
 import scala.util.Random
 
 trait GenotypeImplicits[Ind] {
@@ -36,7 +37,7 @@ object GenotypeImplicits {
   implicit val stringImplicits: GenotypeImplicits[String] = new GenotypeImplicits[String] {
     val fitness: Fitness[String] = _.length
     val join: Join[String] =
-      Joins.singlePoint[Char, WrappedString].alter[String](identity, _.self)
+      Joins.singlePoint[Char, IndexedSeq].alter[String](new WrappedString(_), _.toString)
 
     private val buffer = "The quick brown fox jumps over the lazy dog".replaceAll(" ", "")
     val variation: Variation[String] = { x =>

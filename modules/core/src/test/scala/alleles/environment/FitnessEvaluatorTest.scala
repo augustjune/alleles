@@ -35,7 +35,7 @@ object FitnessEvaluatorTest extends Properties("Fitness evaluator test") {
    */
   def containsSame[A](population1: Population[A], population2: Population[A]): Boolean = {
     def countElems(population: Population[A]): Map[A, Int] =
-      population.groupBy(identity).mapValues(_.size)
+      population.groupBy(identity).view.mapValues(_.size).toMap
 
     countElems(population1) == countElems(population2)
   }

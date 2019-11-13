@@ -1,7 +1,8 @@
 package alleles.toolset
 
-import scala.collection.BitSet
+import scala.collection.{BitSet, IterableOps}
 import scala.collection.generic.CanBuildFrom
+import scala.collection.immutable.VectorBuilder
 import scala.language.higherKinds
 
 /**
@@ -21,11 +22,11 @@ class ReusableRandom(private var s: Long) extends util.Random(s) {
     * Replaces combination of `shuffle` and `take` functions,
     * which doesn't perform redundant shuffling
     */
-  def take[A, Col[T] <: IndexedSeq[T]](n: Int, from: Col[A])(implicit cbf: CanBuildFrom[Col[A], A, Col[A]]): Col[A] = {
+  def take[A](n: Int, from: Vector[A]): Vector[A] = {
     val originalSize = from.size
     if (n >= originalSize) RRandom.shuffle(from)
     else {
-      val popBuilder = cbf()
+      val popBuilder = new VectorBuilder[A]
       popBuilder.sizeHint(n)
       var taken = 0
       var takenIndexes = BitSet()

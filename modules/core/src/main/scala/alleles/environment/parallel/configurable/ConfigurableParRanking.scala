@@ -6,6 +6,7 @@ import alleles.genotype.Fitness
 import cats.Functor
 
 import scala.collection.parallel.TaskSupport
+import scala.collection.parallel.CollectionConverters._
 
 /**
   * Parallel implementation of assigning fitness value for population individuals,
