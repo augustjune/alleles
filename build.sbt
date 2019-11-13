@@ -1,14 +1,9 @@
 
-lazy val scalaOptions = Seq(
-  scalacOptions ++= Seq(
-    "-Ypartial-unification"
-  )
-)
 
-lazy val commonSettings = scalaOptions ++ Seq(
+lazy val commonSettings = Seq(
   version := "0.1",
   organization := "org.augustjune",
-  scalaVersion := "2.12.6"
+  scalaVersion := "2.13.1"
 )
 
 lazy val alleles = project.in(file("."))
@@ -21,13 +16,13 @@ lazy val core = project.in(file("modules/core"))
   .settings(
     name := "alleles-core",
     libraryDependencies ++= Seq(
-      "org.typelevel"         %% "cats-core"            % "1.3.1",
-      "org.typelevel"         %% "cats-laws"            % "1.3.1",
-      "com.typesafe.akka"     %% "akka-stream"          % "2.5.16",
-      "org.scalactic"         %% "scalactic"            % "3.0.5",
+      "org.typelevel"         %% "cats-core"            % "2.0.0",
+      "org.typelevel"         %% "cats-laws"            % "2.0.0",
+      "com.typesafe.akka"     %% "akka-stream"          % "2.6.0",
+      "org.scalactic"         %% "scalactic"            % "3.0.8",
 
-      "com.typesafe.akka"     %% "akka-stream-testkit"  % "2.5.16"  % Test,
-      "org.scalacheck"        %% "scalacheck"           % "1.14.0"  % Test
+      "com.typesafe.akka"     %% "akka-stream-testkit"  % "2.6.0"  % Test,
+      "org.scalacheck"        %% "scalacheck"           % "1.14.2"  % Test
     )
   )
 
@@ -37,7 +32,7 @@ lazy val benchmarks = project.in(file("modules/benchmarks"))
   .settings(
     name := "alleles-benchmarks",
     libraryDependencies ++= Seq(
-      "com.storm-enroute" %% "scalameter" % "0.17"
+      "com.storm-enroute" %% "scalameter" % "0.19"
     )
   )
 
@@ -48,6 +43,6 @@ lazy val examples = project.in(file("modules/examples"))
     name := "alleles-examples",
 
     libraryDependencies ++= Seq(
-      "org.scalatest" %% "scalatest" % "3.0.5"
+      "org.scalatest" %% "scalatest" % "3.0.8"
     )
   )
