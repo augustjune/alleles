@@ -1,10 +1,11 @@
 package alleles.environment
 
-import akka.stream.scaladsl.Source
 import alleles.Population
 import alleles.environment.async.{AsyncFitness, AsyncSetting}
 import alleles.environment.bestTracking.BestTrackingSetting
 import alleles.genotype.{Fitness, Join, Variation}
+import cats.effect.IO
+import fs2.Stream
 
 import scala.concurrent.ExecutionContext
 
@@ -14,7 +15,7 @@ import scala.concurrent.ExecutionContext
   */
 class Setting[A: Fitness : Join : Variation](ranking: Ranking[A], flow: Progress[A]) extends Ambience[A] {
   def evolve(epic: Epic[A]): EvolutionFlow[Population[A]] =
-    Source.repeat(()).scan(epic.initialPopulation) {
+    Stream(()).repeat.scan(epic.initialPopulation) {
       case (prev, _) => flow.nextGeneration(ranking.rate(prev), epic.operators)
     }
 
@@ -28,6 +29,6 @@ class Setting[A: Fitness : Join : Variation](ranking: Ranking[A], flow: Progress
     * Decorates itself with the ability to calculate fitness value
     * of individuals asynchronously
     */
-  def async(implicit asyncFitness: AsyncFitness[A], executionContext: ExecutionContext): Ambience[A] =
+  def async(implicit asyncFitness: AsyncFitness[IO, A], executionContext: ExecutionContext): AsyncSetting[A] =
     new AsyncSetting(flow)
 }

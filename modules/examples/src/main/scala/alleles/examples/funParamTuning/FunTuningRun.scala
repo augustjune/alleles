@@ -1,17 +1,15 @@
 package alleles.examples.funParamTuning
 
-import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.Sink
 import alleles.environment.{Epic, GeneticAlgorithm}
 import alleles.genotype.syntax._
 import alleles.genotype.{Fitness, Join, Scheme, Variation}
 import alleles.stages.{CrossoverStrategy, MutationStrategy, Selection}
 import alleles.toolset.RRandom
 import alleles.{Epoch, Population, PopulationExtension}
+import cats.effect.IO
 
 import scala.language.postfixOps
-import scala.concurrent.Await
+import scala.concurrent.{Await, ExecutionContext}
 import scala.concurrent.duration._
 
 object FunTuningRun extends App {
@@ -41,8 +39,8 @@ object FunTuningRun extends App {
 
   import Genotype._
 
-  implicit val system = ActorSystem()
-  implicit val materializer = ActorMaterializer()
+  implicit val cs = IO.contextShift(ExecutionContext.global)
+  implicit val timer = IO.timer(ExecutionContext.global)
 
   val secretFun = Fun(Vector(5, -2, 1, 4))
 
@@ -55,9 +53,8 @@ object FunTuningRun extends App {
   implicit val fitness = calcFitness(inputValues)
   val operators = Epoch(Selection.tournament(10), CrossoverStrategy.parentsOrOffspring(0.25), MutationStrategy.repetitiveMutation(0.7, 0.4))
 
-  val population: Population[Fun] = Await.result(
-    GeneticAlgorithm[Fun].evolve(Epic(100, operators)).takeWithin(10 seconds).runWith(Sink.last[Population[Fun]]),
-    Duration.Inf)
+  val population: Population[Fun] =
+    GeneticAlgorithm[Fun].evolve(Epic(100, operators)).interruptAfter[IO](10 seconds).compile.lastOrError.unsafeRunSync()
 
   val best: Fun = population.best
 

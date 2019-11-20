@@ -16,13 +16,11 @@ lazy val core = project.in(file("modules/core"))
   .settings(
     name := "alleles-core",
     libraryDependencies ++= Seq(
+      "co.fs2"                  %% "fs2-core"             % "2.1.0",
       "org.typelevel"           %% "cats-core"            % "2.0.0",
       "org.typelevel"           %% "cats-laws"            % "2.0.0",
-      "com.typesafe.akka"       %% "akka-stream"          % "2.6.0",
       "org.scalactic"           %% "scalactic"            % "3.0.8",
       "org.scala-lang.modules"  %% "scala-parallel-collections" % "0.2.0",
-
-      "com.typesafe.akka"       %% "akka-stream-testkit"  % "2.6.0"  % Test,
       "org.scalacheck"          %% "scalacheck"           % "1.14.2"  % Test
     )
   )

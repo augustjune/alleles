@@ -2,8 +2,6 @@ package alleles.bench
 
 import java.util.concurrent.Executors
 
-import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
 import alleles._
 import alleles.environment.{Epic, GeneticAlgorithm}
 import alleles.examples.qap.{Permutation, PermutationOps}
@@ -11,14 +9,10 @@ import alleles.genotype.Scheme
 import alleles.stages.{CrossoverStrategy, MutationStrategy, Selection}
 
 import scala.collection.parallel.ExecutionContextTaskSupport
-import scala.concurrent.duration._
-import scala.concurrent.{Await, ExecutionContext}
+import scala.concurrent.ExecutionContext
 import scala.language.postfixOps
 
 object Compare extends App {
-
-  implicit val system = ActorSystem()
-  implicit val mat = ActorMaterializer()
 
   val implicits = new PermutationOps("http://anjos.mgi.polymtl.ca/qaplib/data.d/had20.dat")
 
@@ -46,8 +40,5 @@ object Compare extends App {
   measurements.foreach {
     case (label, (time, handle)) => println(s"$label result: $time")
   }
-
-
-  Await.ready(system.terminate(), Duration.Inf)
   executorServicePool.shutdown()
 }

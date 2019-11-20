@@ -1,14 +1,12 @@
 package alleles.environment.async
 
-import scala.concurrent.Future
-
 /**
   * Asynchronous version of fitness function
   */
-trait AsyncFitness[A] {
-  def value(a: A): Future[Double]
+trait AsyncFitness[F[_], A] {
+  def value(a: A): F[Double]
 }
 
 object AsyncFitness {
-  def apply[A](a: A)(implicit f: AsyncFitness[A]): Future[Double] = f.value(a)
+  def apply[F[_], A](a: A)(implicit f: AsyncFitness[F, A]): F[Double] = f.value(a)
 }

@@ -1,16 +1,10 @@
 package alleles.examples.geneticProgramming
 
-import akka.actor.ActorSystem
-import akka.stream.ActorMaterializer
-import akka.stream.scaladsl.Sink
 import alleles.environment.{Epic, GeneticAlgorithm}
 import alleles.genotype.{Fitness, Join, Scheme, Variation}
 import alleles.stages.{CrossoverStrategy, MutationStrategy, Selection}
 import alleles.toolset.RRandom
 import alleles.{Epoch, Population}
-
-import scala.concurrent.Await
-import scala.concurrent.duration._
 
 object Test extends App {
 
@@ -54,24 +48,21 @@ object Test extends App {
   val generator = new TreeGen(variables)
 
   val goal: GPTree = "x"
-    //Plus(Sin("x"), Divide("x", 2))
+  //Plus(Sin("x"), Divide("x", 2))
 
   implicit val fintess = treeFitness(goal, calcs(100, variables.map(_ -> 100.0).toMap))
 
   val ops = new GPTreeOps(generator, goal)
-  import ops._
 
-  implicit val system = ActorSystem()
-  implicit val mat = ActorMaterializer()
+  import ops._
 
   val operators = Epoch(
     Selection.tournament(20),
     CrossoverStrategy.parentsOrOffspring(0.5),
     MutationStrategy.repetitiveMutation(0.4, 0.2))
 
-  val lastPop: Population[GPTree] = Await.result(
-    GeneticAlgorithm[GPTree] .par.evolve(Epic(100, operators)).take(1000).runWith(Sink.last),
-    Duration.Inf)
+  val lastPop: Population[GPTree] =
+    GeneticAlgorithm[GPTree].par.evolve(Epic(100, operators)).take(1000).compile.last.get
 
   import alleles.PopulationExtension
   import alleles.genotype.syntax._
@@ -80,8 +71,5 @@ object Test extends App {
   println("Target: " + prettyTree(goal))
   println("Evolved: " + prettyTree(best))
   println("Fitness: " + best.fitness)
-
-  system.terminate()
-
 }
 
