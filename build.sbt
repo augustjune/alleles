@@ -20,7 +20,6 @@ lazy val core = project.in(file("modules/core"))
       "org.typelevel"           %% "cats-core"            % "2.0.0",
       "org.typelevel"           %% "cats-laws"            % "2.0.0",
       "org.scalactic"           %% "scalactic"            % "3.0.8",
-      "org.scala-lang.modules"  %% "scala-parallel-collections" % "0.2.0",
       "org.scalacheck"          %% "scalacheck"           % "1.14.2"  % Test
     )
   )

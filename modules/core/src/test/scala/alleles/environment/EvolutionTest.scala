@@ -1,7 +1,5 @@
 package alleles.environment
 
-import alleles.environment.parallel.ParallelProgress
-import alleles.environment.parallel.configurable.ConfigurableParProgress
 import alleles.environment.sequential.SeqProgress
 import alleles.stages._
 import alleles.{Epoch, GenotypeImplicits, Population, PopulationExtension}
@@ -10,19 +8,13 @@ import org.scalacheck.Gen._
 import org.scalacheck.Prop._
 import org.scalacheck.{Gen, Properties}
 
-import scala.collection.parallel.ForkJoinTaskSupport
-
 object EvolutionTest extends Properties("Evolution strategy props") {
   type Ind = Int
   val implicits: GenotypeImplicits[Ind] = GenotypeImplicits[Ind]
 
   import implicits._
 
-  val derivative: Gen[Progress[Ind]] = Gen.oneOf(
-    new SeqProgress,
-    new ParallelProgress,
-    new ConfigurableParProgress(new ForkJoinTaskSupport)
-  )
+  val derivative: Gen[Progress[Ind]] = Gen.const(new SeqProgress)
 
   val populationGen: Gen[Population[Ind]] = nonEmptyListOf(arbInt.arbitrary).map(_.toVector)
 

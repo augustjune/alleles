@@ -1,7 +1,5 @@
 package alleles.environment
 
-import alleles.environment.parallel.ParallelRanking
-import alleles.environment.parallel.configurable.ConfigurableParRanking
 import alleles.environment.sequential.SeqRanking
 import alleles.genotype.Fitness
 import alleles.genotype.syntax.FitnessObj
@@ -11,18 +9,11 @@ import org.scalacheck.Gen._
 import org.scalacheck.Prop._
 import org.scalacheck.{Gen, Properties}
 
-import scala.collection.parallel.ForkJoinTaskSupport
-
-
 object FitnessEvaluatorTest extends Properties("Fitness evaluator test") {
   type Ind = Int
 
   implicit val fitness: Fitness[Ind] = GenotypeImplicits[Ind].fitness
-  val derivative: Gen[FitnessRanking[Ind]] = Gen.oneOf(
-    new SeqRanking,
-    new ParallelRanking,
-    new ConfigurableParRanking(new ForkJoinTaskSupport)
-  )
+  val derivative: Gen[FitnessRanking[Ind]] = Gen.const(new SeqRanking)
   val populationGen: Gen[Population[Ind]] = nonEmptyListOf(arbitrary[Ind]).map(_.toVector)
 
   property("Rating population keeps all individuals") = forAll(derivative, populationGen) {

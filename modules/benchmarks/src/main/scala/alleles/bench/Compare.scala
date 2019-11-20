@@ -1,15 +1,11 @@
 package alleles.bench
 
-import java.util.concurrent.Executors
-
 import alleles._
 import alleles.environment.{Epic, GeneticAlgorithm}
 import alleles.examples.qap.{Permutation, PermutationOps}
 import alleles.genotype.Scheme
 import alleles.stages.{CrossoverStrategy, MutationStrategy, Selection}
 
-import scala.collection.parallel.ExecutionContextTaskSupport
-import scala.concurrent.ExecutionContext
 import scala.language.postfixOps
 
 object Compare extends App {
@@ -33,7 +29,7 @@ object Compare extends App {
   val ga = GeneticAlgorithm[Permutation]
 
   val measurements = List(2, 4, 8, 16, 32)
-    .map(n => s"Fixed thread pool ($n)" -> ga.par(new ExecutionContextTaskSupport(ExecutionContext.fromExecutor(executorServicePool.register(Executors.newFixedThreadPool(n))))))
+    .map(n => s"Fixed thread pool ($n)" -> ga)
     .map { case (label, setting) => println(s"Running $label"); label -> benchmark.run(setting.evolve(options).take(iterations)) }
 
   println()

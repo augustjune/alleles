@@ -50,7 +50,7 @@ object Test extends App {
   val goal: GPTree = "x"
   //Plus(Sin("x"), Divide("x", 2))
 
-  implicit val fintess = treeFitness(goal, calcs(100, variables.map(_ -> 100.0).toMap))
+  implicit val fitness: Fitness[GPTree] = treeFitness(goal, calcs(100, variables.map(_ -> 100.0).toMap))
 
   val ops = new GPTreeOps(generator, goal)
 
@@ -62,7 +62,7 @@ object Test extends App {
     MutationStrategy.repetitiveMutation(0.4, 0.2))
 
   val lastPop: Population[GPTree] =
-    GeneticAlgorithm[GPTree].par.evolve(Epic(100, operators)).take(1000).compile.last.get
+    GeneticAlgorithm[GPTree].evolve(Epic(100, operators)).take(1000).compile.last.get
 
   import alleles.PopulationExtension
   import alleles.genotype.syntax._
