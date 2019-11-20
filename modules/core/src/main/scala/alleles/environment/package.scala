@@ -1,8 +1,7 @@
 package alleles
 
-import akka.NotUsed
-import akka.stream.scaladsl.Source
+import fs2.{Stream, Pure}
 
 package object environment {
-  type EvolutionFlow[A] = Source[A, NotUsed]
+  type EvolutionFlow[A] = Stream[Pure, A]
 }
