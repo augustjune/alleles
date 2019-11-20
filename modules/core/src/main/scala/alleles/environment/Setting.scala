@@ -5,7 +5,7 @@ import alleles.environment.async.{AsyncFitness, AsyncSetting}
 import alleles.environment.bestTracking.BestTrackingSetting
 import alleles.genotype.{Fitness, Join, Variation}
 import cats.effect.IO
-import fs2.Stream
+import fs2.{Stream, Pure}
 
 import scala.concurrent.ExecutionContext
 
@@ -14,7 +14,7 @@ import scala.concurrent.ExecutionContext
   * with parametrized way of rating the population and applying genetic operators to it
   */
 class Setting[A: Fitness : Join : Variation](ranking: Ranking[A], flow: Progress[A]) extends Ambience[A] {
-  def evolve(epic: Epic[A]): EvolutionFlow[Population[A]] =
+  def evolve(epic: Epic[A]): Stream[Pure, Population[A]] =
     Stream(()).repeat.scan(epic.initialPopulation) {
       case (prev, _) => flow.nextGeneration(ranking.rate(prev), epic.operators)
     }

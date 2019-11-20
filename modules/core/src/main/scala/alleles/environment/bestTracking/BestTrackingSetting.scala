@@ -1,9 +1,9 @@
 package alleles.environment.bestTracking
 
-import alleles.environment.{EvolutionFlow, Progress, Ranking}
+import alleles.environment.{Progress, Ranking}
 import alleles.genotype.{Fitness, Join, Variation}
 import alleles.{Epoch, Population}
-import fs2.Stream
+import fs2.{Stream, Pure}
 
 /**
   * Implementation of genetic algorithm with parametrized way of rating the population
@@ -11,7 +11,7 @@ import fs2.Stream
   * through whole evolution with no computation overhead
   */
 class BestTrackingSetting[A: Fitness : Join : Variation](ranking: Ranking[A], flow: Progress[A]) {
-  def evolve(initial: Population[A], operators: Epoch[A]): EvolutionFlow[PopulationWithBest[A]] =
+  def evolve(initial: Population[A], operators: Epoch[A]): Stream[Pure, PopulationWithBest[A]] =
     Stream(()).repeat.scan((initial, (initial.head, Double.MaxValue))) {
       case ((prev, prevBest), _) =>
         val ratedPopulation = ranking.rate(prev)
